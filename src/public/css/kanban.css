@@ -1,0 +1,201 @@
+.typeField8{
+  background-color: #fff;
+  box-shadow: 0 0 8px 0 rgb(0 0 0 / 20%);
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.typeField2{
+  margin-top: 10px;
+}
+.typeField13{
+  width: 100% !important;
+}
+.typeField13 textarea{
+  resize: none;
+}
+.typeField5 input{
+  width: 200px; 
+  height: 50px; 
+  box-shadow: 0 4px 7px -1px rgb(0 0 0 / 11%), 0 2px 4px -1px rgb(0 0 0 / 7%);
+}
+.typeField1{
+  width: 100%;
+}
+
+.dz-message{
+  color: lightgrey !important;
+}
+#workFlowContainer>div{
+  position: absolute !important;
+  width: 100%;
+  display: flex;
+  gap: 10px
+}
+.bg-gray-custom{
+  background-color: #e9ecef;
+}
+.timeline-step{
+  width: 50px !important;
+  height: 50px !important;
+}
+#timeLineHeadTags div{
+  padding: 10px !important;
+}
+.timeline>div{
+  margin-bottom: 40px !important;
+  margin-top: 40px !important;
+}
+.timeline>div>div{
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #e9ecef;
+  box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+.cardBodySolicitud>div{
+  display: flex;
+}
+.cardBodySolicitud>div h6{
+  margin-bottom: 0;
+}
+
+a.linkTachado::after{
+  content: "";
+  position: absolute;
+  width: 75%;
+  top: 48%;
+  left: 15%;
+  border: solid 1px #252f40;
+  opacity: 0,7;
+}
+
+.capitalize::first-letter{
+  text-transform:capitalize;
+}
+
+.navCustom{
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+  transition: all 0.5s ease;
+}
+
+.navWrapper{
+  display: flex;
+  flex-wrap: wrap;
+  background-color: transparent !important;
+  background: #f8f9fa;
+  position: relative;
+  list-style: none;
+}
+
+.navWrapper a{
+  text-decoration: none;
+  color: #252f40;
+}
+
+.indicatorPhotos{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px; 
+  height: 25px; 
+  border-radius: 50%; 
+  background-color: #8392AB; 
+  position: absolute; 
+  left: 60%; 
+  top: -10%; 
+  color: #ea0606; 
+  font-weight: 900;
+  z-index: 300;
+
+}
+
+/* Modal Llenado */
+.fieldLlenado{
+  background-color: #fff;
+  box-shadow: 0 0 8px 0 rgb(0 0 0 / 20%);
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.textareaReadOnly{
+  border: none;
+  cursor: default;
+  pointer-events: none; 
+}
+.textareaReadOnly:focus{
+  outline: transparent;
+}
+
+/* Hover Effects */
+.indicatorsHover{
+  transition: all 0.5s;
+}
+.indicatorsHover:hover{
+  background-color: #e9ecef;
+  transform: translateY(-10px);
+}
+.tablesHover{
+  transition: all 0.3s;
+}
+.tablesHover:hover{
+  /* background-color: #e9ecef; */
+  transform: translateX(10px);
+  /* transform: scale(1.02) */
+}
+.imageHover{
+  transition: all 0.5s;
+}
+.imageHover:hover{
+  transform: scale(1.08)
+}
+
+/* Buscador de incidentes */
+.buttonsCircle {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  z-index: 990;
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 16%);
+  cursor: pointer;
+}
+
+/* BOTON consulta solicitudes */
+.openConsultaSolicitudes{
+  background: #fff;
+  border-radius: 50%;
+  font-size: 15px;
+  z-index: 990;
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 16%);
+  cursor: pointer;
+}
+
+.iconsHover {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition: 0.3s;
+  padding: 5px;
+}
+
+.iconsHover:hover {
+  background-color: #e9ecef;
+}
+
+/* Libreria choice JS, Estilos para quitar padding indeseado del combobox */
+.buttonsCircle  .dropdown-toggle::after{display: none;}
+.choices__list--dropdown {z-index: 1000;}
+.choices__list--dropdown .choices__item--selectable:after { display: none !important; } 
+.choices__list--dropdown .choices__item--selectable { padding-right: 0 !important; }
+
+
+

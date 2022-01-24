@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>
+    Cátalogo
+  </title>
+  <!-- Fonts and icons -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="../css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+
+  <style>
+    .searchFieldContent{
+      position: relative;
+    }
+    .searchFieldContent i{ 
+      position: absolute;
+      top: 28%;
+      left: 5%;
+      cursor: pointer;
+    }
+    .searchFieldContent input{ 
+      padding-left: 30px;
+    }
+    .imgCard{
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+    .cardCatalog{
+      width: 160px;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .cardCatalog:hover{
+      transform: scale(1.05);
+      filter: grayscale(100%);
+    }
+  </style>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+
+  <!-- Menu -->
+  <%- include('./partials/menu.ejs') %>
+
+  <main class="main-content max-height-vh-100 h-100">
+
+    <!-- Navbar -->
+    <%- include('./partials/head.ejs') %>
+
+    <!-- Cotent -->
+    <div class="p-4 m-4">
+
+      <!-- Head Catalogo -->
+      <div class="card p-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="m-0 ms-3">Fichas <span id="catalogName"></span> </h5>  
+          <div class="w-50 d-flex gap-1 justify-content-end align-items-center">
+            <div id="showInactive" data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Inactivas" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <i class="fas fa-ban"></i>
+            </div>
+            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Ficha" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <i class="fas fa-plus" ></i>
+            </div>
+            <div class="searchFieldContent">
+              <i class="fas fa-search iconField" onclick="filterByValue($('#searchField').val())"></i>
+              <input type="text" class="form-control" name="" id="searchField">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards Catalogo -->
+      <div id="itemsCatalog" class="d-flex flex-wrap justify-content-center gap-3 mt-3"> <!-- Contenido dinamico --> </div>
+    </div>
+      
+  </main>
+
+  <!--   Core JS Files   -->
+  <script src="../js/core/popper.min.js"></script>
+  <script src="../js/core/bootstrap.min.js"></script>
+  <script src="../js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="../js/plugins/choices.min.js"></script>
+  <!-- Kanban scripts -->
+  <script src="../js/plugins/dragula/dragula.min.js"></script>
+  <script src="../js/plugins/jkanban/jkanban.js"></script>
+  <!-- Jquery -->
+  <script src="../js/jquery.js"></script>
+  <script src="../js/jquery-ui.min.js"></script>
+  <!-- Underscore -->
+  <script src="../js/underscore-min.js"></script>
+  <!-- Script Plantilla -->
+  <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+
+  <script>
+    let catalogContent;
+    const removeSpecialCharacters = (s) => { //TODO revisar, parseo no funciona desde el back
+      s = s.replace(/\\n/g, "\\n")  
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f");
+      s = s.replace(/[\u0000-\u0019]+/g,""); 
+      return s;
+    };
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    let showActive = true;
+    $("#showInactive").on("click", function () {
+      if (showActive) {
+        printItems(catalogContent.catalogo_enc, true)
+        showActive = false;
+      } else {
+        printItems(catalogContent.catalogo_enc, false)
+        showActive = true;
+      }
+    })
+
+    const printItems = (data, showInactive) => {
+      $("#itemsCatalog").html("")
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].estado != "A"){
+          if (!showInactive) {continue};
+        };
+        let element = `
+          <div class="card cardCatalog" id="${data[i].id}">
+            <div style="min-width: 160px; height: 160px;" >
+              <img src="http://104.236.159.193:3010/${data[i].foto}" alt=""  class="imgCard">
+            </div>
+            <div class="text-center p-2">
+              <h6 class="m-0" style="font-size: 13px;">${data[i].titulo}</h6>
+              <h6 class="m-0" style="font-size: 13px;">${data[i].subtitulo}</h6>
+            </div>
+          </div>
+        `;
+        $("#itemsCatalog").append(element)
+      }
+      $("#catalogName").text(data[0].nombre_catalogo)
+    };
+
+    const filterByValue = function (stringFilter) {
+      let filteredByText = _.filter(catalogContent.catalogo_enc, o => {
+        if (o.nombre.toLowerCase().split(' ').join('').indexOf(stringFilter.toLowerCase()) > -1 || 
+            o.nombre_catalogo.toLowerCase().split(' ').join('').indexOf(stringFilter.toLowerCase()) > -1) return o;
+      });
+
+      if (filteredByText.length != 0) {
+        printItems(filteredByText);
+      } else {
+        printItems([]);
+      };
+    }
+
+    $('#searchField').keyup(function(e) {
+      let string = $(this).val();
+      if (string.length > 2) {
+        filterByValue(string);
+      } else {
+        filterByValue("");
+      };
+    });
+
+    $(document).ready(function () {
+      catalogContent= '<%- catalogContent %>';
+      catalogContent = removeSpecialCharacters(catalogContent)
+      catalogContent = JSON.parse(catalogContent)
+      console.log(catalogContent)
+
+      printItems(catalogContent.catalogo_enc)
+    })
+
+    // Cultivos
+    // http://104.236.159.193:3010/catalogoenc/1
+
+    // Enfermedades
+    // http://104.236.159.193:3010/catalogoenc/2
+
+    // Malezas
+    // http://104.236.159.193:3010/catalogoenc/3
+
+    //Plagas
+    // http://104.236.159.193:3010/catalogoenc/4
+
+    //Productos
+    // http://104.236.159.193:3010/catalogoenc/5
+
+  </script>
+
+</body>
+</html>
