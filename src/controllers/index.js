@@ -32,7 +32,10 @@ const catalogoProductos = (req, res) => {
 }
 
 const catalogoDetail = (req, res) => {
-    res.render('detail');
+    let id = req.params.id;
+    controller.getCatalogoDetail(id, req, (resp) => {
+        res.render('detail', {'detail': resp} );
+    })
 }
 
 module.exports = {
@@ -41,5 +44,6 @@ module.exports = {
     catalogoMalezas,
     catalogoPlagas,
     catalogoProductos,
-    catalogoDetail
+    catalogoDetail,
+    
 }

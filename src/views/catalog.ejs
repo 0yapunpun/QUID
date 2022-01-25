@@ -14,9 +14,9 @@
   <link href="../css/nucleo-svg.css" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link href="../css/nucleo-svg.css" rel="stylesheet" />
+  <link href="/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
-  <link id="pagestyle" href="../css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+  <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
     .searchFieldContent{
@@ -160,6 +160,11 @@
       $("#catalogName").text(data[0].nombre_catalogo)
     };
 
+    $(document).on("click", ".cardCatalog", function () {
+      let idCard = $(this).attr("id");
+      window.location.href = "/detail/"+idCard;
+    })
+
     const filterByValue = function (stringFilter) {
       let filteredByText = _.filter(catalogContent.catalogo_enc, o => {
         if (o.nombre.toLowerCase().split(' ').join('').indexOf(stringFilter.toLowerCase()) > -1 || 
@@ -191,20 +196,7 @@
       printItems(catalogContent.catalogo_enc)
     })
 
-    // Cultivos
-    // http://104.236.159.193:3010/catalogoenc/1
-
-    // Enfermedades
-    // http://104.236.159.193:3010/catalogoenc/2
-
-    // Malezas
-    // http://104.236.159.193:3010/catalogoenc/3
-
-    //Plagas
-    // http://104.236.159.193:3010/catalogoenc/4
-
-    //Productos
-    // http://104.236.159.193:3010/catalogoenc/5
+    // http://104.236.159.193:3010/catalogodetalle/259
 
   </script>
 

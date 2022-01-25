@@ -22,7 +22,6 @@
     .imgCard{
       max-width: 100%;
       max-height: 100%;
-
       border-radius: 10px;
     }
     .imgUser{
@@ -40,7 +39,7 @@
     }
     .fichaImages{
       width: 300px;
-      height: 400px;
+      /* height: 400px; */
     }
     .removeImgButton{
       width: 30px;
@@ -56,28 +55,86 @@
       transition: 0.3s;
     }
     .removeImgButton:hover{
-      top: -15px;
+      transform: scale(1.05);
     }
     .imgIndicator{
       position: absolute;
-      top: 2%;
+      top: 15px;
       left: 2%;
     }
     #fichaImages{
       position: relative;
     }
     #addImage{
-      width: 60px;
-      height: 60px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
       cursor: pointer;
       transform: translate(-50%, 0);
       position: absolute;
       top: 50%;
-      right: 0%;
+      right: 3%;
       color: white;
       cursor: pointer;
+      transition: 0.3s;
+    }
+    #addImage:hover{
+      transform: translate(-50%, -10%);
+    }
+
+    .textArea{
+      min-height: 100px;
+      resize: none;
+      transition: 0.3s;
+    }
+
+    .textArea::-webkit-scrollbar {
+      display: none;
+    }
+
+    .textAreaDisable{
+      pointer-events: none;
+      border-color: transparent;
+    }
+    .dropdown .dropdown-menu{
+      transform: translate(18%, 42px) !important;
+    }
+    .disableToggle{
+      pointer-events: none;
+      cursor: default;
+    }
+    #removeImageEncabezado{
+      color: red; 
+      font-size: 15px; 
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #addImageEncabezado{
+      color: green; 
+      font-size: 15px; 
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .hideBtnRemoveImg{
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .iconBlancosBiologicos {
+      width: 50px; 
+      height: 50px; 
+      border-radius: 50%;
+      box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+      border: solid 1px lightgray;
+      padding: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .iconBlancosBiologicos:hover{
+      transform: scale(1.1);
     }
 
 
@@ -102,24 +159,29 @@
       <!-- Paginador -->
       <div class="nav-wrapper position-relative end-0">
         <ul class="nav nav-pills nav-fill p-1" role="tablist">
-           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaEncabezado").show()'>
+           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaEncabezado").fadeIn()'>
               <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
               Encabezado ficha
               </a>
            </li>
-           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaImages").show()'>
+           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaImages").fadeIn()'>
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Imágenes Ficha
               </a>
            </li>
-           <li class="nav-item">
+           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaDetalle").fadeIn()'>
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Detalle Ficha
               </a>
             </li> 
-            <li class="nav-item">
+            <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaBlancosBiologicos").fadeIn()'>
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Blancos Biologicos
+              </a>
+            </li> 
+            <li class="nav-item" >
+              <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
+              Geolocalización Ficha
               </a>
             </li> 
          </ul>
@@ -131,26 +193,26 @@
         <div id="fichaEncabezado" class="fichaPage" > 
           <div class="d-flex w-100 p-3">
             <div class="w-40">
-              <div class="text-center ">
+              <div class="">
                 <label for="fichaName">Nombre Ficha</label>
-                <input type="text" id="fichaName" class="form-control">
+                <input type="text" id="fichaName" class="form-control inputsText textAreaDisable" value="jajaj noc">
               </div>
-              <div class="text-center mt-2">
+              <div class=" mt-2">
                 <label for="fichaTitle">Titulo Ficha</label>
-                <input type="text" id="fichaTitle" class="form-control">
+                <input type="text" id="fichaTitle" class="form-control inputsText textAreaDisable" value="Algun texto">
               </div>
-              <div class="text-center mt-2">
+              <div class=" mt-2">
                 <label for="fichaGenericName">Nombre Génerico</label>
-                <input type="text" id="fichaGenericName" class="form-control">
+                <input type="text" id="fichaGenericName" class="form-control inputsText textAreaDisable" value="Algun texto de nuevo">
               </div>
-              <div class="form-check form-switch ps-0 text-center mt-2">
+              <div class="form-check form-switch ps-0  mt-2">
                 <label for="">Estado</label>
                 <div class="d-flex justify-content-center align-items-center gap-2">
                   <div> 
                     <h6  class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Inactivo</h6>
                   </div>
                   <div>
-                    <input class="form-check-input m-0" type="checkbox" id="flexSwitchCheckDefault" checked="" >
+                    <input class="form-check-input m-0 disableToggle" type="checkbox" id="toggleButton" checked="" >
                   </div>
                   <div>
                     <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Activo</h6>
@@ -158,25 +220,33 @@
                 </div>
               </div>
             </div>
-            <div class="w-60 text-center">
-              <div style="height: 350px" >
-                <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogol2YT4jf.png" alt="" class="imgCard border">
+            <div class="w-60 text-center p-3">
+              <div style="height: 350px; border: solid 1px lightgray; border-radius: 1rem;" id="imgEncabezadoContainer" class="p-1">
+                <img src="" alt="" class="imgCard" id="imgEncabezado">
               </div>
-              <div style="color: red; font-size: 15px; cursor: pointer;" class="d-flex justify-content-center align-items-center gap-2">
-                <i class="fa fa-trash" ></i>
-                <p class="m-0">Eliminar Foto</p>
+              <div id="removeImageEncabezado" style="display: none;">
+                <div onclick="removeImageEncabezado()" class="d-flex justify-content-center align-items-center gap-2 imgEncabezadoAddRemove hideBtnRemoveImg">
+                  <i class="fa fa-trash" ></i>
+                  <p class="m-0">Eliminar Foto</p>
+                </div>
               </div>
+              <div id="addImageEncabezado">
+                <div onclick="addImageEncabezado()" class="d-flex justify-content-center align-items-center gap-2 imgEncabezadoAddRemove hideBtnRemoveImg">
+                  <i class="fas fa-plus-square"></i>
+                  <p class="m-0">Agregar Foto</p>
+                </div>
+              </div>
+              <div id="inputNewImgEncabezado" style="position: fixed; top: -200%;"></div>
             </div>
           </div>
-       
         </div>
 
-        <div id="fichaImages" class="fichaPage"  style="display: none;">
+        <!-- Ficha Imagenes -->
+        <div id="fichaImages" class="fichaPage"  style="display: none;" style="min-height: 150px;">
           <div class="imgIndicator">
-            <h6 class="font-size xs"><span>1</span>/5  Imagenes</h6>
+            <h6 class="font-size xs"><span id="imagesAmount"></span>/5  Imagenes</h6>
           </div>
-
-          <div id="imgContainer" class="d-flex gap-3 alig-items-center justify-content-center p-5 " >
+          <div id="imgContainer" class="d-flex gap-3 alig-items-center justify-content-center p-5" >
             <div class="fichaImages d-flex flex-column align-items-center text-center pb-3" style="position: relative;">
               <img class="imgCard" src="http://104.236.159.193:3010/media/catalogo/imagen_catalogol2YT4jf.png" alt="">
               <h6 class="font-weight-bold"></h6>
@@ -199,19 +269,227 @@
               </div>
             </div>
           </div>
-
           <div id="addImage" class=" bg-primary" style="display: none;">
             <div class="d-flex justify-content-center align-items-center h-100">
               <i class="fas fa-plus"></i>
             </div>
           </div>
-
-          <div id="inputsContainer" style="position: fixed; top: -200%;">
-            
-          </div>
-          
+          <div id="inputsContainer" style="position: fixed; top: -200%;"></div>
         </div>
 
+        <!-- Ficha Detalle -->
+        <div id="fichaDetalle" class="fichaPage p-3" style="display: none;">
+          <div class="nav-wrapper position-relative end-0">
+            <ul class="nav nav-pills nav-fill p-1" role="tablist">
+               <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailDescriptionContainer").fadeIn()'>
+                  <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
+                  Descripción
+                  </a>
+               </li>
+               <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailProductsContainer").fadeIn()'>
+                  <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
+                  Productos
+                  </a>
+               </li>
+             </ul>
+          </div>
+          <div id="detailContainer px-3">
+            <div id="detailDescriptionContainer" class="detailPage">
+              <div class="mt-2 mb-3 px-3">
+                <h6 class="text-muted">Familia</h6>
+                <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="auto_grow(this)" >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magnam quaerat eos fuga nobis tempora accusantium neque nihil nesciunt. Atque, aspernatur!</textarea>
+              </div>
+              <div class="mt-1 mb-3 px-3">
+                <h6 class="text-muted">Variedad</h6>
+                <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="auto_grow(this)">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam non earum tempore ea qui aut hic repellat accusantium fuga blanditiis provident sint, quia quisquam, dolorum suscipit cumque iusto dignissimos? Ut id nisi repellat odit cupiditate fugiat dolorem molestias consectetur necessitatibus.</textarea>
+              </div>
+            </div>
+            <div id="detailProductsContainer" class="detailPage" style="display: none;">
+
+              <div class="d-flex">
+
+                <div class="w-45 mt-2 ps-4" style="display: none;" id="addRelatedProduct">
+                  <h6>Relacionar Producto</h6>
+                  <div class="dropdown">
+                    <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                        Lista Productos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+                      <li>
+                        <a class="dropdown-item" href="javascript:;">
+                          <div class="d-flex align-items-center gap-1">
+
+                            <div style="width: 50px; height: 50px;">
+                              <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
+                            </div>
+                            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                              <span >Alguacil SC</span> <br>
+                              <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                              <span>0.8 L/ha</span>
+                            </h6>
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="javascript:;">
+                          <div class="d-flex align-items-center gap-1">
+
+                            <div style="width: 50px; height: 50px;">
+                              <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
+                            </div>
+                            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                              <span >Alguacil SC</span> <br>
+                              <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                              <span>0.8 L/ha</span>
+                            </h6>
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="javascript:;">
+                          <div class="d-flex align-items-center gap-1">
+
+                            <div style="width: 50px; height: 50px;">
+                              <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
+                            </div>
+                            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                              <span >Alguacil SC</span> <br>
+                              <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                              <span>0.8 L/ha</span>
+                            </h6>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="mt-2 w-55" style="margin: 0 auto; text-align: left;">
+                  <h6>Productos Relacionados</h6>
+                  <div class="d-flex align-items-center border rounded my-2" >
+                    <div style="width: 80px; height: 80px;">
+                      <div><img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" alt="" class="imgCard"></div>
+                    </div>
+                    <div>
+                      <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                        <span >Alguacil SC</span> <br>
+                        <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                        <span>0.8 L/ha</span>
+                      </h6>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center border rounded my-2" >
+                    <div style="width: 80px; height: 80px;">
+                      <div><img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" alt="" class="imgCard"></div>
+                    </div>
+                    <div>
+                      <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                        <span >Alguacil SC</span> <br>
+                        <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                        <span>0.8 L/ha</span>
+                      </h6>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center border rounded my-2" >
+                    <div style="width: 80px; height: 80px;">
+                      <div><img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" alt="" class="imgCard"></div>
+                    </div>
+                    <div>
+                      <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                        <span >Alguacil SC</span> <br>
+                        <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                        <span>0.8 L/ha</span>
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Blancos Biologicos -->
+        <div id="fichaBlancosBiologicos" class="fichaPage p-4" style="display: none;">
+          <div class="d-flex gap-3 my-3 justify-content-center">
+            <div class="bg-gray-100 iconBlancosBiologicos"><img src="http://api.pedbox.co:8850/images/icono_plagas.png" alt="" class="imgCard"></div>
+            <div class="bg-gray-100 iconBlancosBiologicos"><img src="http://api.pedbox.co:8850/images/icono_malezas.png" alt="" class="imgCard"></div>
+            <div class="bg-gray-100 iconBlancosBiologicos"><img src="http://api.pedbox.co:8850/images/icono_enfermedades.png" alt="" class="imgCard"></div>
+          </div>
+
+          <!-- Content -->
+          <div class="d-flex">
+            <div class="w-45 mt-2 ps-4" style="display: none;" id="addRelatedElementsBB">
+              <div class="dropdown">
+                <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                    Lista Productos
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+                  <li>
+                    <a class="dropdown-item" href="javascript:;">
+                      <div class="d-flex align-items-center gap-1">
+
+                        <div style="width: 50px; height: 50px;">
+                          <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
+                        </div>
+                        <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                          <span >Alguacil SC</span> <br>
+                          <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                          <span>0.8 L/ha</span>
+                        </h6>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="javascript:;">
+                      <div class="d-flex align-items-center gap-1">
+
+                        <div style="width: 50px; height: 50px;">
+                          <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
+                        </div>
+                        <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                          <span >Alguacil SC</span> <br>
+                          <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                          <span>0.8 L/ha</span>
+                        </h6>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="javascript:;">
+                      <div class="d-flex align-items-center gap-1">
+
+                        <div style="width: 50px; height: 50px;">
+                          <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
+                        </div>
+                        <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                          <span >Alguacil SC</span> <br>
+                          <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                          <span>0.8 L/ha</span>
+                        </h6>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-2 w-55" style="margin: 0 auto; text-align: left;" id="RelatedElementsBB">
+              <div class="d-flex align-items-center border rounded my-2" >
+                <div style="width: 80px; height: 80px;">
+                  <div><img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" alt="" class="imgCard"></div>
+                </div>
+                <div>
+                  <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                    <span >Alguacil SC</span> <br>
+                    <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
+                    <span>0.8 L/ha</span>
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Page -->
         <hr class="horizontal dark mt-0">
         <div class="d-flex justify-content-between align-items-center mb-2 mx-4">
           <div id="backCatalog" style="cursor: pointer;" class="d-flex justify-contet-center align-items-center gap-2">
@@ -230,8 +508,8 @@
             </div>
           </div>
           <div>
-            <button class="btn btn-outline-primary" id="saveButton" style="display: none;">
-              <i class="far fa-save me-2"></i>
+            <button class="btn btn-outline-primary ms-2" id="saveButton" style="display: none;">
+              <i class="far fa-save ms-2"></i>
               Guardar
             </button>
             <button class="btn btn-primary" id="editButton">
@@ -262,11 +540,28 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
-  <!-- Dropzone -->
-  <script src="../public/js/dropzone.min.js"></script>
-  <link rel="stylesheet" href="../public/css/dropzone.min.css">
 
   <script>
+    const removeSpecialCharacters = (s) => { //TODO revisar, parseo no funciona desde el back
+      s = s.replace(/\\n/g, "\\n")  
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f");
+      s = s.replace(/[\u0000-\u0019]+/g,""); 
+      return s;
+    };
+
+
+    let detailContent= '<%- detail %>';
+    console.log(detailContent)
+    detailContent = removeSpecialCharacters(detailContent)
+    detailContent = JSON.parse(detailContent)
+    console.log(detailContent)
+
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -278,6 +573,12 @@
       $("#addImage").show()
       $("#saveButton").show();
       $("#imgContainer").attr("style", "margin-right: 70px")
+      $(".textArea").removeClass("textAreaDisable");
+      $("#addRelatedProduct").show();
+      $(".inputsText").removeClass("textAreaDisable");
+      $("#toggleButton").removeClass("disableToggle");
+      $(".imgEncabezadoAddRemove").removeClass("hideBtnRemoveImg");
+      $("#addRelatedElementsBB").show();
     });
 
     $("#saveButton").on("click", function () {
@@ -286,6 +587,12 @@
       $("#addImage").hide()
       $("#editButton").show();
       $("#imgContainer").attr("style", "margin-right: 0px")
+      $(".textArea").addClass("textAreaDisable");
+      $("#addRelatedProduct").hide();
+      $(".inputsText").addClass("textAreaDisable");
+      $("#toggleButton").addClass("disableToggle");
+      $(".imgEncabezadoAddRemove").addClass("hideBtnRemoveImg");
+      $("#addRelatedElementsBB").hide();
     });
 
     $(document).on("click", ".removeImgButton", function () {
@@ -293,6 +600,7 @@
       let imgContainer = $(this).closest(".fichaImages");
       console.log(imgContainer)
       $(imgContainer).remove();
+      printImagesIndicatoe();
     })
 
     $("#addImage").on("click", function () {
@@ -301,7 +609,7 @@
 
       let element = `
         <div class="inputField">
-        <input type="file" name="" id="imgInput${imagesAmount + 1}">
+        <input type="file" name="" id="imgInput${imagesAmount + 1}" accept="image/*">
         </div>
       `;
 
@@ -323,11 +631,60 @@
             </div>
           `;
           $("#imgContainer").append(element);
+          printImagesIndicatoe();
         }
       });
 
       inputFile.trigger('click');
     });
+    
+    const removeImageEncabezado = () => {
+      $("#imgEncabezado").attr("src", "");
+      $("#addImageEncabezado").show()
+      $("#removeImageEncabezado").hide()
+    }
+
+    const addImageEncabezado = () => {
+      $("#inputNewImgEncabezado").html("");
+      let element = `
+        <input type="file" name="" id="newImgEncabezado" accept="image/*">
+      `;
+      $("#inputNewImgEncabezado").append(element);
+
+      $("#newImgEncabezado").trigger('click');
+    }
+
+    $(document).on("change", "#newImgEncabezado", function () {
+      let file = $(this).prop('files')[0];
+      if (file) {
+        let url = URL.createObjectURL(file);
+        $("#imgEncabezado").attr("src", url);
+        $("#addImageEncabezado").hide()
+        $("#removeImageEncabezado").show()
+      }
+    })
+
+    const printImagesIndicatoe = () =>{
+      let imagesAmount = $("#imgContainer").find(".fichaImages").length;
+      $("#imagesAmount").text(imagesAmount)
+    }
+
+    const auto_grow= (element) => {
+      element.style.height = "5px";
+      element.style.height = (element.scrollHeight)+"px";
+    }
+
+    const setTextareaSize = () => {
+      let textAreas = $(".textArea");
+      for (let i = 0; i < textAreas.length; i++) {
+        auto_grow(textAreas[i])
+      }
+    }
+
+    $(document).ready(function () {
+      printImagesIndicatoe();
+      setTextareaSize();
+    })
 
 
   </script>
