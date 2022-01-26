@@ -76,36 +76,36 @@ controller = {
 	},
 
     getCatalogoDetail: (id, req, cb) => {
-		var request1 = {
-			method: 'GET',
-			url: 'http://104.236.159.193:3010/catalogodetalle/'+id,
-		};
+        var request1 = {
+            method: 'GET',
+            url: 'http://104.236.159.193:3010/catalogodetalle/'+id,
+        };
 
-		request(request1, function(err, res, resp1) {
-			if (err) { console.error(err); resp = false; }
+        request(request1, function(err, res, resp1) {
+            if (err) { console.error(err); resp = false; }
 
-            var request2 = {
-                method: 'GET',
-                url: 'http://104.236.159.193:3010/catalogodetallepropiedad/'+id,
-            };
-            request(request2, function(err, res, resp2) {
-                if (err) { console.error(err); resp = false; }
-
-                var request3 = {
-                    method: 'GET',
-                    url: 'http://104.236.159.193:3010/catalogoenc/5',
+                var request2 = {
+                        method: 'GET',
+                        url: 'http://104.236.159.193:3010/catalogodetallepropiedad/'+id,
                 };
-                request(request3, function(err, res, resp3) {
-                    if (err) { console.error(err); resp = false; }
+                request(request2, function(err, res, resp2) {
+                        if (err) { console.error(err); resp = false; }
 
-                    let resp = [resp1, resp2, resp3];
-                    console.log(resp)
+                        var request3 = {
+                                method: 'GET',
+                                url: 'http://104.236.159.193:3010/catalogoenc/5',
+                        };
+                        request(request3, function(err, res, resp3) {
+                                if (err) { console.error(err); resp = false; }
 
-                    cb(resp);
+                                let resp = [resp1, resp2, resp3];
+                                console.log(resp)
+
+                                cb(resp);
+                        });
                 });
-            });
-		});
-	}
+        });
+    }
 }
 
 module.exports = controller;

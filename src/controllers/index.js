@@ -34,7 +34,7 @@ const catalogoProductos = (req, res) => {
 const catalogoDetail = (req, res) => {
     let id = req.params.id;
     controller.getCatalogoDetail(id, req, (resp) => {
-        res.render('detail', {'detail': resp} );
+        res.render('detail', {'detail': resp[0], "detail2": resp[1], "detail3": resp[2]} );
     })
 }
 
