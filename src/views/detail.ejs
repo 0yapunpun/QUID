@@ -133,9 +133,12 @@
       cursor: pointer;
       transition: 0.3s;
     }
-
     .iconBlancosBiologicos:hover{
       transform: scale(1.1);
+    }
+
+    .iconBlancosBiologicosActive{
+      border: solid 2px lightblue
     }
 
     #imgContainer{
@@ -146,6 +149,12 @@
       border: solid 1px transparent; 
       border-radius: 0.5rem;
       transition: 0.3s;
+    }
+    .hoverCards{
+      transition: 0.3s;
+    }
+    .hoverCards:hover{
+      background-color: lightgray;
     }
 
 
@@ -190,11 +199,11 @@
               Blancos Biologicos
               </a>
             </li> 
-            <li class="nav-item" >
+            <!-- <li class="nav-item" >
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Geolocalización Ficha
               </a>
-            </li> 
+            </li>  -->
          </ul>
       </div>
 
@@ -259,29 +268,7 @@
           <div class="imgIndicator">
             <h6 class="font-size xs"><span id="imagesAmount"></span>/5  Imagenes</h6>
           </div>
-          <div id="imgContainer" class="d-flex gap-3 alig-items-center justify-content-center p-5" >
-            <div class="fichaImages d-flex flex-column align-items-center text-center pb-3" style="position: relative;">
-              <img class="imgCard" src="http://104.236.159.193:3010/media/catalogo/imagen_catalogol2YT4jf.png" alt="">
-              <h6 class="font-weight-bold"></h6>
-              <div class="removeImgButton" style="display: none;">
-                <div class="d-flex justify-content-center alig-items-center removeImgButton"><i class="fas fa-times"></i></div>
-              </div>
-            </div>
-            <div class="fichaImages d-flex flex-column align-items-center text-center pb-3" style="position: relative;">
-              <img class="imgCard" src="http://104.236.159.193:3010/media/catalogo/imagen_catalogol2YT4jf.png" alt="">
-              <h6 class="font-weight-bold"></h6>
-              <div class="removeImgButton" style="display: none;">
-                <div class="d-flex justify-content-center alig-items-center removeImgButton"><i class="fas fa-times"></i></div>
-              </div>
-            </div>
-            <div class="fichaImages d-flex flex-column align-items-center text-center pb-3" style="position: relative;">
-              <img class="imgCard" src="http://104.236.159.193:3010/media/catalogo/imagen_catalogol2YT4jf.png" alt="">
-              <h6 class="font-weight-bold"></h6>
-              <div class="removeImgButton" style="display: none;">
-                <div class="d-flex justify-content-center alig-items-center removeImgButton"><i class="fas fa-times"></i></div>
-              </div>
-            </div>
-          </div>
+            <div id="imgContainer" class="d-flex gap-3 alig-items-center justify-content-center p-5" > <!-- Contenido Dinamico--> </div>
           <div id="addImage" class=" bg-primary" style="display: none;">
             <div class="d-flex justify-content-center align-items-center h-100">
               <i class="fas fa-plus"></i>
@@ -293,213 +280,24 @@
         <!-- Ficha Detalle -->
         <div id="fichaDetalle" class="fichaPage p-3" style="display: none;">
           <div class="nav-wrapper position-relative end-0">
-            <ul class="nav nav-pills nav-fill p-1" role="tablist">
-               <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailDescriptionContainer").fadeIn(); setTextareaSize()'>
-                  <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
-                  Descripción
-                  </a>
-               </li>
-               <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailProductsContainer").fadeIn()'>
-                  <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
-                  Productos
-                  </a>
-               </li>
+            <ul class="nav nav-pills nav-fill p-1" role="tablist" id="detallePaginador">
+
              </ul>
           </div>
-          <div id="detailContainer px-3">
-            <div id="detailDescriptionContainer" class="detailPage">
-              <div class="mt-2 mb-3 px-3">
-                <h6 class="text-muted">Familia</h6>
-                <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="auto_grow(this)" >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Magnam quaerat eos fuga nobis tempora accusantium neque nihil nesciunt. Atque, aspernatur!</textarea>
-              </div>
-              <div class="mt-1 mb-3 px-3">
-                <h6 class="text-muted">Variedad</h6>
-                <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="auto_grow(this)">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam non earum tempore ea qui aut hic repellat accusantium fuga blanditiis provident sint, quia quisquam, dolorum suscipit cumque iusto dignissimos? Ut id nisi repellat odit cupiditate fugiat dolorem molestias consectetur necessitatibus.</textarea>
-              </div>
-            </div>
-            <div id="detailProductsContainer" class="detailPage" style="display: none;">
-
-              <div class="d-flex">
-
-                <div class="w-45 mt-2 ps-4" style="display: none;" id="addRelatedProduct">
-                  <h6>Relacionar Producto</h6>
-                  <div class="dropdown">
-                    <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
-                        Lista Productos
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
-                      <li>
-                        <a class="dropdown-item" href="javascript:;">
-                          <div class="d-flex align-items-center gap-1">
-
-                            <div style="width: 50px; height: 50px;">
-                              <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
-                            </div>
-                            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                              <span >Alguacil SC</span> <br>
-                              <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                              <span>0.8 L/ha</span>
-                            </h6>
-                          </div>
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="javascript:;">
-                          <div class="d-flex align-items-center gap-1">
-
-                            <div style="width: 50px; height: 50px;">
-                              <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
-                            </div>
-                            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                              <span >Alguacil SC</span> <br>
-                              <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                              <span>0.8 L/ha</span>
-                            </h6>
-                          </div>
-                        </a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="javascript:;">
-                          <div class="d-flex align-items-center gap-1">
-
-                            <div style="width: 50px; height: 50px;">
-                              <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
-                            </div>
-                            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                              <span >Alguacil SC</span> <br>
-                              <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                              <span>0.8 L/ha</span>
-                            </h6>
-                          </div>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="mt-2 w-55" style="margin: 0 auto; text-align: left;">
-                  <h6>Productos Relacionados</h6>
-                  <div class="d-flex align-items-center border rounded my-2" >
-                    <div style="width: 80px; height: 80px;">
-                      <div><img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" alt="" class="imgCard"></div>
-                    </div>
-                    <div>
-                      <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                        <span >Alguacil SC</span> <br>
-                        <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                        <span>0.8 L/ha</span>
-                      </h6>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center border rounded my-2" >
-                    <div style="width: 80px; height: 80px;">
-                      <div><img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" alt="" class="imgCard"></div>
-                    </div>
-                    <div>
-                      <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                        <span >Alguacil SC</span> <br>
-                        <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                        <span>0.8 L/ha</span>
-                      </h6>
-                    </div>
-                  </div>
-                  <div class="d-flex align-items-center border rounded my-2" >
-                    <div style="width: 80px; height: 80px;">
-                      <div><img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" alt="" class="imgCard"></div>
-                    </div>
-                    <div>
-                      <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                        <span >Alguacil SC</span> <br>
-                        <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                        <span>0.8 L/ha</span>
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div id="detailContainer" class="px-3">
+            <!-- Contenido Dinamico-->
           </div>
         </div>
 
         <!-- Blancos Biologicos -->
         <div id="fichaBlancosBiologicos" class="fichaPage p-4" style="display: none;">
-          <div class="d-flex gap-3 my-3 justify-content-center">
-            <div class="bg-gray-100 iconBlancosBiologicos"><img src="http://api.pedbox.co:8850/images/icono_plagas.png" alt="" class="imgCard"></div>
-            <div class="bg-gray-100 iconBlancosBiologicos"><img src="http://api.pedbox.co:8850/images/icono_malezas.png" alt="" class="imgCard"></div>
-            <div class="bg-gray-100 iconBlancosBiologicos"><img src="http://api.pedbox.co:8850/images/icono_enfermedades.png" alt="" class="imgCard"></div>
+          <div class="d-flex gap-3 my-3 justify-content-center" id="BBicons"> <!-- Contenido Dinamico--> </div>
+
+          <div>
+            <h6 id="relatedElementsBBpageName" class="text-center"></h6> 
+            <div class="d-flex" id="relatedElementsBB"> <!-- Contenido Dinamico--></div>
           </div>
 
-          <!-- Content -->
-          <div class="d-flex">
-            <div class="w-45 mt-2 ps-4" style="display: none;" id="addRelatedElementsBB">
-              <div class="dropdown">
-                <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
-                    Lista Productos
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
-                  <li>
-                    <a class="dropdown-item" href="javascript:;">
-                      <div class="d-flex align-items-center gap-1">
-
-                        <div style="width: 50px; height: 50px;">
-                          <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
-                        </div>
-                        <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                          <span >Alguacil SC</span> <br>
-                          <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                          <span>0.8 L/ha</span>
-                        </h6>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="javascript:;">
-                      <div class="d-flex align-items-center gap-1">
-
-                        <div style="width: 50px; height: 50px;">
-                          <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
-                        </div>
-                        <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                          <span >Alguacil SC</span> <br>
-                          <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                          <span>0.8 L/ha</span>
-                        </h6>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="javascript:;">
-                      <div class="d-flex align-items-center gap-1">
-
-                        <div style="width: 50px; height: 50px;">
-                          <img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" class="imgCard"/> 
-                        </div>
-                        <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                          <span >Alguacil SC</span> <br>
-                          <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                          <span>0.8 L/ha</span>
-                        </h6>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="mt-2 w-55" style="margin: 0 auto; text-align: left;" id="RelatedElementsBB">
-              <div class="d-flex align-items-center border rounded my-2" >
-                <div style="width: 80px; height: 80px;">
-                  <div><img src="http://104.236.159.193:3010/media/catalogo/imagen_catalogoqalKvuQ.png" alt="" class="imgCard"></div>
-                </div>
-                <div>
-                  <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-                    <span >Alguacil SC</span> <br>
-                    <span>Pyrimethanil 250 g/L + Iprodione 125 g/L</span> <br>
-                    <span>0.8 L/ha</span>
-                  </h6>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Footer Page -->
@@ -521,11 +319,11 @@
             </div>
           </div>
           <div class="d-flex justify-content-end" style="width: 150px;">
-            <button class="btn btn-outline-primary ms-2 " id="saveButton" style="display: none;">
+            <button class="btn btn-outline-primary m-0 " id="saveButton" style="display: none;">
               <i class="far fa-save ms-2"></i>
               Guardar
             </button>
-            <button class="btn btn-primary  ms-2" id="editButton">
+            <button class="btn btn-primary  m-0" id="editButton">
               <i class="fas fa-edit ms-2"></i>
               Editar
             </button>
@@ -555,19 +353,6 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
 
   <script>
-    const removeSpecialCharacters = (s) => { //TODO revisar, parseo no funciona desde el back
-      s = s.replace(/\\n/g, "\\n")  
-           .replace(/\\'/g, "\\'")
-           .replace(/\\"/g, '\\"')
-           .replace(/\\&/g, "\\&")
-           .replace(/\\r/g, "\\r")
-           .replace(/\\t/g, "\\t")
-           .replace(/\\b/g, "\\b")
-           .replace(/\\f/g, "\\f");
-      s = s.replace(/[\u0000-\u0019]+/g,""); 
-      return s;
-    };
-
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -584,7 +369,7 @@
       $(".inputsText").removeClass("textAreaDisable");
       $("#toggleButton").removeClass("disableToggle");
       $(".imgEncabezadoAddRemove").removeClass("hideBtnRemoveImg");
-      $("#addRelatedElementsBB").show();
+      $(".addRelatedElementsBB").show();
       $("#imgEncabezadoContainer").css("border-color", "lightgray")
     });
 
@@ -599,7 +384,7 @@
       $(".inputsText").addClass("textAreaDisable");
       $("#toggleButton").addClass("disableToggle");
       $(".imgEncabezadoAddRemove").addClass("hideBtnRemoveImg");
-      $("#addRelatedElementsBB").hide();
+      $(".addRelatedElementsBB").hide();
       $("#imgEncabezadoContainer").css("border-color", "transparent")
     });
 
@@ -689,15 +474,415 @@
       }
     }
 
+
+    const fixResponseJSON = (s) => {
+      if (s == null && s == "") { return }
+
+      // Remove special characters
+      s = s.replace(/\\n/g, "\\n")  
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f")
+           .replace(/[\u0000-\u0019]+/g,""); 
+
+      // Remove New Lines
+      s = s.replace(/\n/g, "\\n");
+      return s
+     }
+
+    const printData = (detailProducto, detailPropiedad, detailCatalogoProducts, detailCatalogoCultivos, detailCatalogoMaleza, detailCatalogoPlagas, detailCatalogoEnfermedades) => {
+      let datosEncabezado = detailPropiedad.catalogo_detalle_propiedad[0];
+      let imagesFicha = detailProducto.catalogo_detalle_imagen;
+      let detalleFicha = detailPropiedad.catalogo_detalle_propiedad;
+      let productosFicha = detailProducto.catalogo_detalle_producto;
+      let productsList = detailCatalogoProducts.catalogo_enc;
+      let blancosBiologicos = detailProducto.catalogo_detalle_blancos_biologicos;
+
+      let catalogoCultivos = detailCatalogoCultivos.catalogo_enc;
+      let catalogoPlagas = detailCatalogoPlagas.catalogo_enc;
+      let catalogoEnfermedades = detailCatalogoEnfermedades.catalogo_enc;
+      let catalogoMalezas = detailCatalogoMaleza.catalogo_enc;
+
+      // ** Encabezado
+      $("#fichaName").val(datosEncabezado.nombre)
+      $("#fichaTitle").val(datosEncabezado.titulo_catalogo)
+      $("#fichaGenericName").val(datosEncabezado.subtitulo)
+      $("#imgEncabezado").attr("src", "http://104.236.159.193:3010/"+datosEncabezado.foto)
+
+      if (datosEncabezado.estado == "A") {
+        $("#toggleButton").prop("checked", true);
+      } else {
+        $("#toggleButton").prop("checked", false);
+      }
+
+      // ** Imagenes
+      for (let i = 0; i < imagesFicha.length; i++) {
+        let element = `
+          <div class="fichaImages d-flex flex-column align-items-center text-center pb-3" style="position: relative;" id="${imagesFicha[i].id}">
+            <img class="imgCard" src="http://104.236.159.193:3010/${imagesFicha[i].ruta_imagen}" alt="">
+            <h6 class="font-weight-bold"></h6>
+            <div class="removeImgButton" style="display: none;">
+              <div class="d-flex justify-content-center alig-items-center removeImgButton"><i class="fas fa-times"></i></div>
+            </div>
+          </div>
+        `;
+        $("#imgContainer").append(element);
+      }
+
+      // ** Detalle
+      let sections = [];
+      // Get sections
+      for (let i = 0; i < detalleFicha.length; i++) {
+        if (!sections.includes(detalleFicha[i].seccion)) {
+          sections.push(detalleFicha[i].seccion)
+        }
+      }
+      // Create paginator and sections
+      for (let i = 0; i < sections.length; i++) {
+        let elementP = `
+          <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailContainer${sections[i]}").fadeIn(); setTextareaSize()'>
+            <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
+              ${sections[i]}
+            </a>
+          </li>
+        `;
+
+        let statePage;
+        if (i == 0) { statePage = "style='display: none'"} else { statePage = ""}
+        let elementS = `
+          <div id="detailContainer${sections[i]}" class="detailPage" ${statePage}> </div>
+        `;
+        $("#detallePaginador").append(elementP)
+        $("#detailContainer").append(elementS)
+      }
+
+      // Load sections Content
+      for (let i = 0; i < detalleFicha.length; i++) {
+        if (detalleFicha[i].seccion == "Productos") {continue} //This has diferent strcuture
+        let element = `
+          <div class="mt-2 mb-3 px-3">
+            <h6 class="text-muted">${detalleFicha[i].titulo}</h6>
+            <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="auto_grow(this)" >${detalleFicha[i].contenido}</textarea>
+          </div>
+        `;
+        $("#detailContainer"+detalleFicha[i].seccion).append(element)
+      }
+
+      // Load products detail 
+      if (sections.includes("Productos")) {
+        let element = `
+          <div class="d-flex">
+            <div class="w-45 mt-2 ps-4" style="display: none;" id="addRelatedProduct">
+              <h6>Relacionar Producto</h6>
+              <div class="dropdown">
+                <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                    Lista Productos
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2" id="detailRelatedProductsListComplete"></ul>
+              </div>
+            </div>
+            <div class="mt-2 w-40" style="margin: 0 auto; text-align: left;" id="detailRelatedProducts">
+            <div class="text-center my-1">
+              <h6>Productos Relacionados</h6>
+            </div>
+            </div>
+          </div>
+        `;
+        $("#detailContainerProductos").append(element);
+
+        for (let i = 0; i < productsList.length; i++) {
+          let productExist = _.findWhere(productosFicha, {id: productsList[i].id}); // La seccion de productos tiene una estructura diferente
+          if (productExist) {continue}
+
+          let elementL = `
+            <li id="${productsList[i].id}" class="relateProduct" data-img="${productsList[i].foto}" data-n="${productsList[i].nombre}" data-t="${productsList[i].titulo}" data-s="${productsList[i].subtitulo}">
+              <a class="dropdown-item" href="javascript:;">
+                <div class="d-flex align-items-center gap-1">
+                  <div style="width: 50px; height: 50px;">
+                    <img src="http://104.236.159.193:3010/${productsList[i].foto}" class="imgCard"/> 
+                  </div>
+                  <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                    <span >${productsList[i].nombre}</span> <br>
+                    <span>${productsList[i].subtitulo}</span> <br>
+                  </h6>
+                </div>
+              </a>
+            </li>
+          `;
+          $("#detailRelatedProductsListComplete").append(elementL);
+        }
+
+        for (let i = 0; i < productosFicha.length; i++) {
+          let elementP = `
+            <div class="d-flex align-items-center my-2" >
+              <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
+                <img src="http://104.236.159.193:3010/${productosFicha[i].foto}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
+              </div>
+              <div>
+                <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                  <span >${productosFicha[i].nombre}</span> <br>
+                  <span>${productosFicha[i].subtitulo}</span> <br>
+                  <span>${productosFicha[i].dosis}</span>
+                </h6>
+              </div>
+            </div>
+            <hr class="horizontal dark mt-0">
+
+          `;
+          $("#detailRelatedProducts").append(elementP);
+        }
+
+
+        // ** Blancos Biologicos
+        let sectionsBlancosBiologicos = [];
+        // Get sections BB
+        for (let i = 0; i < blancosBiologicos.length; i++) {
+          if (!sectionsBlancosBiologicos.includes(blancosBiologicos[i].id_tipo_catalogo)) {
+            sectionsBlancosBiologicos.push(blancosBiologicos[i].id_tipo_catalogo)
+          }
+        }
+        // Print Sections 
+        for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
+          let icon;
+          let iconName;
+          switch (sectionsBlancosBiologicos[i]) {
+            case 1:
+              icon = "http://api.pedbox.co:8850/images/icono_cultivos.png"
+              iconName = "Cultivos"
+              break;
+            case 2:
+              icon = "http://api.pedbox.co:8850/images/icono_enfermedades.png"
+              iconName = "Enfermedades"
+              break;
+            case 3:
+              icon = "http://api.pedbox.co:8850/images/icono_malezas.png"
+              iconName = "Malezas"
+              break;
+            case 4:
+              icon = "http://api.pedbox.co:8850/images/icono_plagas.png"
+              iconName = "Plagas"
+              break;
+            case 5:
+              icon = "http://api.pedbox.co:8850/images/icono_productos.png"
+              iconName = "Productos"
+              break;
+          }
+
+          let isActive;
+          if (i == 0) {isActive = "iconBlancosBiologicosActive"} else {isActive = ""}
+          let element = `
+            <div class="bg-gray-100 iconBlancosBiologicos ${isActive}" name="${iconName}"><img src="${icon}" alt="" class="imgCard" id="BBtipo${sectionsBlancosBiologicos[i]}" onclick='$(".pageBB").hide(); $("#pageBB${sectionsBlancosBiologicos[i]}").fadeIn();'></div>
+          `;
+
+          let isVisible;
+          if (!i == 0) {isVisible = "style='display: none'"} else {isVisible = ""; $("#relatedElementsBBpageName").text(iconName)}
+          let elementC = `
+            <div class="pageBB w-100" id="pageBB${sectionsBlancosBiologicos[i]}" ${isVisible} >
+              <div class="d-flex">
+                <div class="w-45 mt-2 ps-4 addRelatedElementsBB" style="display: none">
+                  <h6>Relacionar Item </h6>  
+
+                  <div class="dropdown">
+                    <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="DropdownBB${sectionsBlancosBiologicos[i]}">
+                        Lista Productos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="DropdownBB${sectionsBlancosBiologicos[i]}" id="DropdownBBContainer${sectionsBlancosBiologicos[i]}"></ul>
+                  </div>  
+
+                </div>
+                <div class="w-40 mt-2 relatedElementsBBpage" style="margin: 0 auto; text-align: left;"> 
+                </div>
+              </div>
+            </div>
+          `;
+          $("#BBicons").append(element)
+          $("#relatedElementsBB").append(elementC)
+
+        };
+
+        console.log(sectionsBlancosBiologicos)
+        for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
+          let dataBB;
+          switch (sectionsBlancosBiologicos[i]) {
+            case 1:
+              dataBB = catalogoCultivos
+              break;
+            case 2:
+              dataBB = catalogoEnfermedades
+              break;
+            case 3:
+              dataBB = catalogoMalezas
+              break;
+            case 4:
+              dataBB = catalogoPlagas
+              break;
+            case 5:
+              dataBB = productsList
+              break;
+          }
+
+          let printCase = _.where(blancosBiologicos, {id_tipo_catalogo: sectionsBlancosBiologicos[i]});
+          let existBB = [];
+          for (let e = 0; e < printCase.length; e++) {
+            if (!existBB.includes(printCase[e].id)) {
+              existBB.push(printCase[e].id)
+            }
+
+            let element = `
+              <div class="d-flex align-items-center my-2 hoverCards" style="padding: 10px; border-radius: 0.5rem">
+                <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 rounded">
+                  <img src="http://104.236.159.193:3010/${printCase[e].foto}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
+                </div>
+                <div class="ms-2">
+                  <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                    <span >${printCase[e].nombre}</span> <br>
+                    <span>${printCase[e].titulo}</span> <br>
+                    <span>${printCase[e].subtitulo}</span>
+                  </h6>
+                </div>
+              </div>
+              <hr class="horizontal dark mt-0">
+            `
+            $("#pageBB"+sectionsBlancosBiologicos[i]).find(".relatedElementsBBpage").append(element);
+          };
+
+          for (let o = 0; o < dataBB.length; o++) {
+            if (existBB.includes(dataBB[o].id)) {continue}
+
+            let element = `
+              <li id="${dataBB[o].id}" class="cardBlancosBiologicos" data-img="${dataBB[o].foto}" data-n="${dataBB[o].nombre}" data-t="${dataBB[o].titulo}" data-s="${dataBB[o].subtitulo}">
+                <a class="dropdown-item" href="javascript:;">
+                  <div class="d-flex align-items-center gap-1" >
+                    <div style="width: 50px; height: 50px;">
+                      <img src="http://104.236.159.193:3010/${dataBB[o].foto}" class="imgCard" style="object-fit: cover; width: 100%; height: 100%"/> 
+                    </div>
+                    <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                      <span >${dataBB[o].nombre}</span> <br>
+                      <span>${dataBB[o].subtitulo}</span> <br>
+                    </h6>
+                  </div>
+                </a>
+              </li>
+            `;
+            $(`#DropdownBBContainer${dataBB[o].id_catalogo}`).append(element)
+          };
+
+
+
+        }
+      }
+    }
+
+    $(document).on("click", ".cardBlancosBiologicos", function (params) {
+      let container = $(this).parent().parent().parent().siblings(".relatedElementsBBpage");
+      let img = $(this).attr("data-img")
+      let nombre = $(this).attr("data-n")
+      let titulo = $(this).attr("data-t")
+      let subtitulo = $(this).attr("data-s")
+
+      let element = `
+        <div class="d-flex align-items-center my-2 hoverCards" style="padding: 10px; border-radius: 0.5rem">
+          <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 rounded">
+            <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
+          </div>
+          <div class="ms-2">
+            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+              <span >${nombre}</span> <br>
+              <span>${titulo}</span> <br>
+              <span>${subtitulo}</span>
+            </h6>
+          </div>
+        </div>
+        <hr class="horizontal dark mt-0">
+      `
+
+      console.log(container)
+      $(this).remove()
+      $(container).append(element)
+    })
+
+    $(document).on("click", ".relateProduct", function () {
+      let img = $(this).attr("data-img")
+      let nombre = $(this).attr("data-n")
+      let titulo = $(this).attr("data-t")
+      let subtitulo = $(this).attr("data-s")
+
+      let element = `
+        <div class="d-flex align-items-center my-2" >
+          <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
+            <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
+          </div>
+          <div>
+            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+              <span >${nombre}</span> <br>
+              <span>${titulo}</span> <br>
+              <span>${subtitulo}</span>
+            </h6>
+          </div>
+        </div>
+        <hr class="horizontal dark mt-0">
+      `;
+      // No es subtitulo si no dosis
+
+      $(this).remove()
+      $("#detailRelatedProducts").append(element)
+
+    })
+
+
+
+    $(document).on("click", ".iconBlancosBiologicos", function () {
+      $(".iconBlancosBiologicos").removeClass("iconBlancosBiologicosActive");
+      $(this).addClass("iconBlancosBiologicosActive")
+      $("#relatedElementsBBpageName").text($(this).attr("name"))
+    })
+
     $(document).ready(function () {
       printImagesIndicatoe();
       setTextareaSize();
 
-      let detailContent= '<%- detail %>';
-      console.log(detailContent)
-      // detailContent = removeSpecialCharacters(detailContent)
-      detailContent = JSON.parse(detailContent)
-      console.log(detailContent)
+      let detailProducto= '<%- detalleProducto %>';
+      detailProducto = fixResponseJSON(detailProducto)
+      detailProducto = JSON.parse(detailProducto)
+      console.log(detailProducto)
+
+      let detailPropiedad= '<%- detallePropiedad %>';
+      detailPropiedad = fixResponseJSON(detailPropiedad)
+      detailPropiedad = JSON.parse(detailPropiedad)
+      console.log(detailPropiedad)
+
+      let detailCatalogoProducts = '<%- catalogoProductos %>';
+      detailCatalogoProducts = fixResponseJSON(detailCatalogoProducts)
+      detailCatalogoProducts = JSON.parse(detailCatalogoProducts)
+      console.log(detailCatalogoProducts)
+
+      let detailCatalogoCultivos = '<%- catalogoCultivos %>';
+      detailCatalogoCultivos = fixResponseJSON(detailCatalogoCultivos)
+      detailCatalogoCultivos = JSON.parse(detailCatalogoCultivos)
+      console.log("cul", detailCatalogoCultivos)
+
+      let detailCatalogoMaleza = '<%- catalogoMalezas %>';
+      detailCatalogoMaleza = fixResponseJSON(detailCatalogoMaleza)
+      detailCatalogoMaleza = JSON.parse(detailCatalogoMaleza)
+      console.log("male", detailCatalogoMaleza)
+
+      let detailCatalogoPlagas = '<%- catalogoPlagas %>';
+      detailCatalogoPlagas = fixResponseJSON(detailCatalogoPlagas)
+      detailCatalogoPlagas = JSON.parse(detailCatalogoPlagas)
+      console.log("plag", detailCatalogoPlagas)
+
+      let detailCatalogoEnfermedades = '<%- catalogoEnfermedades %>';
+      detailCatalogoEnfermedades = fixResponseJSON(detailCatalogoEnfermedades)
+      detailCatalogoEnfermedades = JSON.parse(detailCatalogoEnfermedades)
+      console.log("enfe", detailCatalogoEnfermedades)
+
+      printData(detailProducto, detailPropiedad, detailCatalogoProducts, detailCatalogoCultivos, detailCatalogoMaleza, detailCatalogoPlagas, detailCatalogoEnfermedades)
+
+
     })
 
 

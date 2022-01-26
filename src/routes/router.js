@@ -9,6 +9,8 @@ router.get('/catalogos/malezas', indexController.catalogoMalezas);
 router.get('/catalogos/plagas', indexController.catalogoPlagas);
 router.get('/catalogos/productos', indexController.catalogoProductos);
 
+router.get('/aportes', indexController.aportes);
+
 // router.get('/catalogos/detail', indexController.catalogoDetail);
 router.get('/detail/:id', indexController.catalogoDetail);
 

@@ -82,28 +82,37 @@ controller = {
         };
 
         request(request1, function(err, res, resp1) {
-            if (err) { console.error(err); resp = false; }
+            if (err) { console.error(err); cb({"response": false}); }
 
-                var request2 = {
-                        method: 'GET',
-                        url: 'http://104.236.159.193:3010/catalogodetallepropiedad/'+id,
-                };
-                request(request2, function(err, res, resp2) {
-                        if (err) { console.error(err); resp = false; }
+			var request2 = {
+					method: 'GET',
+					url: 'http://104.236.159.193:3010/catalogodetallepropiedad/'+id,
+			};
+			request(request2, function(err, res, resp2) {
+					if (err) { console.error(err); cb({"response": false}); }
 
-                        var request3 = {
-                                method: 'GET',
-                                url: 'http://104.236.159.193:3010/catalogoenc/5',
-                        };
-                        request(request3, function(err, res, resp3) {
-                                if (err) { console.error(err); resp = false; }
+					controller.getCatalogCultivos(req, (cultivos) => {
+						if (err) { console.error(err); cb({"response": false}); }
+						controller.getCatalogEnfermedades(req, (enfermedades) => {
+							if (err) { console.error(err); cb({"response": false}); }
+							controller.getCatalogMalezas(req, (malezas) => {
+								if (err) { console.error(err); cb({"response": false}); }
+								controller.getCatalogPlagas(req, (plagas) => {
+									if (err) { console.error(err); cb({"response": false}); }
+									controller.getCatalogProductos(req, (productos) => {
+										if (err) { console.error(err); cb({"response": false}); }
 
-                                let resp = [resp1, resp2, resp3];
-                                console.log(resp)
+										let resp = [resp1, resp2, cultivos, enfermedades, malezas, plagas, productos];
+										cb(resp);
 
-                                cb(resp);
-                        });
-                });
+									})
+								})
+							})
+						})
+					})
+
+
+			});
         });
     }
 }

@@ -34,8 +34,12 @@ const catalogoProductos = (req, res) => {
 const catalogoDetail = (req, res) => {
     let id = req.params.id;
     controller.getCatalogoDetail(id, req, (resp) => {
-        res.render('detail', {'detail': resp[0], "detail2": resp[1], "detail3": resp[2]} );
+        res.render('detail', {'detalleProducto': resp[0], "detallePropiedad": resp[1], "catalogoCultivos": resp[2], "catalogoEnfermedades": resp[3], "catalogoMalezas": resp[4], "catalogoPlagas": resp[5], "catalogoProductos": resp[6]} );
     })
+}
+
+const aportes = (req, res) => {
+    res.render('aportes')
 }
 
 module.exports = {
@@ -45,5 +49,6 @@ module.exports = {
     catalogoPlagas,
     catalogoProductos,
     catalogoDetail,
+    aportes
     
 }

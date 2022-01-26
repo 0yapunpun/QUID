@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>
+    Aportes
+  </title>
+  <!-- Fonts and icons -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+
+  <style>
+    .dotIcon{
+      cursor: pointer
+    }
+    .sideLeft{
+      border-right: solid 1px lightgray;
+    }
+    .headerLeft{
+      height: 50px;
+      position: relative; 
+      display: flex; 
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: solid 1px lightgray;
+    }
+    .headerRight{
+      height: 50px;
+      position: relative; 
+      display: flex; 
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: solid 1px lightgray;
+    }
+    .imgUser{
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: gray;
+    }
+    .bodyLeft h6, .bodyRight h6{
+      margin: 0;
+      font-size: 13px;
+    }
+    .aporteLeft{
+      cursor: pointer;
+      transition: 0.3s;
+      padding: 5px;
+      border-radius: 0.5rem;
+    }
+    .aporteLeft:hover{
+      background-color: lightgray;
+    }
+    .imgCard{
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 10px;
+      border-radius: 50%;
+    }
+    .imgDetalle{
+      border-radius: 0.5rem;
+    }
+    .dropdown-toggle:after{
+      display: none;
+    }
+    .iconAporte{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .iconAporte:hover{
+      background-color: lightgray;
+    }
+  </style>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+
+  <!-- Menu -->
+  <%- include('./partials/menu.ejs') %>
+
+  <main class="main-content max-height-vh-100 h-100">
+
+    <!-- Navbar -->
+    <%- include('./partials/head.ejs') %>
+
+    <!-- Cotent -->
+    <div class="p-4 m-4">
+
+        <div class="card d-flex flex-row p-3">
+          <div class="w-50 sideLeft">
+            <div class="headerLeft px-2">
+              <div class="dotIcon dropdown iconAporte">
+
+                <i class="fas fa-ellipsis-v dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown"></i>
+
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li><a class="dropdown-item" href="javascript:;">Creadas</a></li>
+                  <li><a class="dropdown-item" href="javascript:;">Aprobadas</a></li>
+                  <li><a class="dropdown-item" href="javascript:;">Rechazadas</a></li>
+                </ul>
+
+              </div>
+              <div><h6 class="m-0">Aportes (<span>80</span>)</h6></div>
+              <div>&nbsp;</div>
+            </div>
+            <div class="bodyLeft p-3">
+
+              <div class="d-flex w-100 aporteLeft">
+                <div class="imgUser ms-2 me-3 mt-1">
+                  <img src="http://104.236.159.193:3010/media/usuario/JessyPaulineMaud8tp4z1.png" alt="" class="imgCard">
+                </div>
+                <div class="flex-fill ">
+                  <div class="d-flex justify-content-between alig-items-center">
+                    <h6 class="text-primary">Pauline</h6>
+                    <h6 class="text-xxs font-weight-bolder opacity-7">22/01/11</h6>
+                  </div>
+                  <div>
+                    <h6>Aporte nuevo blanco: Malezas</h6>
+                  </div>
+                  <div>
+                    <h6 class="opacity-7">Es un Chinche pequeño</h6>
+                  </div>
+                </div>
+              </div>
+              <hr class="horizontal dark my-2">
+            </div>
+
+          </div>
+          <div class="w-50">
+            <div class="headerRight px-2">
+              <div>&nbsp;</div>
+              <div><h6 class="m-0">Aporte </h6></div>
+              <div class="dotIcon iconAporte"><i class="fas fa-check"></i></div>
+            </div>
+            <div class="bodyRight p-3">
+
+              <div>
+                <div class="d-flex w-100 ">
+                  <div class="imgUser ms-2 me-3 mt-1">
+                    <img src="http://104.236.159.193:3010/media/usuario/JessyPaulineMaud8tp4z1.png" alt="" class="imgCard">
+                  </div>
+                  <div class="flex-fill ">
+                    <div class="d-flex justify-content-between alig-items-center">
+                      <h6 class="text-primary">Pauline</h6>
+                      <h6 class="text-xxs font-weight-bolder opacity-7">22/01/11</h6>
+                    </div>
+                    <div>
+                      <h6>Aporte nuevo blanco: Malezas</h6>
+                    </div>
+                    <div>
+                      <h6 class="opacity-7">Es un Chinche pequeño</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-check form-switch ps-0 mt-2 text-center d-flex justify-content-center align-items-center flex-column">
+                <label for="" class="m-0 my-2">Estado</label>
+                <div class="d-flex align-items-center gap-2 ">
+                  <div> 
+                    <h6  class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rechazado</h6>
+                  </div>
+                  <div>
+                    <input class="form-check-input m-0 disableToggle" type="checkbox" id="toggleButton" checked="" >
+                  </div>
+                  <div>
+                    <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aprobado</h6>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="horizontal dark my-4">
+              <div class="">
+                <h6 style="font-size: 15px;" class="my-2">Datos del Aporte</h6>
+                <div class="d-flex">
+                  <div class="w-60"><h6>Blanco Biológico: <span class="opacity-7">Plagas</span></h6></div>
+                  <div class="w-40"><h6>Lugar: <span class="opacity-7">Monteria</span></h6></div>
+                </div>
+                <div class="d-flex">
+                  <div class="w-60"><h6>Nombre Común: <span class="opacity-7">Blisus</span></h6></div>
+                  <div class="w-40"><h6>Longitud: <span class="opacity-7">-756666.66</span></h6></div>
+                </div>
+                <div class="d-flex">
+                  <div class="w-60"><h6>Nombre científico: <span class="opacity-7">Nlissus Sp</span></h6></div>
+                  <div class="w-40"><h6>Latitud: <span class="opacity-7">6.182234</span></h6></div>
+                </div>
+              </div>
+
+              <hr class="horizontal dark my-4">
+              <div class="">
+                <h6 style="font-size: 15px;" class="my-1">Notas del Aporte</h6>
+                <div class="d-flex flex-column">
+                  <div class="my-2"><h6>Descripción: <span class="opacity-7">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Error, laboriosam?</span></h6></div>
+                  <div class="my-2"><h6>Recomendación: <span class="opacity-7">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Culpa debitis voluptas aperiam ut, magnam molestiae quod consequatur hic voluptatibus illum.</span></h6></div>
+                </div>
+              </div>
+
+              <hr class="horizontal dark my-4">
+              <div class="">
+                <h6 style="font-size: 15px;" class="my-2">Detalle del Aporte</h6>
+                <div class="imgDetalle">
+                  <img src="http://104.236.159.193:3010/media/aporte/aporte_793_xnCUB7w.png" alt="" style="max-width: 100%; max-height: 100%; border-radius: 0.5rem;">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+    </div>  
+      
+  </main>
+
+  <!--   Core JS Files   -->
+  <script src="../js/core/popper.min.js"></script>
+  <script src="../js/core/bootstrap.min.js"></script>
+  <script src="../js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="../js/plugins/choices.min.js"></script>
+  <!-- Kanban scripts -->
+  <script src="../js/plugins/dragula/dragula.min.js"></script>
+  <script src="../js/plugins/jkanban/jkanban.js"></script>
+  <!-- Jquery -->
+  <script src="../js/jquery.js"></script>
+  <script src="../js/jquery-ui.min.js"></script>
+  <!-- Underscore -->
+  <script src="../js/underscore-min.js"></script>
+  <!-- Script Plantilla -->
+  <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+
+  <script>
+
+  </script>
+
+</body>
+</html>
