@@ -168,7 +168,7 @@
   <!-- Menu -->
   <%- include('./partials/menu.ejs') %>
 
-  <main class="main-content max-height-vh-100 h-100">
+  <main class="main-content max-height-vh-100 h-100" id-item="<%- id %>">
 
     <!-- Navbar -->
     <%- include('./partials/head.ejs') %>
@@ -179,31 +179,31 @@
       <!-- Paginador -->
       <div class="nav-wrapper position-relative end-0">
         <ul class="nav nav-pills nav-fill p-1" role="tablist">
-           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaEncabezado").fadeIn()'>
+           <li id="sectionEncabezado" class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaEncabezado").fadeIn()'>
               <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
               Encabezado ficha
               </a>
            </li>
-           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaImages").fadeIn()'>
+           <li id="sectionImagenes" class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaImages").fadeIn()'>
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Imágenes Ficha
               </a>
            </li>
-           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaDetalle").fadeIn(); textAreaSize(); '>
+           <li id="sectionDetalle" class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaDetalle").fadeIn(); textAreaSize(); '>
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Detalle Ficha
               </a>
             </li> 
-            <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaBlancosBiologicos").fadeIn()'>
+            <li id="sectionBB" class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaBlancosBiologicos").fadeIn()'>
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Blancos Biologicos
               </a>
             </li> 
-            <!-- <li class="nav-item" >
+            <li id="sectionMapa" class="nav-item" >
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Geolocalización Ficha
               </a>
-            </li>  -->
+            </li> 
          </ul>
       </div>
 
@@ -214,15 +214,15 @@
             <div class="w-40" style="padding-left: 15px; padding-top: 17px;">
               <div class="">
                 <label for="fichaName">Nombre Ficha</label>
-                <input type="text" id="fichaName" class="form-control inputsText textAreaDisable" value="jajaj noc">
+                <input type="text" id="fichaName" class="form-control inputsText textAreaDisable" value="">
               </div>
               <div class=" mt-2">
                 <label for="fichaTitle">Titulo Ficha</label>
-                <input type="text" id="fichaTitle" class="form-control inputsText textAreaDisable" value="Algun texto">
+                <input type="text" id="fichaTitle" class="form-control inputsText textAreaDisable" value="">
               </div>
               <div class=" mt-2">
                 <label for="fichaGenericName">Nombre Génerico</label>
-                <input type="text" id="fichaGenericName" class="form-control inputsText textAreaDisable" value="Algun texto de nuevo">
+                <input type="text" id="fichaGenericName" class="form-control inputsText textAreaDisable" value="">
               </div>
               <div class="form-check form-switch ps-0  mt-2 ">
                 <label for="">Estado</label>
@@ -447,8 +447,6 @@
       $("#newImgEncabezado").trigger('click');
     }
 
-
-
     const printImagesIndicator = () =>{
       let imagesAmount = $("#imgContainer").find(".fichaImages").length;
       $("#imagesAmount").text(imagesAmount)
@@ -464,7 +462,6 @@
         element.style.height = (element.scrollHeight)+"px";
       }
     }
-
 
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
@@ -540,8 +537,9 @@
       }
       // Create paginator and sections
       for (let i = 0; i < sections.length; i++) {
+        let navName = sections[i].replace(/\s+/g, '');
         let elementP = `
-          <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailContainer${sections[i]}").fadeIn(); textAreaSize()'>
+          <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailContainer${navName}").fadeIn(); textAreaSize()'>
             <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
               ${sections[i]}
             </a>
@@ -551,7 +549,7 @@
         let statePage;
         if (!i == 0) { statePage = "style='display: none'"} else { statePage = ""}
         let elementS = `
-          <div id="detailContainer${sections[i]}" class="detailPage" ${statePage}> </div>
+          <div id="detailContainer${navName}" class="detailPage" ${statePage}> </div>
         `;
         $("#detallePaginador").append(elementP)
         $("#detailContainer").append(elementS)
@@ -566,7 +564,8 @@
             <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="auto_grow(this)" >${detalleFicha[i].contenido}</textarea>
           </div>
         `;
-        $("#detailContainer"+detalleFicha[i].seccion).append(element)
+        let navName = detalleFicha[i].seccion.replace(/\s+/g, '');
+        $("#detailContainer"+navName).append(element)
       }
 
       // Load products detail 
@@ -701,7 +700,6 @@
 
         };
 
-        console.log(sectionsBlancosBiologicos)
         for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
           let dataBB;
           switch (sectionsBlancosBiologicos[i]) {
@@ -796,8 +794,6 @@
         </div>
         <hr class="horizontal dark mt-0">
       `
-
-      console.log(container)
       $(this).remove()
       $(container).append(element)
     })
@@ -848,40 +844,93 @@
       $("#relatedElementsBBpageName").text($(this).attr("name"))
     })
 
+
+    const handleSectionByCatalog = (catalog) => {
+      if (catalog == "Productos") {
+        $("#sectionImagenes").remove()
+        $("#sectionBB").remove()
+        $("#sectionMapa").remove()
+      }
+      if (catalog != "Cultivos") {
+        $("#sectionBB").remove()
+      }
+      $("#sectionMapa").remove() // Esconder Geolocalización ya que ninguna ficha envia esta info
+    }
+
+    const updateData = () => {
+      let data = {
+        "id": $("main").attr("id-item"),
+        "id_catalogo" : $("main").attr("id-catalog"),
+        "nombre": $("#fichaName").val(),
+        "codigo": "",
+        "titulo": $("#fichaTitle").val(),
+        "subtitulo": $("#fichaGenericName").val(),
+        "idtipoproducto": "",
+        "estado": "I",
+      };
+
+      fetch('http://104.236.159.193:3010/catalogo', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(res => {
+          console.log(res)
+          if (res.success) {location.reload()} 
+          else {console.error("No fue posbile actualizar la ficha")}
+        });
+    }
+
+    const getCatalogId = (cultivos, malezas, plagas, enfermedades, productos) => {
+      let idItem = Number($("main").attr("id-item"))
+
+      let catalogId;
+      catalogId = _.findWhere(cultivos, {id: idItem});
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return}
+
+      catalogId = _.findWhere(malezas, {id: idItem});
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
+
+      catalogId = _.findWhere(plagas, {id: idItem});
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
+
+      catalogId = _.findWhere(enfermedades, {id: idItem});
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
+
+      catalogId = _.findWhere(productos, {id: idItem});
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
+    }
+
     $(document).ready(function () {
-      
       let detailProducto= '<%- detalleProducto %>';
       detailProducto = handleJSON(detailProducto)
-      console.log(detailProducto)
 
       let detailPropiedad= '<%- detallePropiedad %>';
-      detailPropiedad = handleJSON(detailPropiedad)
-      console.log(detailPropiedad)
+      detailPropiedad = handleJSON(detailPropiedad);
       
       let detailCatalogoProducts = '<%- catalogoProductos %>';
       detailCatalogoProducts = handleJSON(detailCatalogoProducts)
-      console.log(detailCatalogoProducts)
       
       let detailCatalogoCultivos = '<%- catalogoCultivos %>';
       detailCatalogoCultivos = handleJSON(detailCatalogoCultivos)
-      console.log("cul", detailCatalogoCultivos)
       
       let detailCatalogoMaleza = '<%- catalogoMalezas %>';
       detailCatalogoMaleza = handleJSON(detailCatalogoMaleza)
-      console.log("male", detailCatalogoMaleza)
       
       let detailCatalogoPlagas = '<%- catalogoPlagas %>';
       detailCatalogoPlagas = handleJSON(detailCatalogoPlagas)
-      console.log("plag", detailCatalogoPlagas)
       
       let detailCatalogoEnfermedades = '<%- catalogoEnfermedades %>';
       detailCatalogoEnfermedades = handleJSON(detailCatalogoEnfermedades)
-      console.log("enfe", detailCatalogoEnfermedades)
 
       printData(detailProducto, detailPropiedad, detailCatalogoProducts, detailCatalogoCultivos, detailCatalogoMaleza, detailCatalogoPlagas, detailCatalogoEnfermedades)
       printImagesIndicator();
       textAreaSize();
+      handleSectionByCatalog(detailPropiedad.catalogo_detalle_propiedad[0].descripcion_catalogo)
+      getCatalogId(detailCatalogoCultivos.catalogo_enc, detailCatalogoMaleza.catalogo_enc, detailCatalogoPlagas.catalogo_enc, detailCatalogoEnfermedades.catalogo_enc, detailCatalogoProducts.catalogo_enc);
 
+      
 
     })
 

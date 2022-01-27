@@ -242,6 +242,30 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
 
   <script>
+    const handleJSON = (s) => {
+      if (s == null && s == "") { return }
+
+      console.log(s) 
+      // Remove special characters
+      s = s.replace(/\\n/g, "\\n")  
+          .replace(/\\'/g, "\\'")
+          .replace(/\\"/g, '\\"')
+          .replace(/\\&/g, "\\&")
+          .replace(/\\r/g, "\\r")
+          .replace(/\\t/g, "\\t")
+          .replace(/\\b/g, "\\b")
+          .replace(/\\f/g, "\\f")
+          .replace(/[\u0000-\u0019]+/g,""); 
+
+      // Remove New Lines
+      s = s.replace(/\n/g, "\\n");
+      s = JSON.parse(s)
+      console.log(s)
+      return s
+    }
+
+    var aportes = '<%- aportes %>';
+    aportes = handleJSON(aportes)
 
   </script>
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>
+    Detalle
+  </title>
+  <!-- Fonts and icons -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+
+  <style>
+
+  </style>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+
+  <!-- Menu -->
+  <%- include('./partials/menu.ejs') %>
+
+  <main class="main-content max-height-vh-100 h-100">
+
+    <!-- Navbar -->
+    <%- include('./partials/head.ejs') %>
+
+    <!-- Cotent -->
+    <div class="p-4 m-4">
+
+        <h1>Cosas se muestran</h1>
+
+    </div>
+      
+  </main>
+
+  <!--   Core JS Files   -->
+  <script src="../js/core/popper.min.js"></script>
+  <script src="../js/core/bootstrap.min.js"></script>
+  <script src="../js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="../js/plugins/choices.min.js"></script>
+  <!-- Kanban scripts -->
+  <script src="../js/plugins/dragula/dragula.min.js"></script>
+  <script src="../js/plugins/jkanban/jkanban.js"></script>
+  <!-- Jquery -->
+  <script src="../js/jquery.js"></script>
+  <script src="../js/jquery-ui.min.js"></script>
+  <!-- Underscore -->
+  <script src="../js/underscore-min.js"></script>
+  <!-- Script Plantilla -->
+  <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+
+  <script>  
+    const handleJSON = (s) => {
+      if (s == null && s == "") { return }
+
+      console.log(s) 
+      // La mala pal pirobo que hizo esta api
+      // Remove special characters
+      s = s.replace(/\\n/g, "\\n")  
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f")
+           .replace(/[\u0000-\u0019]+/g,""); 
+
+      // Remove New Lines
+      s = s.replace(/\n/g, "\\n");
+      s = JSON.parse(s)
+      console.log(s)
+      return s
+      
+    }
+
+    var notificacionesList = '<%- notificaciones %>';
+    notificacionesList = handleJSON(notificacionesList)
+
+  </script>
+
+</body>
+</html>

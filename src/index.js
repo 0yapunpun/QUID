@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 
 //middlewares
 app.use((req, res, next) => {
-	next();
+	return next();
 });
 app.use(bodyParser.json());
 app.use(express.json());

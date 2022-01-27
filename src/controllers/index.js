@@ -32,15 +32,73 @@ const catalogoProductos = (req, res) => {
 }
 
 const catalogoDetail = (req, res) => {
-    let id = req.params.id;
+    var id = req.params.id;
     controller.getCatalogoDetail(id, req, (resp) => {
-        res.render('detail', {'detalleProducto': resp[0], "detallePropiedad": resp[1], "catalogoCultivos": resp[2], "catalogoEnfermedades": resp[3], "catalogoMalezas": resp[4], "catalogoPlagas": resp[5], "catalogoProductos": resp[6]} );
+        res.render('detail', {'detalleProducto': resp[0], "detallePropiedad": resp[1], "catalogoCultivos": resp[2], "catalogoEnfermedades": resp[3], "catalogoMalezas": resp[4], "catalogoPlagas": resp[5], "catalogoProductos": resp[6], "id": id} );
     })
 }
 
 const aportes = (req, res) => {
-    res.render('aportes')
+    controller.getAportes(req, (resp) => {
+        res.render('aportes', {'aportes': resp} );
+    })
 }
+
+const clientes = (req, res) => {
+    controller.getClients(req, (resp) => {
+        res.render('clientes', {"clientes": resp})
+    })
+}
+
+const solicitudInformacion = (req, res) => {
+    controller.getSolicitudInformacion(req, (resp) => {
+        res.render('solicitudInformacion', {"solicitudesA": resp})
+    })
+}
+
+const solicitudInformacionPending = (req, res) => {
+    controller.getPendingRequests(req, (resp) => {
+        res.send({"data": resp});
+    })
+}
+
+const solicitudInformacionClosed = (req, res) => {
+    controller.getClosedRequests(req, (resp) => {
+        res.send({"data": resp});
+    })
+}
+
+const notificaciones = (req, res) => {
+    controller.getNotifications(req, (resp) => {
+        res.render('notificaciones', {"notificaciones": resp})
+    })
+}
+
+const usuarios = (req, res) => {
+    controller.getUsuarios(req, (resp) => {
+        res.render('usuarios', {"inactivos": resp[0], "activos": resp[1]})
+    })
+}
+
+const usuariosExternos = (req, res) => {
+    controller.getExternalUsers(req, (resp) => {
+        res.render('usuariosExternos', {"usuarios": resp})
+    })
+}
+
+const sucursales = (req, res) => {
+    controller.getSucursales(req, (resp) => {
+        res.render('sucursales', {"inactivos": resp[0], "activos": resp[1]})
+    })
+}
+
+const permisos = (req, res) => {
+    controller.getPemissions(req, (resp) => {
+        res.render('permisos', {"permisos": resp})
+    })
+}
+
+
 
 module.exports = {
 	catalogoCultivos,
@@ -49,6 +107,14 @@ module.exports = {
     catalogoPlagas,
     catalogoProductos,
     catalogoDetail,
-    aportes
-    
+    aportes,
+    clientes,
+    solicitudInformacion,
+    solicitudInformacionPending,
+    solicitudInformacionClosed,
+    notificaciones,
+    usuarios,
+    sucursales,
+    usuariosExternos,
+    permisos
 }
