@@ -189,7 +189,7 @@
               Imágenes Ficha
               </a>
            </li>
-           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaDetalle").fadeIn(); setTextareaSize()'>
+           <li class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaDetalle").fadeIn(); textAreaSize(); '>
               <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
               Detalle Ficha
               </a>
@@ -307,7 +307,7 @@
             <i class="fas fa-chevron-left"></i>
             <h6 class="text-s m-0" >Volver al catalogo</h6>
           </div>
-          <div class="d-flex justify-content-center gap-3">
+          <!-- <div class="d-flex justify-content-center gap-3">
             <div class="imgUser"></div>
             <div class="text-center">
               <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Diseñado Actualizado Por:</h6>
@@ -317,7 +317,7 @@
                 <span>11/12/2022</span>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="d-flex justify-content-end" style="width: 150px;">
             <button class="btn btn-outline-primary m-0 " id="saveButton" style="display: none;">
               <i class="far fa-save ms-2"></i>
@@ -393,7 +393,7 @@
       let imgContainer = $(this).closest(".fichaImages");
       console.log(imgContainer)
       $(imgContainer).remove();
-      printImagesIndicatoe();
+      printImagesIndicator();
     })
 
     $("#addImage").on("click", function () {
@@ -424,7 +424,7 @@
             </div>
           `;
           $("#imgContainer").append(element);
-          printImagesIndicatoe();
+          printImagesIndicator();
         }
       });
 
@@ -447,35 +447,26 @@
       $("#newImgEncabezado").trigger('click');
     }
 
-    $(document).on("change", "#newImgEncabezado", function () {
-      let file = $(this).prop('files')[0];
-      if (file) {
-        let url = URL.createObjectURL(file);
-        $("#imgEncabezado").attr("src", url);
-        $("#addImageEncabezado").hide()
-        $("#removeImageEncabezado").show()
-      }
-    })
 
-    const printImagesIndicatoe = () =>{
+
+    const printImagesIndicator = () =>{
       let imagesAmount = $("#imgContainer").find(".fichaImages").length;
       $("#imagesAmount").text(imagesAmount)
     }
 
-    const auto_grow= (element) => {
-      element.style.height = "5px";
-      element.style.height = (element.scrollHeight)+"px";
-    }
-
-    const setTextareaSize = () => {
+    const textAreaSize = () => {
       let textAreas = $(".textArea");
       for (let i = 0; i < textAreas.length; i++) {
-        auto_grow(textAreas[i])
+        // auto_grow(textAreas[i])
+        let element = textAreas[i]
+
+        element.style.height = "5px";
+        element.style.height = (element.scrollHeight)+"px";
       }
     }
 
 
-    const fixResponseJSON = (s) => {
+    const handleJSON = (s) => {
       if (s == null && s == "") { return }
 
       // Remove special characters
@@ -491,6 +482,7 @@
 
       // Remove New Lines
       s = s.replace(/\n/g, "\\n");
+      s = JSON.parse(s)
       return s
      }
 
@@ -511,7 +503,12 @@
       $("#fichaName").val(datosEncabezado.nombre)
       $("#fichaTitle").val(datosEncabezado.titulo_catalogo)
       $("#fichaGenericName").val(datosEncabezado.subtitulo)
-      $("#imgEncabezado").attr("src", "http://104.236.159.193:3010/"+datosEncabezado.foto)
+
+      if (datosEncabezado.foto) {
+        $("#imgEncabezado").attr("src", "http://104.236.159.193:3010/"+datosEncabezado.foto)
+        $("#addImageEncabezado").hide();
+        $("#removeImageEncabezado").show();
+      } 
 
       if (datosEncabezado.estado == "A") {
         $("#toggleButton").prop("checked", true);
@@ -544,7 +541,7 @@
       // Create paginator and sections
       for (let i = 0; i < sections.length; i++) {
         let elementP = `
-          <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailContainer${sections[i]}").fadeIn(); setTextareaSize()'>
+          <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailContainer${sections[i]}").fadeIn(); textAreaSize()'>
             <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
               ${sections[i]}
             </a>
@@ -552,7 +549,7 @@
         `;
 
         let statePage;
-        if (i == 0) { statePage = "style='display: none'"} else { statePage = ""}
+        if (!i == 0) { statePage = "style='display: none'"} else { statePage = ""}
         let elementS = `
           <div id="detailContainer${sections[i]}" class="detailPage" ${statePage}> </div>
         `;
@@ -586,9 +583,9 @@
               </div>
             </div>
             <div class="mt-2 w-40" style="margin: 0 auto; text-align: left;" id="detailRelatedProducts">
-            <div class="text-center my-1">
-              <h6>Productos Relacionados</h6>
-            </div>
+              <div class="text-center my-1">
+                <h6>Productos Relacionados</h6>
+              </div>
             </div>
           </div>
         `;
@@ -834,6 +831,16 @@
     })
 
 
+    //  Event for input file 
+    $(document).on("change", "#newImgEncabezado", function () {
+      let file = $(this).prop('files')[0];
+      if (file) {
+        let url = URL.createObjectURL(file);
+        $("#imgEncabezado").attr("src", url);
+        $("#addImageEncabezado").hide()
+        $("#removeImageEncabezado").show()
+      }
+    })
 
     $(document).on("click", ".iconBlancosBiologicos", function () {
       $(".iconBlancosBiologicos").removeClass("iconBlancosBiologicosActive");
@@ -842,45 +849,38 @@
     })
 
     $(document).ready(function () {
-      printImagesIndicatoe();
-      setTextareaSize();
-
+      
       let detailProducto= '<%- detalleProducto %>';
-      detailProducto = fixResponseJSON(detailProducto)
-      detailProducto = JSON.parse(detailProducto)
+      detailProducto = handleJSON(detailProducto)
       console.log(detailProducto)
 
       let detailPropiedad= '<%- detallePropiedad %>';
-      detailPropiedad = fixResponseJSON(detailPropiedad)
-      detailPropiedad = JSON.parse(detailPropiedad)
+      detailPropiedad = handleJSON(detailPropiedad)
       console.log(detailPropiedad)
-
+      
       let detailCatalogoProducts = '<%- catalogoProductos %>';
-      detailCatalogoProducts = fixResponseJSON(detailCatalogoProducts)
-      detailCatalogoProducts = JSON.parse(detailCatalogoProducts)
+      detailCatalogoProducts = handleJSON(detailCatalogoProducts)
       console.log(detailCatalogoProducts)
-
+      
       let detailCatalogoCultivos = '<%- catalogoCultivos %>';
-      detailCatalogoCultivos = fixResponseJSON(detailCatalogoCultivos)
-      detailCatalogoCultivos = JSON.parse(detailCatalogoCultivos)
+      detailCatalogoCultivos = handleJSON(detailCatalogoCultivos)
       console.log("cul", detailCatalogoCultivos)
-
+      
       let detailCatalogoMaleza = '<%- catalogoMalezas %>';
-      detailCatalogoMaleza = fixResponseJSON(detailCatalogoMaleza)
-      detailCatalogoMaleza = JSON.parse(detailCatalogoMaleza)
+      detailCatalogoMaleza = handleJSON(detailCatalogoMaleza)
       console.log("male", detailCatalogoMaleza)
-
+      
       let detailCatalogoPlagas = '<%- catalogoPlagas %>';
-      detailCatalogoPlagas = fixResponseJSON(detailCatalogoPlagas)
-      detailCatalogoPlagas = JSON.parse(detailCatalogoPlagas)
+      detailCatalogoPlagas = handleJSON(detailCatalogoPlagas)
       console.log("plag", detailCatalogoPlagas)
-
+      
       let detailCatalogoEnfermedades = '<%- catalogoEnfermedades %>';
-      detailCatalogoEnfermedades = fixResponseJSON(detailCatalogoEnfermedades)
-      detailCatalogoEnfermedades = JSON.parse(detailCatalogoEnfermedades)
+      detailCatalogoEnfermedades = handleJSON(detailCatalogoEnfermedades)
       console.log("enfe", detailCatalogoEnfermedades)
 
       printData(detailProducto, detailPropiedad, detailCatalogoProducts, detailCatalogoCultivos, detailCatalogoMaleza, detailCatalogoPlagas, detailCatalogoEnfermedades)
+      printImagesIndicator();
+      textAreaSize();
 
 
     })
@@ -890,3 +890,10 @@
 
 </body>
 </html>
+
+
+<!-- TODO
+- Controlar casos json format
+- Esconder campos del detalle en los formularios necesarios
+- 
+-->
