@@ -63,25 +63,28 @@
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
 
-      console.log(s) 
-      // La mala pal pirobo que hizo esta api
-      // Remove special characters
+      // Remove special characters, new lienes
       s = s.replace(/\\n/g, "\\n")  
-           .replace(/\\'/g, "\\'")
-           .replace(/\\"/g, '\\"')
-           .replace(/\\&/g, "\\&")
-           .replace(/\\r/g, "\\r")
-           .replace(/\\t/g, "\\t")
-           .replace(/\\b/g, "\\b")
-           .replace(/\\f/g, "\\f")
-           .replace(/[\u0000-\u0019]+/g,""); 
+          .replace(/\\'/g, "\\'")
+          .replace(/\\"/g, '\\"')
+          .replace(/\\&/g, "\\&")
+          .replace(/\\r/g, "\\r")
+          .replace(/\\t/g, "\\t")
+          .replace(/\\b/g, "\\b")
+          .replace(/\\f/g, "\\f")
+          .replace(/[\u0000-\u0019]+/g,"")
+          .replace(/\n/g, "\\n")
+          .replace(/},{/g,'}, {')
+          .replace(/^ +/gm, " ")
+          .replace(/\n/g, "")
+          .replace(/{ /g, "{")
+          .replace(/ }/g, "}")
+          .replace(/\[ /g, "[")
+          .replace(/ \]/g, "]");
 
-      // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
-      s = JSON.parse(s)
       console.log(s)
-      return s
-      
+      return s = JSON.parse(s)
+      console.log(s)
     }
 
     var notificacionesList = '<%- notificaciones %>';

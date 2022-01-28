@@ -35,7 +35,30 @@
 
     <!-- Cotent -->
     <div class="p-4 m-4">
+
+      <h6 class="ms-2">Usuarios Externos</h6>
+      
+      <div class="card p-3">
+        <table id="tableUsuarios">
+          <thead>
+            <tr id="tableHead">
+              <th class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Foto</th>
+              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Correo</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Plataforma</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contactos</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Evaluaciones</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Registro</th>
+            </tr> 
+          </thead>  
+          
+
+        </table>
+      </div>
     </div>  
+
+
+    
       
   </main>
 
@@ -55,13 +78,14 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Datatable -->
+  <script src="../js/plugins/datatables.js"></script>
 
   <script>
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
 
-      console.log(s) 
-      // Remove special characters
+      // Remove special characters, new lienes
       s = s.replace(/\\n/g, "\\n")  
           .replace(/\\'/g, "\\'")
           .replace(/\\"/g, '\\"')
@@ -70,17 +94,46 @@
           .replace(/\\t/g, "\\t")
           .replace(/\\b/g, "\\b")
           .replace(/\\f/g, "\\f")
-          .replace(/[\u0000-\u0019]+/g,""); 
+          .replace(/[\u0000-\u0019]+/g,"")
+          .replace(/\n/g, "\\n");
 
-      // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
-      s = JSON.parse(s)
-      console.log(s)
-      return s
+      return s = JSON.parse(s)
     }
+
+    // ***
+    const printTable = (data) =>{
+      console.log("f", data)
+
+      var tableBody = "<tbody id='tableBody'>"
+
+      for (let i = 0; i < data.length; i++) {
+        let tableRow = `
+          <tr>
+            <td>
+              <div style="width: 60px; height: 60px; border-radius: 50%">
+                <img src="${data[1].foto}" onerror='this.onerror=null;  this.src="http://104.236.159.193:8850/images/logoamigoinvesa.png"' alt=""  style="max-height: 100%; max-width: 100%">
+              </div>
+            </td>
+            <td>${data[i].nombre}</td>
+            <td>${data[i].correo ? data[i].correo : "-"}</td>
+            <td class="text-center">${data[i].android == "1" ? '<i class="fab fa-android"></i>' : '<i class="fab fa-apple"></i>'}</td>
+            <td class="text-center">${data[i].contactos}</td>
+            <td class="text-center">${data[i].evaluaciones }</td>
+            <td class="text-center">${data[i].registro_finalizado == 1 ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}</td>
+          </tr>
+        `;
+        console.log(tableRow)
+        tableBody += tableRow
+      }
+      tableBody += "</tbody>"
+      $("#tableUsuarios").append(tableBody);
+      const tableObj = new simpleDatatables.DataTable("#tableUsuarios");   
+    }
+    
 
     var usuarios = '<%- usuarios %>';
     usuarios = handleJSON(usuarios)
+    printTable(usuarios)
 
   </script>
 
