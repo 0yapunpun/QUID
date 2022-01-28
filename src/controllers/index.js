@@ -98,6 +98,32 @@ const permisos = (req, res) => {
     })
 }
 
+const ranking = (req, res) => {
+    controller.getRankingUsuarioAll(req, (resp) => {
+        res.render('rankingAsesores', {"lista": resp})
+    })
+}
+
+const movimientos = (req, res) => {
+    controller.getMovimientosAllInforme(req, (resp) => {
+        res.render('movimientos', {"data": resp})
+    })
+}
+
+const movimientosUser = (req, res) => {
+    var id = req.params.id;
+    controller.getMovimientosInforme(id, req, (resp) => {
+        res.render('movimientos', {"data": resp})
+    })
+}
+
+const blancosBiologicos = (req, res) => {
+    controller.getBlancosBiologicosInforme(req, (resp) => {
+        console.log(resp)
+        res.render('informeBlancosBiologicos', {"data": resp[0], "data2": resp[1]})
+    })
+}
+
 
 
 module.exports = {
@@ -116,5 +142,9 @@ module.exports = {
     usuarios,
     sucursales,
     usuariosExternos,
-    permisos
+    permisos,
+    ranking,
+    movimientos,
+    movimientosUser,
+    blancosBiologicos
 }

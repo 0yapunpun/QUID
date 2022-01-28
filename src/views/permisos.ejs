@@ -19,8 +19,49 @@
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
+    .fieldsSize{
+      width: 300px !important;
+    }
 
-  </style>
+    /* Libreria choice JS, Estilos para quitar padding indeseado del combobox */
+    .choices{
+      margin: 0;
+      min-width: 150px;
+    }
+    .choices__list--dropdown {
+        z-index: 1000;
+    }
+    .choices__list--dropdown .choices__item--selectable:after {
+        display: none !important;
+    }
+    .choices__list--dropdown .choices__item--selectable {
+        padding-right: 0 !important;
+    }
+    .inputTextItem{
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-radius: 0;
+    }
+    .inputTextItem:focus{
+      outline: none;
+      box-shadow: none;
+      border-color: inherit;
+    }
+
+    /* *** */
+    .itemsSidebar{
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 0.5rem;
+      color: #344767;
+      transition: 0.3s;
+    }
+    .itemsSidebar:hover{
+      background-color: lightgrey;
+    }
+  
+    </style>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -35,7 +76,25 @@
 
     <!-- Cotent -->
     <div class="p-4 m-4">
-        <h1>Permisos</h1>
+      <div class="w-100 p-3 ps-4">
+        <h4>Asignación de permisos por rol</h4>
+        <h6>Permisos para la plataforma</h6>
+      </div>
+      <div class="p-4 pt-1">
+        <div class="d-flex flex-row w-100 min-vh-100  card ">
+          <div class="w-30 p-3 border-end" id="sideBarPermissions"> <!-- Contenido dinamico --> </div>
+          <div class="w-70" >
+            <div class="d-flex justify-content-between w-100 border-bottom p-3">
+              <select class="form-control fieldsSize" name="rolesSelect" id="rolesSelect">
+                <!-- Contenido dinamico -->
+              </select>
+            </div>
+            <div id="displayFiltered" class="pt-2" data-currentCatalog="1"> 
+              <!-- Contenido dinamico -->
+            </div>
+          </div>
+        </div>
+      </div>
     </div>  
       
   </main>
@@ -56,12 +115,13 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Choices JS -->
+  <script src="../js/plugins/choices.min.js"></script>
 
   <script>
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
 
-      console.log(s) 
       // Remove special characters
       s = s.replace(/\\n/g, "\\n")  
           .replace(/\\'/g, "\\'")
@@ -82,6 +142,69 @@
 
     var permisos = '<%- permisos %>';
     permisos = handleJSON(permisos)
+
+    const loadInputSelect = (data) => {
+      for (let i = 0; i < data.length; i++) {
+        let element = `
+          <option value="${data[i].descripcion}" data-id="${data[i].id}">${data[i].descripcion}</option>
+        `;
+        $("#rolesSelect").append(element);
+      };
+      $("#rolesSelect").first("option").attr("selected");
+      const choices = new Choices($('#rolesSelect')[0]);
+    };
+
+    const loadSidebar = (data) => {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].activo != 1)  {continue}
+        let element = `
+          <div class="itemsSidebar" data-codigo="${data[i].codigo}" data-id="${data[i].id}" onclick="loadPermissionsList(permisos.permisos, ${data[i].id})">
+            <h6 class="m-0 font-weight-bold"> ${data[i].descripcion} </h6>
+          </div>
+          <hr class="horizontal dark" style="margin: 5px"> 
+        `;         
+        $("#sideBarPermissions").append(element)
+      }
+    };
+
+    const loadPermissionsList = (data, modulo) => {
+      $("#displayFiltered").attr("data-currentCatalog", modulo)
+      let permissionsList = _.where(data.configuracion, {id_modulo: modulo});
+      let rolSelected = $("#rolesSelect option:selected").text();
+      let permissionsRol = _.where(data.roles, {descripcion: rolSelected});
+
+      let hasPermissions = [];
+      for (let i = 0; i < permissionsList.length; i++) {
+        let descripcion = permissionsList[i].descripcion;
+        let permission = _.where(permissionsRol[0].permisos, {id_configuracion: permissionsList[i].id});
+        permission[0].descripcion = descripcion;
+        hasPermissions.push(permission[0])
+      }
+
+      $("#displayFiltered").html("")
+      for (let i = 0; i < hasPermissions.length; i++) {
+        let element = `
+          <div class="form-switch d-flex justify-content-between px-4 pt-2" data-id="${hasPermissions[i].definicion}">
+            <label class="form-check-label" for="flexSwitchCheckDefault">${hasPermissions[i].descripcion}</label>
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" ${hasPermissions[i].contenido == "S" ? "checked" : ""}>
+          </div>
+        `;
+        $("#displayFiltered").append(element)
+        $("#displayFiltered")
+      }
+    };
+
+    $(document).on('change','#rolesSelect',function(){
+      let currentCatalog = Number($("#displayFiltered").attr("data-currentCatalog"))
+      loadPermissionsList(permisos.permisos, currentCatalog)
+    });
+
+    $(document).ready(function () {
+      loadInputSelect(permisos.permisos.roles);
+      loadSidebar(permisos.permisos.modulos)
+      loadPermissionsList(permisos.permisos, 1)
+
+    });
 
   </script>
 

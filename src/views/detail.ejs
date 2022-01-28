@@ -305,7 +305,7 @@
         <div class="d-flex justify-content-between align-items-center mb-2 mx-4">
           <div id="backCatalog" style="cursor: pointer;" class="d-flex justify-contet-center align-items-center gap-2">
             <i class="fas fa-chevron-left"></i>
-            <h6 class="text-s m-0" >Volver al catalogo</h6>
+            <h6 class="text-s m-0" onclick="history.back()">Volver al catalogo</h6>
           </div>
           <!-- <div class="d-flex justify-content-center gap-3">
             <div class="imgUser"></div>
@@ -389,11 +389,13 @@
     });
 
     $(document).on("click", ".removeImgButton", function () {
-      // Get atributte to send data to delete
       let imgContainer = $(this).closest(".fichaImages");
-      console.log(imgContainer)
+      let id = Number($(this).parent().attr("id"))
+      
       $(imgContainer).remove();
       printImagesIndicator();
+
+      fetch("http://104.236.159.193:3010/catalogo_detalle_imagen/"+id)
     })
 
     $("#addImage").on("click", function () {
@@ -419,7 +421,7 @@
               <img class="imgCard" src="${url}" alt="">
               <h6 class="font-weight-bold"></h6>
               <div class="removeImgButton" >
-                <div class="d-flex justify-content-center alig-items-center removeImgButton"><i class="fas fa-times"></i></div>
+                <div class="d-flex justify-content-center alig-items-center"><i class="fas fa-times"></i></div>
               </div>
             </div>
           `;
@@ -433,14 +435,19 @@
     
     const removeImageEncabezado = () => {
       $("#imgEncabezado").attr("src", "");
-      $("#addImageEncabezado").show()
-      $("#removeImageEncabezado").hide()
+      $("#addImageEncabezado").show();
+      $("#removeImageEncabezado").hide();
+
+      let id = Number($("main").attr("id-item"))
+      fetch("http://104.236.159.193:3010/catalogo_imagen/"+id)
     }
 
     const addImageEncabezado = () => {
       $("#inputNewImgEncabezado").html("");
-      let element = `
-        <input type="file" name="" id="newImgEncabezado" accept="image/*">
+      let element = ` 
+        <form id="newImgEncabezadoForm" method="POST" action="" enctype="multipart/form-data"> 
+          <input type="file" name="" id="newImgEncabezado" accept="image/*">
+        </form>
       `;
       $("#inputNewImgEncabezado").append(element);
 
@@ -515,12 +522,13 @@
 
       // ** Imagenes
       for (let i = 0; i < imagesFicha.length; i++) {
+        console.log(imagesFicha)
         let element = `
           <div class="fichaImages d-flex flex-column align-items-center text-center pb-3" style="position: relative;" id="${imagesFicha[i].id}">
             <img class="imgCard" src="http://104.236.159.193:3010/${imagesFicha[i].ruta_imagen}" alt="">
             <h6 class="font-weight-bold"></h6>
             <div class="removeImgButton" style="display: none;">
-              <div class="d-flex justify-content-center alig-items-center removeImgButton"><i class="fas fa-times"></i></div>
+              <div class="d-flex justify-content-center alig-items-center"><i class="fas fa-times"></i></div>
             </div>
           </div>
         `;
@@ -530,6 +538,7 @@
       // ** Detalle
       let sections = [];
       // Get sections
+      
       for (let i = 0; i < detalleFicha.length; i++) {
         if (!sections.includes(detalleFicha[i].seccion)) {
           sections.push(detalleFicha[i].seccion)
@@ -557,9 +566,21 @@
 
       // Load sections Content
       for (let i = 0; i < detalleFicha.length; i++) {
-        if (detalleFicha[i].seccion == "Productos") {continue} //This has diferent strcuture
+        // console.log(detalleFicha[i])
+
+        if (detalleFicha[i].seccion == "Productos") { //Elementos fantasma para la recolleccion de datos, 
+          let element = `
+          <div style="display: none" class="infoHarvest" data-propiedad="${detalleFicha[i].id_catalogo_propiedad}" data-seccion="${detalleFicha[i].id_catologo_seccion}" data-maestro="${detalleFicha[i].campo_maestro}" data-orden="${detalleFicha[i].orden_propiedad}" data-isArchivo="${detalleFicha[i].foto}">
+            <textarea name="" id="" class="form-control textArea textAreaDisable"></textarea>
+          </div>
+          `;
+          let navName = detalleFicha[i].seccion.replace(/\s+/g, '');
+          $("#detailContainer"+navName).append(element)
+          continue
+        } 
+
         let element = `
-          <div class="mt-2 mb-3 px-3">
+          <div class="mt-2 mb-3 px-3 infoHarvest" data-propiedad="${detalleFicha[i].id_catalogo_propiedad}" data-seccion="${detalleFicha[i].id_catologo_seccion}" data-maestro="${detalleFicha[i].campo_maestro}" data-orden="${detalleFicha[i].orden_propiedad}" data-isArchivo="${detalleFicha[i].foto}">
             <h6 class="text-muted">${detalleFicha[i].titulo}</h6>
             <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="auto_grow(this)" >${detalleFicha[i].contenido}</textarea>
           </div>
@@ -614,7 +635,7 @@
 
         for (let i = 0; i < productosFicha.length; i++) {
           let elementP = `
-            <div class="d-flex align-items-center my-2" >
+            <div class="d-flex align-items-center my-2 infoHarvestProducts" data-id="${productosFicha[i].id}">
               <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
                 <img src="http://104.236.159.193:3010/${productosFicha[i].foto}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
               </div>
@@ -634,13 +655,14 @@
 
 
         // ** Blancos Biologicos
-        let sectionsBlancosBiologicos = [];
-        // Get sections BB
-        for (let i = 0; i < blancosBiologicos.length; i++) {
-          if (!sectionsBlancosBiologicos.includes(blancosBiologicos[i].id_tipo_catalogo)) {
-            sectionsBlancosBiologicos.push(blancosBiologicos[i].id_tipo_catalogo)
-          }
-        }
+        let sectionsBlancosBiologicos = [2, 3, 4]; 
+        // Esta parte la hice pensando que los BB eran dinamicos, pero siempre van a ser los tres mismos. Refactirzar obviando esto y el switch case
+        // for (let i = 0; i < blancosBiologicos.length; i++) {
+        //   if (!sectionsBlancosBiologicos.includes(blancosBiologicos[i].id_tipo_catalogo)) {
+        //     sectionsBlancosBiologicos.push(blancosBiologicos[i].id_tipo_catalogo)
+        //   }
+        // }
+
         // Print Sections 
         for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
           let icon;
@@ -681,14 +703,12 @@
               <div class="d-flex">
                 <div class="w-45 mt-2 ps-4 addRelatedElementsBB" style="display: none">
                   <h6>Relacionar Item </h6>  
-
                   <div class="dropdown">
                     <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="DropdownBB${sectionsBlancosBiologicos[i]}">
                         Lista Productos
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="DropdownBB${sectionsBlancosBiologicos[i]}" id="DropdownBBContainer${sectionsBlancosBiologicos[i]}"></ul>
                   </div>  
-
                 </div>
                 <div class="w-40 mt-2 relatedElementsBBpage" style="margin: 0 auto; text-align: left;"> 
                 </div>
@@ -728,7 +748,7 @@
             }
 
             let element = `
-              <div class="d-flex align-items-center my-2 hoverCards" style="padding: 10px; border-radius: 0.5rem">
+              <div class="d-flex align-items-center my-2 hoverCards dataHarvestBB" data-id="${printCase[e].id}" data-catalog="${printCase[e].id_tipo_catalogo}" style="padding: 10px; border-radius: 0.5rem">
                 <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 rounded">
                   <img src="http://104.236.159.193:3010/${printCase[e].foto}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
                 </div>
@@ -747,9 +767,8 @@
 
           for (let o = 0; o < dataBB.length; o++) {
             if (existBB.includes(dataBB[o].id)) {continue}
-
             let element = `
-              <li id="${dataBB[o].id}" class="cardBlancosBiologicos" data-img="${dataBB[o].foto}" data-n="${dataBB[o].nombre}" data-t="${dataBB[o].titulo}" data-s="${dataBB[o].subtitulo}">
+              <li id="${dataBB[o].id}" id-catalog="${dataBB[o].id_catalogo}" class="cardBlancosBiologicos" data-img="${dataBB[o].foto}" data-n="${dataBB[o].nombre}" data-t="${dataBB[o].titulo}" data-s="${dataBB[o].subtitulo}">
                 <a class="dropdown-item" href="javascript:;">
                   <div class="d-flex align-items-center gap-1" >
                     <div style="width: 50px; height: 50px;">
@@ -765,9 +784,6 @@
             `;
             $(`#DropdownBBContainer${dataBB[o].id_catalogo}`).append(element)
           };
-
-
-
         }
       }
     }
@@ -778,9 +794,11 @@
       let nombre = $(this).attr("data-n")
       let titulo = $(this).attr("data-t")
       let subtitulo = $(this).attr("data-s")
+      let id = $(this).attr("id")
+      let idCatalog = $(this).attr("id-catalog")
 
       let element = `
-        <div class="d-flex align-items-center my-2 hoverCards" style="padding: 10px; border-radius: 0.5rem">
+        <div class="d-flex align-items-center my-2 hoverCards dataHarvestBB" data-id="${id}" data-catalog="${idCatalog}" style="padding: 10px; border-radius: 0.5rem">
           <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 rounded">
             <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
           </div>
@@ -799,13 +817,14 @@
     })
 
     $(document).on("click", ".relateProduct", function () {
+      let id = $(this).attr("id")
       let img = $(this).attr("data-img")
       let nombre = $(this).attr("data-n")
       let titulo = $(this).attr("data-t")
       let subtitulo = $(this).attr("data-s")
 
       let element = `
-        <div class="d-flex align-items-center my-2" >
+        <div class="d-flex align-items-center my-2 infoHarvestProducts" data-id="${id}">
           <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
             <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
           </div>
@@ -857,27 +876,76 @@
       $("#sectionMapa").remove() // Esconder Geolocalización ya que ninguna ficha envia esta info
     }
 
+    // POST METHODS
     const updateData = () => {
       let data = {
-        "id": $("main").attr("id-item"),
-        "id_catalogo" : $("main").attr("id-catalog"),
+        "id": Number($("main").attr("id-item")),
+        "id_catalogo" : Number($("main").attr("id-catalog")),
         "nombre": $("#fichaName").val(),
         "codigo": "",
         "titulo": $("#fichaTitle").val(),
         "subtitulo": $("#fichaGenericName").val(),
         "idtipoproducto": "",
-        "estado": "I",
+        "estado": ($('#toggleButton').is(':checked') ? "A" : "I")
       };
 
+      let fields = $(".infoHarvest");
+      for (let i = 0; i < fields.length; i++) {
+        data["catalogo_detalle["+i+"][id_catalogo_propiedad]"] = Number($(fields[i]).attr("data-propiedad"));   
+        data["catalogo_detalle["+i+"][id_catalogo_seccion]"] = Number($(fields[i]).attr("data-seccion"));   
+        data["catalogo_detalle["+i+"][id_campo_maestro]"] = ($(fields[i]).attr("data-maestro") ? $(fields[i]).attr("data-maestro") : null);   
+        data["catalogo_detalle["+i+"][contenido]"] = $(fields[i]).find("textarea").val();  
+        data["catalogo_detalle["+i+"][es_archivo]"] = ($(fields[i]).attr("data-isArchivo") ? $(fields[i]).attr("data-isArchivo") : 0);        
+        data["catalogo_detalle["+i+"][orden]"] = Number($(fields[i]).attr("data-orden"));  
+      }
+
+      let fieldProducts = $(".infoHarvestProducts");
+      for (let i = 0; i < fieldProducts.length; i++) {
+        data["catalogo_producto["+i+"][id_catalogo_encabezado_producto]"] = Number($(fieldProducts[i]).attr("data-id"));   
+        data["catalogo_producto["+i+"][dosis]"] = "Dosis no agregada"   
+      }
+
+      let fieldBB = $(".dataHarvestBB");
+      for (let i = 0; i < fieldBB.length; i++) {
+        data["catalogo_blanco_biologico["+i+"][id_blanco_biologico]"] = Number($(fieldBB[i]).attr("data-id"));   
+        data["catalogo_blanco_biologico["+i+"][id_tipo_catalogo]"] = Number($(fieldBB[i]).attr("data-catalog"));    
+      }
+
+      console.log(data)
+    
       fetch('http://104.236.159.193:3010/catalogo', {
         method: 'POST',
         headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.success) {} 
+        // if (res.success) {location.reload()} 
+        else {console.error("No fue posbile actualizar la ficha")}
+      });
+    };
+
+    const updateImg = () => {
+      var formData = new FormData($('#newImgEncabezadoForm')[0]);
+      var myFile = document.querySelector("#newImgEncabezado")
+      
+      formData.append('idcatalogoenc', $("main").attr("id-item"));
+      formData.append('nombre_archivo', "imagen_catalogo");
+      formData.append('img', myFile.files[0]);
+
+      console.log(myFile)
+      console.log([...formData])
+
+      fetch('http://104.236.159.193:3010/catalogo', {
+        method: 'POST',
+        body: formData
+      })
         .then(res => res.json())
         .then(res => {
           console.log(res)
-          if (res.success) {location.reload()} 
+          if (res.success) {} 
           else {console.error("No fue posbile actualizar la ficha")}
         });
     }

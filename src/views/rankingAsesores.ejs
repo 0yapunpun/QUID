@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
   <title>
-    Usuarios Externos
+    Ranking Asesores
   </title>
   <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -26,6 +26,9 @@
     .noSorter .dataTable-sorter::before{
       opacity: 0;
     }
+    .iconTable{
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -42,19 +45,18 @@
     <!-- Cotent -->
     <div class="p-4 m-4">
 
-      <h6 class="ms-2">Usuarios Externos</h6>
+      <h6 class="ms-2">Ranking Asesores</h6>
       
       <div class="card p-3">
         <table id="tableUsuarios" style="table-layout: fixed;">
           <thead>
             <tr id="tableHead">
-              <th class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-8 noSorter">Foto</th>
-              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15 noSorter">Nombre</th>
-              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Correo</th>
-              <th style="padding: 0;" class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter w-10">Plataforma</th>
-              <th style="padding: 0;" class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter w-10">Contactos</th>
-              <th style="padding: 0;" class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter w-10" >Evaluaciones</th>
-              <th style="padding: 0;" class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter w-10">Registro</th>
+              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-8 noSorter">#</th>
+              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15 noSorter">Foto</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Asesor</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Cargo</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Puntos</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter w-10"></th>
             </tr> 
           </thead>  
           
@@ -62,9 +64,6 @@
         </table>
       </div>
     </div>  
-
-
-    
       
   </main>
 
@@ -87,23 +86,29 @@
   <!-- Datatable -->
   <script src="../js/plugins/datatables.js"></script>
 
-  <script>
+  <script>  
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
-
-      // Remove special characters, new lienes
+      // Remove special characters
       s = s.replace(/\\n/g, "\\n")  
-          .replace(/\\'/g, "\\'")
-          .replace(/\\"/g, '\\"')
-          .replace(/\\&/g, "\\&")
-          .replace(/\\r/g, "\\r")
-          .replace(/\\t/g, "\\t")
-          .replace(/\\b/g, "\\b")
-          .replace(/\\f/g, "\\f")
-          .replace(/[\u0000-\u0019]+/g,"")
-          .replace(/\n/g, "\\n");
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f")
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\n");
+           ; 
 
-      return s = JSON.parse(s)
+      // Remove New Lines
+      return JSON.parse(s)
     }
 
     // ***
@@ -114,32 +119,39 @@
 
       for (let i = 0; i < data.length; i++) {
         let tableRow = `
-          <tr>
+          <tr ${data[i].id_usuario}>
+            <td>${i + 1}</td>
             <td>
               <div style="width: 60px; height: 60px; border-radius: 50%">
                 <img src="http://104.236.159.193:3010/${data[i].foto}" onerror='this.onerror=null;  this.src="http://104.236.159.193:8850/images/logoamigoinvesa.png"' alt=""  style="max-height: 100%; max-width: 100%; border-radius: 50%">
               </div>
             </td>
             <td>${data[i].nombre}</td>
-            <td>${data[i].correo ? data[i].correo : "-"}</td>
-            <td class="text-center">${data[i].android == "1" ? '<i class="fab fa-android"></i>' : '<i class="fab fa-apple"></i>'}</td>
-            <td class="text-center">${data[i].contactos}</td>
-            <td class="text-center">${data[i].evaluaciones }</td>
-            <td class="text-center">${data[i].registro_finalizado == 1 ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}</td>
+            <td>${data[i].cargo}</td>
+            <td class="text-center">${data[i].total_puntos}</td>
+            <td class="text-center"><i class="fas fa-info-circle iconTable" id="${data[i].id_usuario}" data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Detalle"></i></td>
           </tr>
         `;
-        console.log(tableRow)
         tableBody += tableRow
       }
       tableBody += "</tbody>"
       $("#tableUsuarios").append(tableBody);
       const tableObj = new simpleDatatables.DataTable("#tableUsuarios");   
     }
-    
 
-    var usuarios = '<%- usuarios %>';
-    usuarios = handleJSON(usuarios)
-    printTable(usuarios)
+    $(document).on("click", ".iconTable", function () {
+      let id = Number($(this).attr("id"))
+      window.location.href = "/informes/movimientos/"+id;
+    })
+
+    $(document).ready(function () {
+      var ranking = '<%- lista %>';
+      ranking = handleJSON(ranking)
+      console.log(ranking)
+      printTable(ranking.ranking)
+    })
+
+
 
   </script>
 

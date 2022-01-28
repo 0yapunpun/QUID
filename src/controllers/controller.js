@@ -1,6 +1,14 @@
 const request = require('request');
 const squel = require('squel');
 
+const currentDate = () => {
+	let today = new Date();
+	let dd = String(today.getDate()).padStart(2, '0');
+	let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+	let yyyy = today.getFullYear();
+	return today = yyyy + '/' + mm + '/' + dd;
+}
+
 controller = {
     getCatalogCultivos: (req, cb) => {
 		var options = {
@@ -298,7 +306,7 @@ controller = {
 		})
 	},
 
-	getRankingUsuarioAll: (req, res , cb) => {
+	getRankingUsuarioAll: (req, cb) => {
 		var options = {
 			method: 'GET',
 			url: 'http://104.236.159.193:3010/obtener_ranking_general_dashboard',
@@ -310,7 +318,7 @@ controller = {
 		})
 	}, 
 
-	getMovimientosAllInforme: (req, res, cb) => {
+	getMovimientosAllInforme: (req, cb) => {
 		var options = {
 			method: 'GET',
 			url: 'http://104.236.159.193:3010/contar_principales',
@@ -322,10 +330,11 @@ controller = {
 		})
 	}, 
 
-	getMovimientosInforme: (id, req, res, cb) => {
+	getMovimientosInforme: (id, res, cb) => {
+		let idUser = Number(id)
 		var options = {
 			method: 'GET',
-			url: 'http://104.236.159.193:3010/contar_principales?id_usuario='+id,
+			url: 'http://104.236.159.193:3010/contar_principales?id_usuario='+idUser
 		};
 
 		request(options, function(err, res, resp) {
@@ -436,10 +445,10 @@ controller = {
 		})
 	},
 
-	getBlancosBiologicosInforme: (data, req, res, cb) => {
+	getBlancosBiologicosInforme: (res, cb) => {
 		var options = {
 			method: 'GET',
-			url: "http://104.236.159.193:3010/contar_principales_bb?fecha="+data.date
+			url: "http://104.236.159.193:3010/contar_principales_bb?fecha="+currentDate()
 		};
 
 		request(options, function(err, res, resp) {
@@ -447,14 +456,14 @@ controller = {
 
 			var options2 = {
 				method: 'GET',
-				url: "http://104.236.159.193:3010/contar_blanco_biologico_fecha?fecha="+data.date
+				url: "http://104.236.159.193:3010/contar_blanco_biologico_fecha?fecha="+currentDate()
 			};
 
 			request(options2, function(err, res, resp2) {
 				if (err) { console.error(err); resp2 = false; }
 
 				let response = [resp, resp2]
-				cb(resp);
+				cb(response);
 			})
 		})
 	},

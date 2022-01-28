@@ -4,8 +4,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
   <title>
-    Movimientos
+    Informe Blancos Biologicos
   </title>
   <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -26,9 +27,6 @@
 
     #cardsContainer>div:hover{
       background-color: lightgrey;
-    }
-    #cardsContainer h4{
-      font-size: 15px !important;
     }
   </style>
 </head>
@@ -92,23 +90,14 @@
       for (const x in data) {
         let color;
         switch (x) {
-          case "clientes":
-            color = "3f51b5"
+          case "enfermedades":
+            color = "4CAF50"
             break;
-          case "recomendaciones":
-            color = "E91E63"
-            break;
-          case "fichas":
+          case "malezas":
             color = "FE5621"
             break;
-          case "capacitaciones":
-            color = "6639B6"
-            break;
-          case "aportes":
-            color = "FFC105"
-            break;
-          case "acompanamientos":
-            color = "4CAF50"
+          case "plagas":
+            color = "3f51b5"
             break;
         }
 
@@ -143,6 +132,10 @@
     $(document).ready(function () {
       var movimientos = '<%- data %>';
       movimientos = handleJSON(movimientos)
+
+      var movimientos2 = '<%- data2 %>';
+      movimientos2 = handleJSON(movimientos2)
+      
       loadCards(movimientos.cuenta)
       console.log(movimientos.cuenta)
     })
