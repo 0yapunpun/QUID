@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
   <title>
     Solicitud Información
   </title>
@@ -19,7 +20,18 @@
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
-
+    .noSorter .dataTable-sorter::after{
+      opacity: 0;
+    }
+    .noSorter .dataTable-sorter::before{
+      opacity: 0;
+    }
+    .fs-17{
+      font-size: 17px;
+    }
+    .fs-13 h6{
+      font-size: 13px;
+    }
   </style>
 </head>
 
@@ -35,11 +47,107 @@
 
     <!-- Cotent -->
     <div class="p-4 m-4">
+      <!-- Paginador -->
+      <div class="nav-wrapper position-relative end-0">
+        <ul class="nav nav-pills nav-fill p-1" role="tablist">
+          <li id="sectionEncabezado" class="nav-item" onclick='getAbiertas()'>
+            <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
+            Abiertas
+            </a>
+          </li>
+          <li id="sectionImagenes" class="nav-item" onclick='getPendientes()'>
+            <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
+            Pendientes
+            </a>
+          </li>
+          <li id="sectionDetalle" class="nav-item" onclick='getCerradas()'>
+            <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
+            Cerradas
+            </a>
+          </li> 
+        </ul>
+        <div class="card p-3" id="tableContainer"><!-- Contenido dinamico --></div>
+      </div>
+    </div>
 
-      <button onclick="getAbiertas()">Abiertas</button>
-      <button onclick="getPendientes()">Pendientes</button>        
-      <button onclick="getCerradas()">Cerrado</button>        
+    <!-- Modal -->
+    <div class="modal fade" tabindex="-1" id="detailModal" role="dialog" aria-labelledby="detailModalModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Detalle Solicitud</h5>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+              <button type="button" class="btn-close rounded-circle me-1" style="background-color: gray" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="modal-body bg-gray-100" >
+            <div class="d-flex">
 
+              <div class="infoUser d-flex flex-column flex-fill w-33 align-items-center text-left border-end" style="min-width: 30%;">
+                <div style="width: 90px; height: 90px; background-color: lightgrey; border-radius: 50%" class="mb-5 mt-3">
+                  <img src="" alt="" id="userImg" style="max-height: 100%; max-width: 100%; border-radius: 50%; min-width: 100%; min-height: 100%; object-fit: cover">
+                </div>
+                <div class="d-flex flex-column ">
+                  <div class="d-flex flex-column" style="font-size:13px">
+                    <h6 class="my-2 fs-17">Datos Usuario</h6>
+                    <div class="fs-13">
+                      <div ><h6>Usuario: <span class="opacity-7" id="userName"> </span></h6></div>
+                      <div ><h6>Celular: <span class="opacity-7" id="userPhone"></span></h6></div>
+                      <div ><h6>Correo: <br> <span class="opacity-7" id="userEmail"></span></h6></div>
+                    </div>
+                  </div>
+                  <hr class="horizontal dark my-4">
+                  <div class="d-flex flex-column">
+                    <h6 class="my-2 fs-17">Datos Contacto</h6>
+                    <div class="fs-13">
+                      <div ><h6>Telefono: <span class="opacity-7" id="contactTelefono"> </span></h6></div>
+                      <div ><h6>Celular: <span class="opacity-7" id="contactPhone"></span></h6></div>
+                      <div ><h6>Correo: <br><span class="opacity-7" id="contactEmail"></span></h6></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="datosSolicitud w-33 flex-fill d-flex align-items-start justify-content-center text-left border-end" style="min-width: 30%;">
+                <div class="d-flex flex-column">
+                  <div class="text-center">
+                    <h6 class="my-2 fs-17">Datos Solicitud</h6>
+                  </div>
+                  <div class="fs-13">
+                    <div ><h6>Estado: <br><span class="opacity-7" id="detailState"></span></h6></div>
+                    <div ><h6>Días: <br><span class="opacity-7" id="detailDays"></span></h6></div>
+                    <div ><h6>Lugar Visita: <br><span class="opacity-7" id="detailPlaceVisit"></span></h6></div>
+                    <div ><h6>Ubicacin: <br><span class="opacity-7" id="detailCity"></span> - <span class="opacity-7" id="detailDepartament"></span></h6></div>
+                    <div ><h6>Vereda: <br><span class="opacity-7" id="detailVereda"></span></h6></div>
+                    <div ><h6>Fecha: <br><span class="opacity-7" id="detailDate"></span></h6></div>
+                    <div ><h6>Tipo Visita: <br><span class="opacity-7" id="detailKind"></span></h6></div>
+                    <div ><h6>Extension: <br><span class="opacity-7" id="detailExtension">Monteria@sdf.com</span></h6></div>
+                    <div ><h6>Direccion: <br><span class="opacity-7" id="detailDirection"></span></h6></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="Seguimiento w-33 flex-fill" style="min-width: 30%; position: relative;" >
+                <div style="position: absolute; top: 0%;" class="w-100 text-center">
+                  <h6 class="my-2 fs-17">Fichas Solicitud</h6>
+                </div>
+                <div id="detailFichas" class="d-flex flex-wrap gap-2  align-items-center justify-content-center border-bottom" style="min-height: 150px; padding-top: 50px; padding-bottom: 10px;">
+                  <!-- Contenido dinamico -->
+                </div>
+                <div class="d-flex flex-column gap-2 align-items-center">
+                  <div class="fs-17 mt-1">
+                    <h6>Seguimiento Solicitud</h6>
+                  </div>
+                  <div class="w-95" style="overflow: scroll; padding-bottom: 20px;" id="seguimientoContainer">
+                    <!-- Contenido Dinamico -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
       
   </main>
@@ -60,24 +168,29 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Datatable -->
+  <script src="../js/plugins/datatables.js"></script>
 
   <script>
     const getAbiertas = () => {
       console.log(solicitudesAbiertas)
+      printTable(solicitudesAbiertas.solicitudes)
     };
   
     const getPendientes = () => {
       fetch('/solicitudInformacion/pending')
         .then(data => { return data.json()})
         .then(data => { return handleJSON(data.data)})
-        .then(data => { solicitudesPendientes = data});
+        .then(data => { solicitudesPendientes = data})
+        .then(data => { printTable(solicitudesPendientes.solicitudes)});
     };
 
     const getCerradas = () => {
       fetch('/solicitudInformacion/closed')
         .then(data => { return data.json()})
         .then(data => { return handleJSON(data.data)})
-        .then(data => { solicitudesCerradas = data});
+        .then(data => { solicitudesCerradas = data})
+        .then(data => { printTable(solicitudesCerradas.solicitudes)});
     }
 
     const handleJSON = (s) => {
@@ -92,21 +205,141 @@
            .replace(/\\t/g, "\\t")
            .replace(/\\b/g, "\\b")
            .replace(/\\f/g, "\\f")
-           .replace(/[\u0000-\u0019]+/g,""); 
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\n");
 
       // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
       s = JSON.parse(s)
       console.log(s)
       return s
+    };
+
+    const printTable = (data) => {
+      $("#tableContainer").html("")
+      let table = `
+        <table id="tableUsuarios" style="table-layout: fixed; width: 100%">
+          <thead>
+            <tr id="tableHead">
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter" id="picRow">Foto</th>
+              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter w-32" id="datosRow">Datos</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Tipo</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Fecha</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Días</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter w-8">Detalle</th>
+            </tr> 
+          </thead>  
+        </table>
+      `;
+      $("#tableContainer").append(table)
+
+      var tableBody = "<tbody id='tableBody'>"
+      for (let i = 0; i < data.length; i++) {
+        let tableRow = `
+          <tr ${data[i].id_usuario} data-row='${JSON.stringify(data[i])}' id="${i}">
+            <td>
+              <div style="width: 60px; height: 60px; border-radius: 50%">
+                <img src="http://104.236.159.193:3010/${data[i].foto}" onerror='this.onerror=null;  this.src="http://104.236.159.193:8850/images/logoamigoinvesa.png"' alt=""  style="max-height: 100%; max-width: 100%; border-radius: 50%; min-width: 100%; min-height: 100%; object-fit: cover">
+              </div>
+            </td>
+            <td>
+              <h6 style="font-size:14px">Nombre: <span style="color: #67748e">${data[i].nombre}</span></h6>
+              <h6 style="font-size:14px">Contacto: <span style="color: #67748e">${data[i].contacto}</span></h6>
+              <h6 style="font-size:14px">Correo: <span style="color: #67748e">${data[i].correo_usuario}</span></h6>
+              <h6 style="font-size:14px">Telefono: <span style="color: #67748e">${data[i].telefono}</span></h6>
+            </td>
+            <td class="text-center">${data[i].tipo}</td>
+            <td class="text-center">${data[i].fecha_contacto}</td>
+            <td class="text-center">${data[i].dias}</td>
+            <td class="text-center">
+              <div class="detailRequest" id="${data[i].id}">
+                <i class="fas fa-info-circle" tittle="Ver Detalle" style="cursor: pointer"></i>
+              </div>
+            </td>
+          </tr>
+        `;
+        tableBody += tableRow
+      }
+      tableBody += "</tbody>"
+      $("#tableUsuarios").append(tableBody);
+      const tableObj = new simpleDatatables.DataTable("#tableUsuarios");  
+      $("#datosRow").css("width" ,"32%")
+      $("#picRow").css("width" ,"12%")
+    };
+
+    const printDetail = (row, detail, nota) => {
+      console.log(nota.notas);
+
+      $("#userImg").attr("src", "http://104.236.159.193:3010/"+row.foto)
+      $("#userName").text(row.nombre)
+      $("#userPhone").text(row.telefono_usuario)
+      $("#userEmail").text(row.correo_usuario)
+      $("#contactTelefono").text(row.telefono)
+      $("#contactPhone").text(row.celular)
+      $("#contactEmail").text(row.correo)
+
+      $("#detailState").text((row.correo == "C" ? "Cerrado" : "Abierto"))
+      $("#detailDays").text(row.dias)
+      $("#detailPlaceVisit").text(row.lugar)
+      $("#detailCity").text(row.ciudad)
+      $("#detailDepartament").text(row.departamento)
+      $("#detailVereda").text((row.vereda ? row.vereda : "-"))
+      $("#detailDate").text(row.fecha_contacto)
+      $("#detailKind").text(row.tipo)
+      $("#detailExtension").text((row.extension ? row.extension : "-"))
+      $("#detailDirection").text((row.direccion ? row.direccion : "-"))
       
+      $("#detailFichas").html("")
+      for (let i = 0; i < detail.detalle.length; i++) {
+        let element = `
+          <div style="width: 60px; height: 60px; background-color: lightgrey; border-radius: 50%" title="${detail.detalle[i].titulo}" >
+            <img src="http://104.236.159.193:3010/${detail.detalle[i].foto}" alt="" style="max-width: 100%; max-height: 100%; border-radius: 50%; min-width: 100%; min-height: 100%; object-fit: cover">
+          </div>
+        `;
+        $("#detailFichas").append(element)
+      }
+
+      $("#seguimientoContainer").html("")
+      for (let i = 0; i < nota.notas.length; i++) {
+        let element = `
+          <div class="card p-2 fs-13 my-1">
+            <h6 class="m-0">${(nota.notas[i].actividad ? nota.notas[i].actividad : "")}</h6>
+            <h6 class="opacity-7 m-0"> ${(nota.notas[i].nota ? nota.notas[i].nota : "")} </h6>
+            <h6 class="m-0">Cerrado: <span class="opacity-7">${(nota.notas[i].fecha_seguimiento ? nota.notas[i].fecha_seguimiento: "")}</span></h6>
+          </div>
+        `;
+        $("#seguimientoContainer").append(element)
+      }
+
+      $("#detailModal").modal("show");
     }
+
+    $(document).on("click", ".detailRequest", function () {
+      let id = $(this).attr("id");
+      let rowData = JSON.parse($(this).parent().parent().attr("data-row"))
+      console.log(rowData)
+
+      fetch('/solicitudInformacion/'+id)
+      .then(res => res.json())
+      .then(res => {
+        if (res) {
+          let detail = JSON.parse(res.detalle)
+          console.log(detail)
+          let nota = JSON.parse(res.nota)
+          console.log(nota)
+          printDetail(rowData, detail, nota)
+        } 
+        else {console.error("No fue posbile obtener detalle de la solicitud")}
+      });
+    })
+
+
 
     var solicitudesAbiertas = '<%- solicitudesA %>';
     var solicitudesPendientes;
     var solicitudesCerradas;
 
     solicitudesAbiertas = handleJSON(solicitudesAbiertas)
+    printTable(solicitudesAbiertas.solicitudes)
 
   </script>
 

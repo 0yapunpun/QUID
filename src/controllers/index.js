@@ -68,6 +68,13 @@ const solicitudInformacionClosed = (req, res) => {
     })
 }
 
+const solicitudInformacionDetail = (req, res) => {
+    var id = req.params.id;
+    controller.getDetailRequest(id, req, (resp) => {
+        res.send({"detalle": resp[0], "nota": resp[1]})
+    })
+}
+
 const notificaciones = (req, res) => {
     controller.getNotifications(req, (resp) => {
         res.render('notificaciones', {"notificaciones": resp})
@@ -138,6 +145,7 @@ module.exports = {
     solicitudInformacion,
     solicitudInformacionPending,
     solicitudInformacionClosed,
+    solicitudInformacionDetail,
     notificaciones,
     usuarios,
     sucursales,

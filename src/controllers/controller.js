@@ -157,6 +157,30 @@ controller = {
 		});
 	},
 
+	getDetailRequest: (id, req, cb) => {
+		var options = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/obtener_detalle_solicitud?id_solicitud='+id,
+		};
+
+		request(options, function(err, res, resp) {
+			if (err) { console.error(err); resp = false; }
+
+			var options2 = {
+				method: 'GET',
+				url: 'http://104.236.159.193:3010/obtener_notas_solicitud?id_solicitud='+id
+			};
+
+			request(options2, function(err, res, resp2) {
+				if (err) { console.error(err); resp2 = false; }
+
+				let response = [resp, resp2]
+				console.log(response)
+				cb(response);
+			});
+		});
+	},
+
 	getSolicitudInformacion: (req, cb) => {
 		controller.getOpenRequests(req, (resp) => {
 			cb(resp)

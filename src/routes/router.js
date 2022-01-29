@@ -28,9 +28,11 @@ router.get('/sucursales', indexController.sucursales);
 router.get('/permisos', indexController.permisos);
 
 
+// Solicitud Informacion
 router.get('/solicitudInformacion', indexController.solicitudInformacion);
 router.get('/solicitudInformacion/pending', indexController.solicitudInformacionPending);
 router.get('/solicitudInformacion/closed', indexController.solicitudInformacionClosed);
+router.get('/solicitudInformacion/:id', indexController.solicitudInformacionDetail);
 
 
 module.exports = router;
