@@ -83,7 +83,9 @@ const notificaciones = (req, res) => {
 
 const usuarios = (req, res) => {
     controller.getUsuarios(req, (resp) => {
-        res.render('usuarios', {"inactivos": resp[0], "activos": resp[1]})
+        controller.getMasters(req, (respMasters) =>{
+            res.render('usuarios', {"inactivos": resp[0], "activos": resp[1], "cargos": respMasters.cargos, "roles": respMasters.roles, "departamentos": respMasters.departamentos})
+        })
     })
 }
 
@@ -108,6 +110,13 @@ const permisos = (req, res) => {
 const ranking = (req, res) => {
     controller.getRankingUsuarioAll(req, (resp) => {
         res.render('rankingAsesores', {"lista": resp})
+    })
+}
+
+const rankingUser = (req, res) => {
+    var id = req.params.id;
+    controller.getRankingUsuario(id, req, (resp) => {
+        res.send({"data": resp})
     })
 }
 
@@ -152,6 +161,7 @@ module.exports = {
     usuariosExternos,
     permisos,
     ranking,
+    rankingUser,
     movimientos,
     movimientosUser,
     blancosBiologicos

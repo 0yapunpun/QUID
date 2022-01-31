@@ -175,7 +175,6 @@ controller = {
 				if (err) { console.error(err); resp2 = false; }
 
 				let response = [resp, resp2]
-				console.log(response)
 				cb(response);
 			});
 		});
@@ -307,10 +306,11 @@ controller = {
 					if (err) { console.error(err); resDepartamentos = false; }
 
 					let response = {
-						"cargos": resCargos,
-						"roles": resRoles,
-						"departamentos": resDepartamentos,
+						cargos: resCargos,
+						roles: resRoles,
+						departamentos: resDepartamentos,
 					};
+
 					cb(response);
 				})
 

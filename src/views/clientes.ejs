@@ -36,7 +36,7 @@
     <!-- Cotent -->
     <div class="p-4 m-4">
 
-      <h1>Hijueputa vida</h1>
+      <h1>Clientes (falta formatear json)</h1>
       
       <div class="card p-3">
         <table>
@@ -92,10 +92,12 @@
            .replace(/\\t/g, "\\t")
            .replace(/\\b/g, "\\b")
            .replace(/\\f/g, "\\f")
-           .replace(/[\u0000-\u0019]+/g,""); 
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\\\n")
+           .replace(/\r/g, "\\\\r")
+           .replace(/\t/g, "\\\\t");        
 
-      // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
+
       s = JSON.parse(s)
       return s
     }

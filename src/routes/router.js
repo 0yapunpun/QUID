@@ -22,10 +22,13 @@ router.get('/informes/blancosBiologicos', indexController.blancosBiologicos);
 router.get('/aportes', indexController.aportes);
 router.get('/clientes', indexController.clientes);
 router.get('/notificaciones', indexController.notificaciones);
-router.get('/usuarios', indexController.usuarios);
 router.get('/usuariosExternos', indexController.usuariosExternos);
 router.get('/sucursales', indexController.sucursales);
 router.get('/permisos', indexController.permisos);
+
+// Usuarios
+router.get('/usuarios', indexController.usuarios);
+router.get('/usuarios/:id', indexController.rankingUser);
 
 
 // Solicitud Informacion

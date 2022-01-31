@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
   <title>
     Usuarios
   </title>
@@ -19,11 +20,131 @@
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
+    .searchFieldContent{
+      position: relative;
+    }
+    .searchFieldContent i{ 
+      position: absolute;
+      top: 28%;
+      left: 5%;
+      cursor: pointer;
+    }
+    .searchFieldContent input{ 
+      padding-left: 30px;
+    }
+    .imgCard{
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+    .imgCard{
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+    .cardUser{
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .cardUser:hover{
+      background-color: lightgray;
+      transform: scale(1.1);
+    }
 
+
+    /* Style Scrollbar */
+    .removeScrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    ::-webkit-scrollbar {
+      width: 5px;              
+    }
+
+    ::-webkit-scrollbar-track {
+      background: white;       
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: lightgray;    
+      border-radius: 20px;       
+    }
+    .scrollBar {
+      scrollbar-width: 5px;         
+      scrollbar-color: white lightgray;   
+    }
+
+    /* Nav */
+    .activeNav{
+      background-color: white !important;
+      border-radius: 0.5rem;
+    }
+    .nav-item{
+      background-color: transparent;
+      cursor: pointer;
+      transition: 0.01s;
+    }
+
+    /* Font-sizq */
+    .fs-17{
+      font-size: 17px;
+    }
+    .fs-15 h6{
+      font-size: 15px;
+    }
+    .fs-13 h6{
+      font-size: 13px;
+    }
+    .fontsizeTable td{
+      font-size: 13px;
+    }
+
+    /* Table Styles */
+    .noSorter .dataTable-sorter::after{
+      opacity: 0;
+    }
+    .noSorter .dataTable-sorter::before{
+      opacity: 0;
+    }
+
+    /* Buttons Modal */
+    .updateDataButton{
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .updateDataButton:hover{
+      text-decoration: underline;
+    }
+
+    /* Inactive fields */
+    .inactiveField{
+      border-color: transparent;
+      pointer-events: none;
+      background-color: transparent;
+    }
+    .inactiveSelect{
+      pointer-events: none;
+    }
+    .inactiveSelect .choices__inner{
+      border-color: transparent !important;
+      pointer-events: none;
+    }
+
+    .choices[data-type*='select-one']:after{
+      opacity: 0;
+    }
   </style>
 </head>
 
-<body class="g-sidenav-show bg-gray-100">
+<body class="g-sidenav-show bg-gray-100 scrollBar">
 
   <!-- Menu -->
   <%- include('./partials/menu.ejs') %>
@@ -36,17 +157,230 @@
     <!-- Cotent -->
     <div class="p-4 m-4">
 
-        <h1>Cosas se muestran</h1>
-
+      <div class="card p-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="m-0 ms-3">Clientes  </h5>  
+          <div class="w-50 d-flex gap-1 justify-content-end align-items-center">
+            <div onclick="toggleStateUser()" id="showInactive"  data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Usuarios Inactivos" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <i class="fas fa-ban"></i>
+            </div>
+            <div onclick="newUser()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Usuario" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <i class="fas fa-plus" ></i>
+            </div>
+            <div class="searchFieldContent">
+              <i class="fas fa-search iconField" onclick=""></i>
+              <input type="text" class="form-control" name="" id="searchField">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="itemsUsers" class="d-flex flex-wrap justify-content-center gap-3 mt-3"> <!-- Contenido dinamico --></div>
     </div>
+
+    <!-- Modales -->
+    <div class="modal fade" tabindex="-1" id="detailModal" role="dialog" aria-labelledby="detailModalModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Detalle Usuario </h5>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+              <button type="button" class="btn-close rounded-circle me-1" style="background-color: gray" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="modal-body bg-gray-100 d-flex" data-idUser="" id="userDetail">
+
+            <div class="infoUser d-flex flex-column flex-fill w-40 align-items-center text-left border-end text-center" >
+              <div style="width: 150px; height: 150px; background-color: lightgrey; border-radius: 50%" class="mb-5 mt-3">
+                <img src="" alt="" id="userImg" style="max-height: 100%; max-width: 100%; border-radius: 50%; min-width: 100%; min-height: 100%; object-fit: cover">
+              </div>
+              <div class="d-flex flex-column ">
+                <div class="d-flex flex-column" style="font-size:13px">
+                  <h6 class="my-2 fs-17">Datos Usuario</h6>
+                  <div class="fs-15">
+                    <div ><h6>Nombre: <br>  <span class="opacity-7" id="userName"> </span></h6></div>
+                    <div ><h6>Usuario:  <br> <span class="opacity-7" id="userUser"></span></h6></div>
+                    <div ><h6>Cargo: <br> <span class="opacity-7" id="userCargo"> </span></h6></div>
+                    <div><h6>Tipo de usuario:  <br> <span class="opacity-7" id="userKind"></span></h6></div>
+                    <div id="rankingIndicator"><h6>Ranking: <br> <span class="opacity-7" id="userRank"></span></h6></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="updateDataButton">
+                <hr class="horizontal dark mt-0">
+                <div class="updateData" >
+                  <h6 class="m-0">
+                    <i class="fas fa-pen"></i>
+                    Actulizar datos
+                  </h6>
+                </div>
+                <div class="createUser" style="display: none; ">
+                  <h6 class="m-0" style="color: green;">
+                    <i class="fas fa-plus"></i>
+                    Crear Usuario 
+                  </h6>
+                </div>
+                <div class="saveData" style="display: none;">
+                  <h6 class="m-0" style="color: green">
+                    <i class="fas fa-save"></i>
+                    Guardar datos
+                  </h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-fill w-60 p-1">
+
+              <div class="nav-wrapper position-relative end-0" style="z-index: 1;">
+                <ul class="nav nav-pills nav-fill p-1" role="tablist" style="background-color: #ededed">
+                  <li class="nav-item activeNav">
+                    <a class="nav-link mb-0 px-0 py-1 active" >
+                      Datos
+                    </a>
+                  </li>
+                  <li class="nav-item" id="pointsNavigator">
+                    <a class="nav-link mb-0 px-0 py-1" >
+                      Puntos
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div id="detailSection" class="p-3 fs-13" >
+                <div class="userView">
+                  <div ><h6 class="m-0">Tipo de usuario: </h6> 
+                    <div id="selectKindContainer" class="inputSelect inactiveSelect">
+                      <select name="" id="selectKind">
+                        <!-- Contenido dinamico -->
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div ><h6 class="m-0">Cargo: </h6> 
+                    <div id="selectCargoContainer" class="inputSelect inactiveSelect">
+                      <select name="" id="selectCargo">
+                        <!-- Contenido Dinamico -->
+                      </select>
+                    </div>
+                  </div>
+  
+                  <div >
+                    <h6 class="m-0">Nombre: </h6> 
+                    <input type="text" class="form-control inputField inactiveField" id="inputName" oninput="$('#userName').text($(this).val())">
+                  </div>
+  
+                  <div >
+                    <h6 class="m-0">Usuario: </h6> 
+                    <input type="text" class="form-control inputField inactiveField" id="inputUser" oninput="$('#userUser').text($(this).val())">
+                  </div>
+  
+                  <div >
+                    <h6 class="m-0">Clave: </h6> 
+                    <input type="password" class="form-control inputField inactiveField" id="inputPassword">
+                  </div>
+  
+                  <div id="claveField" style="display: none">
+                    <h6 class="m-0">Verificar Clave: </h6> 
+                    <input type="password" class="form-control inputField inactiveField" id="confirmPassword">
+                  </div>
+  
+                  <div >
+                    <h6 class="m-0">Celular: </h6> 
+                    <input type="number" class="form-control inputField inactiveField" id="userPhone">
+                  </div>
+
+                  <div style="display: none;" id="directionContainer">
+                    <h6 class="m-0">Direccion: </h6> 
+                    <input type="text" class="form-control inputField inactiveField" id="directionField" >
+                  </div>
+                  
+  
+                  <div style="display: none;">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="m-0">Telefono: </h6> 
+                        <input type="number" class="form-control inactiveField" id="telefonoField">
+                      </div>
+                      <div >
+                        <h6 class="m-0">Extension: </h6> 
+                        <input type="number" class="form-control inactiveField" id="extensionField">
+                      </div>
+                    </div>
+                  </div>
+  
+                  <div ><h6 class="m-0">Departamento: </h6> 
+                    <div id="selectDepartamentContainer" class="inputSelect inactiveSelect">
+                      <select class="" name="" id="selectDepartment" onchange="printMasterCity()">
+                        <!-- Contenido Dinamico -->
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="m-0">Ciudad: </h6> 
+                    <div id="selectCityContainer" class="inputSelect inactiveSelect">
+                      <select name="" id="selectCity">
+                        <!-- Contenido Dinamico -->
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-check form-switch ps-0  mt-2 ">
+                    <label for="">Estado</label>
+                    <div class="d-flex align-items-center gap-2 ms-2">
+                      <div> 
+                        <h6  class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Inactivo</h6>
+                      </div>
+                      <div>
+                        <input class="form-check-input m-0 disableToggle inputField inactiveField" type="checkbox" id="toggleButton" checked="" >
+                      </div>
+                      <div>
+                        <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Activo</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="sucursalView"> <!-- Para después --> </div>
+              </div>
+
+              <div id="pointSection" style="display: none;">
+
+                <div class="card m-3 p-2">
+                  <table id="tableUsuarios" style="table-layout: fixed;">
+                    <thead>
+                      <tr id="tableHead">
+                        <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-8 noSorter">#</th>
+                        <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15 noSorter">Generadas</th>
+                        <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15 noSorter">Validadas</th>
+                        <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15 noSorter">Aprobadas</th>
+                        <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15 noSorter">Puntos</th>
+   
+                      </tr> 
+                    </thead>  
+                    <tbody class="fontsizeTable">
+                      <!-- Contenido Dinamico -->
+                    </tbody>
+                  </table>
+                  <div class="text-end pe-4 pt-2">
+                    <label for="">Total: <span id="totalPoints" class="ms-1">1</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
       
   </main>
 
   <!--   Core JS Files   -->
   <script src="../js/core/popper.min.js"></script>
   <script src="../js/core/bootstrap.min.js"></script>
-  <script src="../js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="../js/plugins/smooth-scrollbar.min.js"></script>
+  <!-- <script src="../js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../js/plugins/smooth-scrollbar.min.js"></script> -->
   <script src="../js/plugins/choices.min.js"></script>
   <!-- Kanban scripts -->
   <script src="../js/plugins/dragula/dragula.min.js"></script>
@@ -72,10 +406,13 @@
            .replace(/\\t/g, "\\t")
            .replace(/\\b/g, "\\b")
            .replace(/\\f/g, "\\f")
-           .replace(/[\u0000-\u0019]+/g,""); 
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\\\n")
+           .replace(/\r/g, "\\\\r")
+           .replace(/\t/g, "\\\\t");
 
       // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
+      
       s = JSON.parse(s)
       console.log(s)
       return s
@@ -86,8 +423,317 @@
     activeUsers = handleJSON(activeUsers)
 
     var inactiveUsers = '<%- inactivos %>';
-    // console.log("???", inactiveUsers)
     inactiveUsers = handleJSON(inactiveUsers)
+
+    var cargos = '<%- cargos %>';
+    cargos = handleJSON(cargos)
+
+    var roles = '<%- roles %>';
+    roles = handleJSON(roles)
+
+    var departamentos = '<%- departamentos %>';
+    departamentos = handleJSON(departamentos)
+    // let cargos = handleJSON(masters)
+
+    const printUsers = (data) => {
+      $("#itemsUsers").html("")
+      for (let i = 0; i < data.length; i++) {
+        let element = `
+          <div class="card cardUser" id="${data[i].id}" data-user='${JSON.stringify(data[i])}' style="max-width: 160px">
+            <div style="min-width: 160px; height: 160px;" >
+              <img src="http://104.236.159.193:3010/${data[i].foto}" alt="" onerror='this.onerror=null;  this.src="http://104.236.159.193:8850/images/miAmigoInvesa.png"' class="imgCard">
+            </div>
+            <div class="text-center p-2">
+              <h6 class="m-0" style="font-size: 13px;"> ${data[i].nombre}</h6>
+            </div>
+          </div>
+        `;
+        $("#itemsUsers").append(element)
+      }
+    };
+
+    let showActive = true;
+    const toggleStateUser = () =>{
+      if (showActive) {
+        printUsers(inactiveUsers)
+        showActive = false
+      } else {
+        printUsers(activeUsers)
+        showActive = true
+      }
+    }
+
+    let showDetail = true;
+    $(".nav-item").click(function () {
+      $(".nav-item").removeClass("activeNav");
+      $(this).addClass("activeNav");
+
+
+      if (showDetail) {
+        $("#detailSection").hide()
+        $("#pointSection").show()
+        showDetail = false
+      } else {
+        $("#detailSection").show()
+        $("#pointSection").hide()
+        showDetail = true
+      }
+
+    })
+
+    $(document).on("click", ".cardUser", function () {
+      let data = $(this).attr("data-user");
+      data = JSON.parse(data)
+
+      let id = data.id
+      fetch('/usuarios/'+id)
+      .then(res => res.json())
+      .then(res => {
+        if (res) {
+          let response = JSON.parse(res.data);
+          printDataUser(data, response);
+
+          $(".inputField").addClass("inactiveField")
+          $(".inputSelect").addClass("inactiveSelect")
+          $("#rankingIndicator").show()
+          $(".saveData").hide();
+          $(".createUser").hide();
+          $(".updateData").show();
+          $("#pointsNavigator").show();
+        } 
+        else {console.error("No fue posbile obtener detalle de la solicitud")}
+      });
+    })
+
+    const printMasterCity = (selected) =>{
+      let currentDepartment = Number($("#selectDepartment").val());
+      let departmentMaster = _.findWhere(departamentos.deptociudad, {id: currentDepartment});
+      $("#selectCityContainer").html(`<select name="" id="selectCity"></select>`);
+
+      let ciudad = departmentMaster.ciudades;
+      for (let i = 0; i < ciudad.length; i++) {
+        let element = `
+          <option value="${ciudad[i].id}" data-idDepto="${ciudad[i].id_depto}" ${(ciudad[i].id == selected ? "selected" : "")}>${ciudad[i].ciudad}</option>
+        `;
+        $("#selectCity").append(element)
+      }
+      const choiceCity = new Choices($('#selectCity')[0]);
+    }
+    
+    const printDataUser = (data, ranking) => {
+      console.log({data})
+      $("#userDetail").attr("data-idUser", data.id)
+      // *** Print Masters
+      let currentDepartament
+      for (let i = 0; i < departamentos.deptociudad.length; i++) {
+        currentDepartment = _.findWhere(departamentos.deptociudad[i].ciudades, {id: data.id_ciudad})
+        if (currentDepartment) {
+          currentDepartment = currentDepartment.id_depto
+          break
+        }
+      }
+
+      $("#selectDepartamentContainer").html(`<select name="" id="selectDepartment" onchange="printMasterCity()"></select>`);
+      for (let i = 0; i < departamentos.deptociudad.length; i++) {
+        let element = `
+          <option value="${departamentos.deptociudad[i].id}" ${(departamentos.deptociudad[i].id == currentDepartment ? "selected" : "")}>${departamentos.deptociudad[i].descripcion}</option>
+        `;
+        $("#selectDepartment").append(element);
+        // if (departamentos.deptociudad[i].id == curretDepartment ) {console.log(departamentos.deptociudad[i]); printMasterCity(departamentos.deptociudad[i].id)}
+        printMasterCity(data.id_ciudad)
+      }
+
+      $("#selectKindContainer").html('<select name="" id="selectKind"></select>')
+      for (let i = 0; i < roles.roles.length; i++) {
+        let element = `
+          <option value="${roles.roles[i].descripcion}" data-id="${roles.roles[i].id}" ${(roles.roles[i].id == data.id_rol ? "selected" : "")}>${roles.roles[i].descripcion}</option>
+        `;
+        $("#selectKind").append(element)
+      }
+      $("#userKind").text($("#selectKind").val())
+
+      $("#selectCargoContainer").html('<select name="" id="selectCargo"></select>')
+      for (let i = 0; i < cargos.cargos.length; i++) {
+        let element = `
+          <option value="${cargos.cargos[i].descripcion}" data-id="${cargos.cargos[i].id}" ${(cargos.cargos[i].id == data.id_cargo ? "selected" : "")} >${cargos.cargos[i].descripcion}</option>
+        `;
+        $("#selectCargo").append(element)
+      }
+      $("#userCargo").text($("#selectCargo").val())
+
+      // Print Datos
+      $("#inputName").val(data.nombre)
+      $("#userName").text(data.nombre)
+
+      $("#inputUser").val(data.usuario)
+      $("#userUser").text(data.usuario)
+
+      $("#inputPassword").val(data.clave)
+      $("#userPhone").val(data.celular)
+
+      if (data.confirmado) {
+        $("#toggleButton").prop("checked", true);
+      } else {
+        $("#toggleButton").prop("checked", false);
+      }
+
+      if (data.foto) {
+        $("#userImg").attr("src", "http://104.236.159.193:3010/"+data.foto);
+      } else {
+        $("#userImg").attr("src", "http://104.236.159.193:8850/images/miAmigoInvesa.png");
+      }
+
+      $("#userRank").text((ranking.ranking[0].ranking == -1 ? "-" : ranking.ranking[0].ranking))
+
+      // Print Points
+      let puntos = ranking.ranking[0].puntaje;
+      $(".fontsizeTable").html("")
+      for (let i = 0; i < puntos.length; i++) {
+        let element = `
+          <tr>
+            <td>${i+1}</td>
+            <td>${puntos[i].actividad}</td>
+            <td class="text-center" style="padding-right: 5px">${puntos[i].total_actividad}</td>
+            <td class="text-center">${puntos[i].aprobados}</td>
+            <td class="text-center">${puntos[i].aprobados}</td>
+          </tr>
+        `;
+        $(".fontsizeTable").append(element)
+      }
+      $("#totalPoints").text(ranking.ranking[0].puntos)
+
+      // Init plugin Chocies Js
+      const choiceKind = new Choices($('#selectKind')[0]);
+      const choiceCargo = new Choices($('#selectCargo')[0]);
+      const choiceCity = new Choices($('#selectCity')[0]);
+      const choiceDepartment = new Choices($('#selectDepartment')[0]);
+
+      $("#detailModal").modal("show")
+    }
+
+    const newUser = () =>{
+      $("#selectKindContainer").html('<select name="" id="selectKind"></select>')
+      for (let i = 0; i < roles.roles.length; i++) {
+        let element = `
+          <option value="${roles.roles[i].descripcion}" data-id="${roles.roles[i].id}">${roles.roles[i].descripcion}</option>
+        `;
+        $("#selectKind").append(element)
+      }
+      $("#selectKind").append(` <option value="" selected disabled hidden>...</option>`)
+      const choiceKind = new Choices($('#selectKind')[0]);
+      
+      $("#selectCargoContainer").html('<select name="" id="selectCargo"></select>')
+      for (let i = 0; i < cargos.cargos.length; i++) {
+        let element = `
+        <option value="${cargos.cargos[i].descripcion}" data-id="${cargos.cargos[i].id}"  >${cargos.cargos[i].descripcion}</option>
+        `;
+        $("#selectCargo").append(element)
+      }
+      $("#selectCargo").append(` <option value="" selected disabled hidden>...</option>`)
+      const choiceCargo = new Choices($('#selectCargo')[0]);
+
+      $("#selectDepartamentContainer").html(`<select name="" id="selectDepartment" onchange="printMasterCity()"></select>`);
+      for (let i = 0; i < departamentos.deptociudad.length; i++) {
+        let element = `
+          <option value="${departamentos.deptociudad[i].id}">${departamentos.deptociudad[i].descripcion}</option>
+        `;
+        $("#selectDepartment").append(element);
+      }
+      const choiceDepartment = new Choices($('#selectDepartment')[0]);
+      printMasterCity()
+
+      $("#userDetail").attr("data-idUser", "0")
+      $("#userImg").attr("src", "")
+      $("#userName").text("")
+      $("#userCargo").text("")
+      $("#userUser").text("")
+      $("#userKind").text("")
+
+      $("#inputName").val("")
+      $("#inputUser").val("")
+      $("#inputPassword").val("")
+      $("#confirmPassword").val("")
+      $("#userPhone").val("")
+
+      $("#rankingIndicator").hide()
+      $(".saveData").hide();
+      $(".updateData").hide();
+      $(".createUser").show()
+      $("#claveField").show();
+      $("#pointsNavigator").hide();
+      $(".inputField").removeClass("inactiveField")
+      $(".inputSelect").removeClass("inactiveSelect")
+      $("#detailModal").modal("show")
+    }
+
+
+    $(".updateData").on("click", function () {
+      $(".inputField").removeClass("inactiveField")
+      $(".inputSelect").removeClass("inactiveSelect")
+
+      $(this).hide();
+      $(".createUser").hide()
+      $("#rankingIndicator").show()
+      $(".saveData").show();
+      $("#pointsNavigator").hide();
+      $("#claveField").show();
+    })
+
+    $(".saveData").on("click", function () {
+      $(".inputField").addClass("inactiveField")
+      $(".inputSelect").addClass("inactiveSelect")
+
+      $("#rankingIndicator").show()
+      $(".createUser").hide()
+      $("#claveField").hide();
+      $(this).hide();
+      $(".updateData").show();
+      $("#pointsNavigator").show()
+    })
+
+    const sendData = () =>{
+      let data = {
+        "id_usuario": Number($("#userDetail").attr("data-idUser")),
+        "nombre": $("#inputName").val(),
+        "usuario": $("#inputUser").val(),
+        "clave": $("#inputPassword").val(),
+        "id_cargo": 7,
+        "confirmado": 0,
+        "id_ciudad": 1,
+        "perfil": ($('#toggleButton').is(':checked') ? "A" : "I"),
+        "telefono": $("#telefonoField").val(),
+        "extension": $("#extensionField").val(),
+        "celular": Number($("#userPhone").val()),
+        "direccion": $("#directionField").val(),
+        "id_rol": 2,
+      }
+      console.log(data)
+
+      // fetch('http://104.236.159.193:3010/usuario', {
+      //   method: 'POST',
+      //   headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+      //   body: JSON.stringify(data)
+      // })
+      // .then(res => res.json())
+      // .then(res => {
+      //   console.log(res)
+      //   if (res.success) {} 
+      //   // if (res.success) {location.reload()} 
+      //   else {console.error("No fue posbile actualizar datos")}
+      // });
+    }
+
+    $(document).on("change", "#selectCargo", function () {
+      $("#userCargo").text($(this).val())
+    })
+
+    $(document).on("change", "#selectKind", function () {
+      $("#userKind").text($(this).val())
+    })
+
+    $(document).ready(function () {
+      printUsers(activeUsers)
+    })
 
   </script>
 
