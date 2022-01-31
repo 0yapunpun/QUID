@@ -27,10 +27,6 @@
     }
     .headerLeft{
       height: 50px;
-      position: relative; 
-      display: flex; 
-      justify-content: space-between;
-      align-items: center;
       border-bottom: solid 1px lightgray;
     }
     .headerRight{
@@ -42,10 +38,10 @@
       border-bottom: solid 1px lightgray;
     }
     .imgUser{
+      min-width: 50px;
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background-color: gray;
     }
     .bodyLeft h6, .bodyRight h6{
       margin: 0;
@@ -84,6 +80,10 @@
     .iconAporte:hover{
       background-color: lightgray;
     }
+    .inactiveField{
+      opacity: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 
@@ -100,73 +100,86 @@
     <!-- Cotent -->
     <div class="p-4 m-4">
 
-        <div class="card d-flex flex-row p-3">
-          <div class="w-50 sideLeft">
-            <div class="headerLeft px-2">
-              <div class="dotIcon dropdown iconAporte">
-
-                <i class="fas fa-ellipsis-v dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown"></i>
-
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <li><a class="dropdown-item" href="javascript:;">Creadas</a></li>
-                  <li><a class="dropdown-item" href="javascript:;">Aprobadas</a></li>
-                  <li><a class="dropdown-item" href="javascript:;">Rechazadas</a></li>
+      <h6>Aportes</h6>
+      <div class="card d-flex flex-row p-3">
+        <div class="w-50 sideLeft">
+          <div class="headerLeft px-2">
+            <div class="nav-wrapper position-relative end-0" style="cursor: pointer;">
+              <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                <li onclick='printAportes(creados); $("#rightSideContainer").hide(); $("#aporteState").removeClass("inactiveField"); $("#stateField").hide()' class="nav-item">
+                  <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab"  role="tab" aria-controls="profile" aria-selected="true">
+                    Creados
+                  </a>
+                </li>
+                <li onclick='printAportes(aprobados); $("#rightSideContainer").hide(); $("#aporteState").addClass("inactiveField"); $("#stateField").show()' class="nav-item">
+                  <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab"  role="tab" aria-controls="dashboard" aria-selected="false">
+                    Aprobados
+                  </a>
+                </li>
+                <li onclick='printAportes(rechazados); $("#rightSideContainer").hide(); $("#aporteState").addClass("inactiveField"); $("#stateField").show()' class="nav-item">
+                  <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab"  role="tab" aria-controls="dashboard" aria-selected="false">
+                    Rechazados
+                  </a>
+                </li>
+                  
                 </ul>
-
-              </div>
-              <div><h6 class="m-0">Aportes (<span>80</span>)</h6></div>
-              <div>&nbsp;</div>
             </div>
-            <div class="bodyLeft p-3">
+          </div>
+          <div class="bodyLeft p-3" id="leftSideContainer">
 
-              <div class="d-flex w-100 aporteLeft">
+            <!-- <div class="d-flex w-100 aporteLeft">
+              <div class="imgUser ms-2 me-3 mt-1">
+                <img src="http://104.236.159.193:3010/media/usuario/JessyPaulineMaud8tp4z1.png" alt="" class="imgCard">
+              </div>
+              <div class="flex-fill ">
+                <div class="d-flex justify-content-between alig-items-center">
+                  <h6 class="text-primary">Pauline</h6>
+                  <h6 class="text-xxs font-weight-bolder opacity-7">22/01/11</h6>
+                </div>
+                <div>
+                  <h6>Aporte nuevo blanco: Malezas</h6>
+                </div>
+                <div>
+                  <h6 class="opacity-7">Es un Chinche pequeño</h6>
+                </div>
+              </div>
+            </div>
+            <hr class="horizontal dark my-2"> -->
+
+          </div>
+
+        </div>
+        <div class="w-50">
+          <div class="headerRight px-2">
+            <div>&nbsp;</div>
+            <div><h6 class="m-0">Aporte </h6></div>
+            <div id="aporteState">
+              <div  class="d-flex justify-content-center alig-items-center gap-2">
+                <div class="dotIcon iconAporte" title="Aprobar Aporte"><i class="fas fa-times"></i></div>
+                <div class="dotIcon iconAporte" title="Rechazar Aporte"><i class="fas fa-check"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bodyRight p-3" id="rightSideContainer" style="display: none;">
+
+            <div>
+              <div class="d-flex w-100 ">
                 <div class="imgUser ms-2 me-3 mt-1">
-                  <img src="http://104.236.159.193:3010/media/usuario/JessyPaulineMaud8tp4z1.png" alt="" class="imgCard">
+                  <img id="dataAporteImgUser" src="" alt="" class="imgCard">
                 </div>
                 <div class="flex-fill ">
                   <div class="d-flex justify-content-between alig-items-center">
-                    <h6 class="text-primary">Pauline</h6>
-                    <h6 class="text-xxs font-weight-bolder opacity-7">22/01/11</h6>
+                    <h6 class="text-primary" id="dataAporteName"></h6>
+                    <h6 class="text-xxs font-weight-bolder opacity-7" id="dataAporteDate"></h6>
                   </div>
                   <div>
-                    <h6>Aporte nuevo blanco: Malezas</h6>
-                  </div>
-                  <div>
-                    <h6 class="opacity-7">Es un Chinche pequeño</h6>
+                    <h6>Aporte nuevo blanco biológico: <span class="dataAporteBB"></span></h6>
                   </div>
                 </div>
               </div>
-              <hr class="horizontal dark my-2">
             </div>
-
-          </div>
-          <div class="w-50">
-            <div class="headerRight px-2">
-              <div>&nbsp;</div>
-              <div><h6 class="m-0">Aporte </h6></div>
-              <div class="dotIcon iconAporte"><i class="fas fa-check"></i></div>
-            </div>
-            <div class="bodyRight p-3">
-
-              <div>
-                <div class="d-flex w-100 ">
-                  <div class="imgUser ms-2 me-3 mt-1">
-                    <img src="http://104.236.159.193:3010/media/usuario/JessyPaulineMaud8tp4z1.png" alt="" class="imgCard">
-                  </div>
-                  <div class="flex-fill ">
-                    <div class="d-flex justify-content-between alig-items-center">
-                      <h6 class="text-primary">Pauline</h6>
-                      <h6 class="text-xxs font-weight-bolder opacity-7">22/01/11</h6>
-                    </div>
-                    <div>
-                      <h6>Aporte nuevo blanco: Malezas</h6>
-                    </div>
-                    <div>
-                      <h6 class="opacity-7">Es un Chinche pequeño</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div id="stateField" style="display: none;">
               <div class="form-check form-switch ps-0 mt-2 text-center d-flex justify-content-center align-items-center flex-column">
                 <label for="" class="m-0 my-2">Estado</label>
                 <div class="d-flex align-items-center gap-2 ">
@@ -181,44 +194,44 @@
                   </div>
                 </div>
               </div>
+            </div>
 
-              <hr class="horizontal dark my-4">
-              <div class="">
-                <h6 style="font-size: 15px;" class="my-2">Datos del Aporte</h6>
-                <div class="d-flex">
-                  <div class="w-60"><h6>Blanco Biológico: <span class="opacity-7">Plagas</span></h6></div>
-                  <div class="w-40"><h6>Lugar: <span class="opacity-7">Monteria</span></h6></div>
-                </div>
-                <div class="d-flex">
-                  <div class="w-60"><h6>Nombre Común: <span class="opacity-7">Blisus</span></h6></div>
-                  <div class="w-40"><h6>Longitud: <span class="opacity-7">-756666.66</span></h6></div>
-                </div>
-                <div class="d-flex">
-                  <div class="w-60"><h6>Nombre científico: <span class="opacity-7">Nlissus Sp</span></h6></div>
-                  <div class="w-40"><h6>Latitud: <span class="opacity-7">6.182234</span></h6></div>
-                </div>
+            <hr class="horizontal dark my-4">
+            <div class="">
+              <h6 style="font-size: 15px;" class="my-2">Datos del Aporte</h6>
+              <div class="d-flex">
+                <div class="w-60"><h6>Blanco Biológico: <span class="opacity-7 dataAporteBB"></span></h6></div>
+                <div class="w-40"><h6>Lugar: <span class="opacity-7" id="dataAportPlace"></span></h6></div>
               </div>
-
-              <hr class="horizontal dark my-4">
-              <div class="">
-                <h6 style="font-size: 15px;" class="my-1">Notas del Aporte</h6>
-                <div class="d-flex flex-column">
-                  <div class="my-2"><h6>Descripción: <span class="opacity-7">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Error, laboriosam?</span></h6></div>
-                  <div class="my-2"><h6>Recomendación: <span class="opacity-7">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Culpa debitis voluptas aperiam ut, magnam molestiae quod consequatur hic voluptatibus illum.</span></h6></div>
-                </div>
+              <div class="d-flex">
+                <div class="w-60"><h6>Nombre Común: <span class="opacity-7" id="dataAportNameComun"></span></h6></div>
+                <div class="w-40"><h6>Longitud: <span class="opacity-7" id="dataAportLongitude"></span></h6></div>
               </div>
-
-              <hr class="horizontal dark my-4">
-              <div class="">
-                <h6 style="font-size: 15px;" class="my-2">Detalle del Aporte</h6>
-                <div class="imgDetalle">
-                  <img src="http://104.236.159.193:3010/media/aporte/aporte_793_xnCUB7w.png" alt="" style="max-width: 100%; max-height: 100%; border-radius: 0.5rem;">
-                </div>
+              <div class="d-flex">
+                <div class="w-60"><h6>Nombre científico: <span class="opacity-7" id="dataAportNameSci"></span></h6></div>
+                <div class="w-40"><h6>Latitud: <span class="opacity-7" id="dataAportLatitud"></span></h6></div>
               </div>
+            </div>
 
+            <hr class="horizontal dark my-4">
+            <div class="">
+              <h6 style="font-size: 15px;" class="my-1">Notas del Aporte</h6>
+              <div class="d-flex flex-column">
+                <div class="my-2"><h6>Descripción: <span class="opacity-7" id="dataAportDescription"></span></h6></div>
+                <div class="my-2"><h6>Recomendación: <span class="opacity-7" id="dataAportRecomendation"></span></h6></div>
+              </div>
+            </div>
+
+            <hr class="horizontal dark my-4">
+            <div class="">
+              <h6 style="font-size: 15px;" class="my-2">Detalle del Aporte</h6>
+              <div id="detailAport">
+                <!-- Contenido Dinamico -->
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
     </div>  
       
@@ -244,8 +257,6 @@
   <script>
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
-
-      console.log(s) 
       // Remove special characters
       s = s.replace(/\\n/g, "\\n")  
           .replace(/\\'/g, "\\'")
@@ -255,10 +266,10 @@
           .replace(/\\t/g, "\\t")
           .replace(/\\b/g, "\\b")
           .replace(/\\f/g, "\\f")
-          .replace(/[\u0000-\u0019]+/g,""); 
+          .replace(/[\u0000-\u0019]+/g,"")
+          .replace(/\n/g, "\\n");
 
       // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
       s = JSON.parse(s)
       console.log(s)
       return s
@@ -266,6 +277,74 @@
 
     var aportes = '<%- aportes %>';
     aportes = handleJSON(aportes)
+
+    let creados = _.where(aportes.aporte, {estado: "C"})
+    let aprobados = _.where(aportes.aporte, {estado: "A"})
+    let rechazados = _.where(aportes.aporte, {estado: "R"})
+
+    const printAportes = (data) =>{
+      $("#leftSideContainer").html("")
+      for (let i = 0; i < data.length; i++) {
+        let element = `
+          <div class="d-flex w-100 aporteLeft" data-aporte='${JSON.stringify(data[i])}'>
+            <div class="imgUser ms-2 me-3 mt-1">
+              <img src="http://104.236.159.193:3010/${data[i].foto}" onerror='this.onerror=null;  this.src="http://104.236.159.193:8850/images/logoamigoinvesa.png"' alt="" class="imgCard">
+            </div>
+            <div class="flex-fill ">
+              <div class="d-flex justify-content-between alig-items-center">
+                <h6 class="text-primary">${data[i].nombre}</h6>
+                <h6 class="text-xxs font-weight-bolder opacity-7">${data[i].fecha}</h6>
+              </div>
+              <div>
+                <h6>Aporte nuevo blanco biologico: ${(data[i].descripcion_blanco_biologico ? data[i].descripcion_blanco_biologico : "-")}</h6>
+              </div>
+              <div>
+                <h6 class="opacity-7">${data[i].descripcion}</h6>
+              </div>
+            </div>
+          </div>
+          <hr class="horizontal dark my-2">
+        `;
+        $("#leftSideContainer").append(element)
+      }
+    }
+
+    $(document).on("click", ".aporteLeft", function () {
+      let data = JSON.parse($(this).attr("data-aporte"))
+      console.log(data)
+
+      $("#dataAporteName").text(data.nombre)
+      $("#dataAporteDate").text(data.fecha)
+      $(".dataAporteBB").text(data.descripcion_blanco_biologico)
+      $("#dataAporteImgUser").attr("src", (data.foto ? "http://104.236.159.193:3010/"+data.foto : "http://104.236.159.193:8850/images/logoamigoinvesa.png"))
+      $("#toggleButton").prop('checked', (data.estado == "A" ? true : false));
+
+      $("#dataAportPlace").text((data.lugar ? data.lugar : "-"))
+      $("#dataAportNameComun").text((data.nombre_comun ? data.nombre_comun : "-"))
+      $("#dataAportNameSci").text((data.nombre_cientifico ? data.nombre_cientifico : "-"))
+      $("#dataAportLongitude").text((data.longitud ? data.longitud : "-"))
+      $("#dataAportLatitud").text((data.latitud ? data.latitud : "-"))
+
+      $("#dataAportDescription").text(data.descripcion)
+      $("#dataAportRecomendation").text(data.recomendacion)
+
+      $("#detailAport").html("")
+      for (let i = 0; i < data.detalle_aporte.length; i++) {
+        let element = `
+          <div class="imgDetalle">
+            <img src="http://104.236.159.193:3010/${data.detalle_aporte[i].contenido}" alt="" style="max-width: 100%; max-height: 100%; border-radius: 0.5rem;">
+            <label for="">${data.detalle_aporte[i].nota}</label>
+          </div>
+        `;
+        $("#detailAport").append(element)
+      }
+
+      $("#rightSideContainer").show();
+    })
+
+    $(document).ready(function () {
+      printAportes(creados)
+    })
 
   </script>
 

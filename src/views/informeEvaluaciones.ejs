@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
+  <title>
+    Evaluaciones
+  </title>
+  <!-- Fonts and icons -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+
+  <style>
+    #cardsContainer>div{
+      width: 16%;
+      transition: 0.3s;
+    }
+    #cardsContainer>div:hover{
+      background-color: lightgrey;
+    }
+    #cardsContainer h4{
+      font-size: 15px !important;
+    }
+  </style>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+
+  <!-- Menu -->
+  <%- include('./partials/menu.ejs') %>
+
+  <main class="main-content max-height-vh-100 h-100">
+
+    <!-- Navbar -->
+    <%- include('./partials/head.ejs') %> 
+
+    <!-- Cotent -->
+    <div class="p-4 m-4"> 
+      <div class="card flex-row p-3 my-2 justify-content-between align-items-center">
+        <h6>Evaluaciones Por Rango de Fecha</h6>
+        <div>
+          <div class="d-flex gap-2 align-items-center">  
+            <div>
+              <label for="date1">Desde</label> 
+              <input class="form-control" id="date1" type="date">
+            </div>
+            <div>
+              <label for="date2">Hasta</label> 
+              <input class="form-control"  id="date2" type="date">
+            </div>
+            <div onclick="searRangoFecha()" data-bs-toggle="tooltip" data-bs-placement="top" title="Buscar Evaluaciones" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; margin-top: 30px;" >
+              <i class="fas fa-search" ></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-3" id="tableContainer"> <!-- Contenido Dinamico --> </div>
+      
+      <div class="d-flex gap-1" id="chartsContainer"> <!-- Contenido Dinamico -->  </div>
+      
+    </div>
+      
+  </main>
+
+  <!--   Core JS Files   -->
+  <script src="/js/core/popper.min.js"></script>
+  <script src="/js/core/bootstrap.min.js"></script>
+  <script src="/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="/js/plugins/choices.min.js"></script>
+  <!-- Kanban scripts -->
+  <script src="/js/plugins/dragula/dragula.min.js"></script>
+  <script src="/js/plugins/jkanban/jkanban.js"></script>
+  <!-- Jquery -->
+  <script src="/js/jquery.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <!-- Underscore -->
+  <script src="/js/underscore-min.js"></script>
+  <!-- Script Plantilla -->
+  <script src="/js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Chart JS -->
+  <script src="/js/plugins/chartjs.min.js"></script>
+
+  <script>
+    const handleJSON = (s) => {
+      if (s == null && s == "") { return }
+      // Remove special characters
+      s = s.replace(/\\n/g, "\\n")  
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f")
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\n");
+      return JSON.parse(s)
+    }
+
+    var evaluaciones = '<%- evaluaciones %>';
+    evaluaciones = handleJSON(evaluaciones);
+    console.log(evaluaciones)
+
+    var respuestas = '<%- respuestas %>';
+    respuestas = handleJSON(respuestas);
+    console.log(respuestas)
+
+    const printTable = (data) => {
+      $("#tableContainer").html("");
+      let thead = `
+        <table id="tableInformes" style="table-layout: fixed;">
+          <thead>
+            <tr id="tableHead">
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Departamento</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Asesores</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Evaluaciones</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Promedio</th>
+            </tr> 
+          </thead>  
+        </table>
+      `;
+      $("#tableContainer").append(thead)
+
+      let tbody = "<tbody>";
+      for (let i = 0; i < data.length; i++) {
+        let element = `
+          <tr>
+            <td class="text-center">${data[i].departamento}</td>
+            <td class="text-center">${data[i].asesores}</td>
+            <td class="text-center">${data[i].cuenta}</td>
+            <td class="text-center">${data[i].promedio_evaluacion}</td>
+          </tr>
+        `;  
+        tbody += element;      
+      }
+      tbody += "</tbody>"
+      $("#tableInformes").append(tbody)
+    }
+
+
+    const printCharts = (data) => {
+      $("#chartsContainer").html();
+      let element = `
+        <div class="chart card p-3 mt-2 flex-fill w-50" >
+          <h6 style="text-transform: capitalize">Registro por departamentos</h6>
+          <canvas id="registro" class="chart-canvas" height="300"></canvas>
+        </div>
+  
+        <div class="chart card p-3 mt-2 flex-fill w-50" >
+          <h6 style="text-transform: capitalize">Promedio por departamentos</h6>
+          <canvas id="promedio" class="chart-canvas" height="300"></canvas>
+        </div>
+      `;
+      $("#chartsContainer").html(element);
+
+      let dataRegistroDep = [];
+      let dataRegistroDta = [];
+      let dataPromedio = [];
+      for (let i = 0; i < data.length; i++) {
+        dataRegistroDep.push(data[i].departamento)
+        dataRegistroDta.push(data[i].cuenta)
+        dataPromedio.push(data[i].promedio_evaluacion)
+      }
+
+      var chartRegistro = document.getElementById("registro").getContext("2d");
+      new Chart(chartRegistro, {
+          type: "bar",
+          data: {
+          labels: dataRegistroDep,
+          datasets: [{
+              label: "",
+              weight: 5,
+              borderWidth: 0,
+              borderRadius: 4,
+              backgroundColor: "#FFB7C6",
+              data: dataRegistroDta,
+              fill: false
+          }]
+          }
+      });
+
+      var chartPromedio = document.getElementById("promedio").getContext("2d");
+      new Chart(chartPromedio, {
+          type: "bar",
+          data: {
+          labels: dataRegistroDep,
+          datasets: [{
+              label: "",
+              weight: 5,
+              borderWidth: 0,
+              borderRadius: 4,
+              backgroundColor: "#FFB7C6",
+              data: dataPromedio,
+              fill: false
+          }]
+          }
+      });
+    }
+    
+    const searRangoFecha = () => {
+      let dateStart = $("#date1").val();
+      let dateEnd = $("#date2").val();
+
+      dateStart = dateStart.replace(/-/g, "");
+      dateEnd = dateEnd.replace(/-/g, "");
+
+      let link = `http://104.236.159.193:3010/obtener_evaluacionesDepto?fechaInicial=${dateStart}&fechaFinal=${dateEnd}`;
+
+      fetch(link)
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+
+        printCharts(res.datosEncuesta);
+        printTable(res.datosEncuesta);
+      })
+      .catch(error => console.error(error));
+
+      console.log(dateEnd, dateStart)
+    }
+    
+
+    $(document).ready(function () {
+      printCharts(evaluaciones.datosEncuesta);
+      printTable(evaluaciones.datosEncuesta);
+
+      let currentDate = new Date();
+      currentDate = currentDate.toISOString().substr(0, 10)
+      $("#date2").val(currentDate)
+
+      var firstDay = new Date(new Date().getFullYear(), 0, 1);
+      firstDay = firstDay.toISOString().substr(0, 10);
+      $("#date1").val(firstDay)
+
+    })
+
+  </script>
+
+</body>
+</html>

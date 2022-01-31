@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
   <title>
     Sucursales
   </title>
@@ -19,6 +20,62 @@
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
+    .searchFieldContent{
+      position: relative;
+    }
+    .searchFieldContent i{ 
+      position: absolute;
+      top: 28%;
+      left: 5%;
+      cursor: pointer;
+    }
+    .searchFieldContent input{ 
+      padding-left: 30px;
+    }
+    .imgCard{
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+    .imgCard{
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+    .cardUser{
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .cardUser:hover{
+      background-color: lightgray;
+      transform: scale(1.1);
+    }
+
+    /* Inactive fields */
+    .inactiveField{
+      border-color: transparent;
+      pointer-events: none;
+      background-color: transparent;
+    }
+    .inactiveSelect{
+      pointer-events: none;
+    }
+    .inactiveSelect .choices__inner{
+      border-color: transparent !important;
+      pointer-events: none;
+    }   
+    .choices[data-type*='select-one']:after{
+      opacity: 0;
+    }
+
 
   </style>
 </head>
@@ -36,9 +93,146 @@
     <!-- Cotent -->
     <div class="p-4 m-4">
 
-        <h1>Cosas se muestran</h1>
+      <div class="card p-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="m-0 ms-3">Sucursales  </h5>  
+          <div class="w-50 d-flex gap-1 justify-content-end align-items-center">
+            <div onclick="toggleStateViewActive()" id="showInactive"  data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Sucursales Inactivas" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <i class="fas fa-ban"></i>
+            </div>
+            <div onclick="newSucursal()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Sucursal" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <i class="fas fa-plus" ></i>
+            </div>
+            <div class="searchFieldContent">
+              <i class="fas fa-search iconField" onclick=""></i>
+              <input type="text" class="form-control" name="" id="searchField">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="itemsUsers" class="d-flex flex-wrap justify-content-center gap-3 mt-3"> <!-- Contenido dinamico --></div>
 
     </div>
+
+        <!-- Modales -->
+        <div class="modal fade" tabindex="-1" id="detailModal" role="dialog" aria-labelledby="detailModalModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Detalle Sucursal </h5>
+                <div class="d-flex justify-content-center align-items-center gap-2">
+                  <button type="button" class="btn-close rounded-circle me-1" style="background-color: gray" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+              </div>
+              <div class="modal-body bg-gray-100 d-flex" data-idUser="" id="userDetail">
+    
+                <div class="infoUser d-flex flex-column flex-fill w-40 align-items-center text-left border-end text-center" >
+                  <div style="width: 150px; height: 150px; background-color: lightgrey; border-radius: 50%" class="mb-5 mt-3">
+                    <img src="http://104.236.159.193:8850/images/miAmigoInvesa.png" alt="" id="userImg" style="max-height: 100%; max-width: 100%; border-radius: 50%; min-width: 100%; min-height: 100%; object-fit: cover">
+                  </div>
+                  <div class="d-flex flex-column ">
+                    <div class="d-flex flex-column" style="font-size:13px">
+                      <h6 class="my-2 fs-17">Datos Surcursal</h6>
+                      <div class="fs-15">
+                        <div ><h6>Nombre: <br>  <span class="opacity-7" id="userName"> </span></h6></div>
+                        <div><h6>Tipo de usuario:  <br> <span class="opacity-7" id="userKind"></span></h6></div>
+                        <div>
+                          <h6>Ubicación:  <br> 
+                            <span class="opacity-7" id="userCity"></span> -
+                            <span class="opacity-7" id="userDep"></span> 
+                          </h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="updateDataButton">
+                    <hr class="horizontal dark mt-0">
+                    <div class="updateData" style="cursor: pointer;">
+                      <h6 class="m-0">
+                        <i class="fas fa-pen"></i>
+                        Actulizar datos
+                      </h6>
+                    </div>
+                    <div class="createUser" style="display: none; cursor: pointer;">
+                      <h6 class="m-0" style="color: green;">
+                        <i class="fas fa-plus"></i>
+                        Crear Sucursal 
+                      </h6>
+                    </div>
+                    <div class="saveData" style="display: none; cursor: pointer;">
+                      <h6 class="m-0" style="color: green">
+                        <i class="fas fa-save"></i>
+                        Guardar datos
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="flex-fill w-60 p-1">
+                  <div id="detailSection" class="p-3 fs-13" >
+                    <div class="userView">
+                      <div ><h6 class="m-0">Tipo de usuario: </h6> 
+                        <input type="text" class="form-control inputField inactiveField" id="" value="Sucursal" readonly>
+                      </div>
+                      <div >
+                        <h6 class="m-0">Nombre: </h6> 
+                        <input type="text" class="form-control inputField inactiveField" id="inputName" oninput="$('#userName').text($(this).val())">
+                      </div>
+                      <div >
+                        <h6 class="m-0">Celular: </h6> 
+                        <input type="number" class="form-control inputField inactiveField" id="userPhone">
+                      </div>
+                      <div id="directionContainer" class="d-flex gap-2">
+                        <div class="flex-fill">
+                          <h6 class="m-0">Telefono: </h6> 
+                          <input type="number" class="form-control inputField inactiveField" id="userPhoneS">
+                        </div>
+                        <div class="flex-fill">
+                          <h6 class="m-0">Ext: </h6> 
+                          <input type="number" class="form-control inputField inactiveField" id="phoneExtension">
+                        </div>
+                      </div>
+
+                      <div ><h6 class="m-0">Departamento: </h6> 
+                        <div id="selectDepartamentContainer" class="inputSelect inactiveSelect">
+                          <select class="" name="" id="selectDepartment">
+                            <!-- Contenido Dinamico -->
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <h6 class="m-0">Ciudad: </h6> 
+                        <div id="selectCityContainer" class="inputSelect inactiveSelect" onchange="printMasterCity()">
+                          <select name="" id="selectCity">
+                            <!-- Contenido Dinamico -->
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-check form-switch ps-0  mt-2 ">
+                        <label for="">Estado</label>
+                        <div class="d-flex align-items-center gap-2 ms-2">
+                          <div> 
+                            <h6  class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Inactivo</h6>
+                          </div>
+                          <div>
+                            <input class="form-check-input m-0 disableToggle inputField inactiveField" type="checkbox" id="toggleButton" checked="" >
+                          </div>
+                          <div>
+                            <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Activo</h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+
+                </div>
+    
+              </div>
+            </div>
+          </div>
+        </div>
       
   </main>
 
@@ -87,6 +281,151 @@
 
     var inactiveSucursal = '<%- inactivos %>';
     inactiveSucursal = handleJSON(inactiveSucursal)
+
+    var departamentos = '<%- departamentos %>';
+    departamentos = handleJSON(departamentos)
+
+    const printUsers = (data) => {
+      $("#itemsUsers").html("")
+      for (let i = 0; i < data.length; i++) {
+        let element = `
+          <div class="card cardUser" id="${data[i].id}" data-user='${JSON.stringify(data[i])}' style="max-width: 160px">
+            <div style="min-width: 160px; height: 160px;" >
+              <img src="http://104.236.159.193:3010/${data[i].foto}" alt="" onerror='this.onerror=null;  this.src="http://104.236.159.193:8850/images/miAmigoInvesa.png"' class="imgCard">
+            </div>
+            <div class="text-center p-2">
+              <h6 class="m-0" style="font-size: 13px;"> ${data[i].nombre}</h6>
+            </div>
+          </div>
+        `;
+        $("#itemsUsers").append(element)
+      }
+    };
+
+    const printMasterCity = (selected) => {
+      let currentDepartment = Number($("#selectDepartment").val());
+      let departmentMaster = _.findWhere(departamentos.deptociudad, {id: currentDepartment});
+      $("#selectCityContainer").html(`<select name="" id="selectCity"></select>`);
+
+      let ciudad = departmentMaster.ciudades;
+      for (let i = 0; i < ciudad.length; i++) {
+        let element = `
+          <option value="${ciudad[i].id}" data-idDepto="${ciudad[i].id_depto}" ${(ciudad[i].id == selected ? "selected" : "")} >${ciudad[i].ciudad}</option>
+        `;
+        $("#selectCity").append(element)
+      }
+      const choiceCity = new Choices($('#selectCity')[0]);
+
+      $("#userCity").text($("#selectDepartment").text())
+      $("#userDep").text($("#selectCity").text())
+    }
+
+    $(document).on("click", ".cardUser", function () {
+      let data = JSON.parse($(this).attr("data-user"));
+      console.log(data)
+
+      let currentDepartament = _.findWhere(departamentos.deptociudad, {descripcion: data.departamento})
+      currentDepartament = currentDepartament.id
+
+      $("#selectDepartamentContainer").html(`<select name="" id="selectDepartment" onchange="printMasterCity()"></select>`);
+      for (let i = 0; i < departamentos.deptociudad.length; i++) {
+        let element = `
+          <option value="${departamentos.deptociudad[i].id}" ${(departamentos.deptociudad[i].id == currentDepartament ? "selected" : "")}>${departamentos.deptociudad[i].descripcion}</option>
+        `;
+        $("#selectDepartment").append(element);
+        printMasterCity(data.id_ciudad)
+      }
+      const choiceDepartment = new Choices($('#selectDepartment')[0]);
+
+      $(".updateData").show();
+      $(".saveData").hide();
+      $(".createUser").hide();
+      $(".inputField").addClass("inactiveField")
+      $(".inputSelect").addClass("inactiveSelect")
+
+      $("#userName").text(data.nombre)
+      $("#userKind").text(data.descripcion)
+      $("#userCity").text(data.ciudad)
+      $("#userDep").text(data.departamento)
+
+      $("#inputName").val(data.nombre)
+      $("#userPhone").val(data.celular)
+      $("#userPhoneS").val(data.telefono)
+      $("#phoneExtension").val(data.extension)
+
+      if (data.perfil == "S") {
+        $("#toggleButton").prop("checked", true);
+      } else {
+        $("#toggleButton").prop("checked", false);
+      }
+
+      $("#detailModal").modal("show")
+    })
+
+    const newSucursal = () => {
+      $("#userName").text("")
+      $("#userKind").text("")
+      $("#userCity").text("")
+      $("#userDep").text("")
+
+      $("#inputName").val("")
+      $("#userPhone").val("")
+      $("#userPhoneS").val("")
+      $("#phoneExtension").val("")
+
+      $(".updateData").hide();
+      $(".saveData").hide();
+      $(".createUser").show();
+
+      $(".inputField").removeClass("inactiveField")
+      $(".inputSelect").removeClass("inactiveSelect")
+
+      $("#selectDepartamentContainer").html(`<select name="" id="selectDepartment" onchange="printMasterCity()"></select>`);
+      for (let i = 0; i < departamentos.deptociudad.length; i++) {
+        let element = `
+          <option value="${departamentos.deptociudad[i].id}" >${departamentos.deptociudad[i].descripcion}</option>
+        `;
+        $("#selectDepartment").append(element);
+        printMasterCity()
+      }
+      const choiceDepartment = new Choices($('#selectDepartment')[0]);
+
+      $("#userCity").text("")
+      $("#userDep").text("")
+
+      $("#detailModal").modal("show")
+    }
+
+    $(".updateData").on("click", function () {
+      $(".inputField").removeClass("inactiveField")
+      $(".inputSelect").removeClass("inactiveSelect")
+
+      $(".updateData").hide();
+      $(".saveData").show();
+    })
+
+    $(".saveData").on("click", function () {
+      $(".inputField").addClass("inactiveField")
+      $(".inputSelect").addClass("inactiveSelect")
+
+      $(".saveData").hide();
+      $(".updateData").show();
+    })
+
+    let showActive = true;
+    function toggleStateViewActive() {
+      if (showActive) {
+        printUsers(inactiveSucursal)
+        showActive = false;
+      } else {
+        printUsers(activeSucursal)
+        showActive = true;
+      }
+    }
+
+    $(document).ready(function () {
+      printUsers(activeSucursal)
+    })
 
   </script>
 

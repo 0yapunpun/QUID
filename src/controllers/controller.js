@@ -9,6 +9,16 @@ const currentDate = () => {
 	return today = yyyy + '/' + mm + '/' + dd;
 }
 
+const firstDayOfYear = () => {
+	let today = new Date();
+	let dd = String(today.getDate()).padStart(2, '0');
+	let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+	let yyyy = today.getFullYear();
+	return today = yyyy + '/01/01';
+}
+
+
+
 controller = {
     getCatalogCultivos: (req, cb) => {
 		var options = {
@@ -492,56 +502,42 @@ controller = {
 		})
 	},
 
-	getProductosInforme: (data, req, res, cb) => {
-		var options = {
-			method: 'GET',
-			url: "http://104.236.159.193:3010/contar_principales_productos?fecha="+data.id
-		};
+	// getProductosInforme: (data, req, res, cb) => {
+	// 	var options = {
+	// 		method: 'GET',
+	// 		url: "http://104.236.159.193:3010/contar_principales_productos?fecha="+data.id
+	// 	};
 
-		request(options, function(err, res, resp) {
-			if (err) { console.error(err); resp = false; }
-			cb(resp);
-		})
-	},
+	// 	request(options, function(err, res, resp) {
+	// 		if (err) { console.error(err); resp = false; }
+	// 		cb(resp);
+	// 	})
+	// },
 
-	getProductosInforme: (data, req, res, cb) => {
+	getProductosInforme: (data, res, cb) => {
+		let date;
+		if (data) {date = data}
+		else {date = currentDate()}
+
 		var options = { // Datos tarjetas
 			method: 'GET',
-			url: "http://104.236.159.193:3010/contar_principales_productos?fecha="+data.date
+			url: "http://104.236.159.193:3010/contar_principales_productos?fecha="+date
 		};
 		request(options, function(err, res, resp) {
 			if (err) { console.error(err); resp = false; }
 
 			var options2 = { // Datos mes/año + datos graficas
 				method: 'GET',
-				url: "http://104.236.159.193:3010/contar_productos_fecha?fecha="+data.date
+				url: "http://104.236.159.193:3010/contar_productos_fecha?fecha="+date
 			};
 			request(options2, function(err, res, resp2) {
 				if (err) { console.error(err); resp2 = false; }
 
-				var options3 = { // Recomendations (of all elements) by month
-					method: 'GET',
-					url: "http://104.236.159.193:3010/contar_productos_fecha?fecha="+data.date+"&mes=true"
-				};
-				request(options3, function(err, res, resp3) {
-					if (err) { console.error(err); resp3 = false; }
-
-					var options4 = { // Recomendations (of all elements) by year
-						method: 'GET',
-						url: "http://104.236.159.193:3010/contar_productos_fecha?fecha="+data.date+"&ano=true"
-					};
-					request(options4, function(err, res, resp4) {
-						if (err) { console.error(err); resp3 = false; }
-
-						let response = {
-							"general": resp,
-							"detail": resp2,
-							"recomendationsMonth": resp3,
-							"recomendationsYear": resp4,
-						}
-						cb(response);
-					})
-				})
+				let response = {
+					"general": resp,
+					"detail": resp2,
+				}
+				cb(response);
 			})
 		})
 	},
@@ -572,9 +568,20 @@ controller = {
 		})
 	},
 
-	getEvaluacionesInformes: (data, req, res, cb) => {
-		let fechaInicio = data.dateInit;
-		let fechaFinal = data.dateFin;
+	getEvaluacionesInformes: (data, res, cb) => {
+		let fechaInicio;
+		let fechaFinal;
+		if (data) {
+			fechaInicio = data.dateInit;
+			fechaFinal = data.dateFin;
+		} else {
+			fechaInicio = firstDayOfYear();
+			fechaFinal = currentDate();
+		}
+
+		fechaInicio = fechaInicio.replace(/\//g, "");
+		fechaFinal = fechaFinal.replace(/\//g, "");
+
 		var options = {
 			method: 'GET',
 			url: "http://104.236.159.193:3010/obtener_evaluacionesDepto?fechaInicial="+fechaInicio+"&fechaFinal="+fechaFinal

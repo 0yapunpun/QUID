@@ -97,7 +97,9 @@ const usuariosExternos = (req, res) => {
 
 const sucursales = (req, res) => {
     controller.getSucursales(req, (resp) => {
-        res.render('sucursales', {"inactivos": resp[0], "activos": resp[1]})
+        controller.getMasters(req, (respMasters) =>{
+            res.render('sucursales', {"inactivos": resp[0], "activos": resp[1], "cargos": respMasters.cargos, "roles": respMasters.roles, "departamentos": respMasters.departamentos})
+        })
     })
 }
 
@@ -140,6 +142,27 @@ const blancosBiologicos = (req, res) => {
     })
 }
 
+const informeProductos = (req, res) => {
+    let date = "";
+    controller.getProductosInforme(date, req, (resp) => {
+        res.render('informeProductos', {"general": resp.general, "detail": resp.detail})
+    })
+}
+
+const informeProductosByDate = (req, res) => {
+    let date = req.params.date;
+    controller.getProductosInforme(date, req, (resp) => {
+        res.send({"general": resp.general, "detail": resp.detail})
+    })
+}
+
+const evaluaciones = (req, res) => {
+    let date = "";
+    controller.getEvaluacionesInformes(date, req, (resp) => {
+        res.render('informeEvaluaciones', {"evaluaciones": resp.evaluaciones, "respuestas": resp.respuestas})
+    })
+}
+
 
 
 module.exports = {
@@ -164,5 +187,8 @@ module.exports = {
     rankingUser,
     movimientos,
     movimientosUser,
-    blancosBiologicos
+    blancosBiologicos,
+    informeProductos,
+    informeProductosByDate,
+    evaluaciones
 }

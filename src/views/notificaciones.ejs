@@ -19,7 +19,20 @@
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
-
+    .noSorter .dataTable-sorter::after{
+      opacity: 0;
+    }
+    .noSorter .dataTable-sorter::before{
+      opacity: 0;
+    }
+    .newNotification{
+      cursor: pointer;
+      transition: 0.3s;
+      border-bottom: solid 1px transparent;
+    }
+    .newNotification:hover{
+      border-color:  lightgrey;
+    }
   </style>
 </head>
 
@@ -36,8 +49,95 @@
     <!-- Cotent -->
     <div class="p-4 m-4">
 
-        <h1>Cosas se muestran</h1>
+      <div class="d-flex justify-content-between align-items-center mb-2" >
+        <h6 class="ms-2 mb-0">Notificaciones</h6>
+        <div class="d-flex align-items-center gap-2 newNotification" id="newNotificationButton">
+          <i class="fas fa-plus"></i>
+          <h6 class="mb-0">Nuevo Notificación</h6>
+        </div>
+      </div>
+      
+      <div class="card p-3">
+        <table id="tableUsuarios" style="table-layout: fixed;">
+          <thead>
+            <tr id="tableHead">
+              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  noSorter">Titulo</th>
+              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-30 noSorter">Mensaje</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Fecha</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Destino</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Plataforma</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Público</th>
+            </tr> 
+          </thead>  
+        </table>
+      </div>
 
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" tabindex="-1" id="newNotification" role="dialog" aria-labelledby="detailModalModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Nueva Notificación </h5>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+              <button type="button" class="btn-close rounded-circle me-1" style="background-color: gray" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="modal-body bg-gray-100 d-flex flex-column">
+            <div>
+              <label for="">Titulo</label>
+              <input type="text" class="form-control">
+            </div>
+            <div>
+              <label for="">Mensaje</label>
+              <textarea class="form-control" id="" cols="30" rows="10"></textarea>
+            </div>
+
+            <div>
+              <label for="">Plataforma</label>
+              <div class="d-flex justify-contet-center alig-items-center gap-3">
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
+                  <label class="custom-control-label" for="customRadio1">Android</label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
+                  <label class="custom-control-label" for="customRadio1">iOS</label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
+                  <label class="custom-control-label" for="customRadio1">Ambas</label>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <label for="">Destino</label>
+              <div class="d-flex justify-contet-center alig-items-center gap-3">
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
+                  <label class="custom-control-label" for="customRadio1">Todos los asesores</label>
+                </div>
+    
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
+                  <label class="custom-control-label" for="customRadio1">Asesor único</label>
+                </div>
+    
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
+                  <label class="custom-control-label" for="customRadio1">Usuario único</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-primary">Enviar Nitificación</button>
+          </div>
+    
+        </div>
+      </div>
     </div>
       
   </main>
@@ -58,6 +158,8 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Datatable -->
+  <script src="../js/plugins/datatables.js"></script>
 
   <script>  
     const handleJSON = (s) => {
@@ -80,15 +182,44 @@
           .replace(/{ /g, "{")
           .replace(/ }/g, "}")
           .replace(/\[ /g, "[")
-          .replace(/ \]/g, "]");
+          .replace(/ \]/g, "]")
+          .replace (/ "Punta morada de la papa"/g, "'Punta morada de la papa'" );
 
-      console.log(s)
       return s = JSON.parse(s)
-      console.log(s)
     }
+
+    const printTable = (data) =>{
+      var tableBody = "<tbody id='tableBody'>"
+
+      for (let i = 0; i < data.length; i++) {
+        let tableRow = `
+          <tr>
+            <td>${data[i].titulo}</td>
+            <td>${data[i].mensaje}</td>
+            <td class="text-center">${data[i].fecha}</td>
+            <td class="text-center">${data[i].destino}</td>
+            <td class="text-center">${data[i].plataforma}</td>
+            <td class="text-center">${data[i].numero_publico}</td>
+          </tr>
+        `;
+        tableBody += tableRow
+      }
+      tableBody += "</tbody>"
+      $("#tableUsuarios").append(tableBody);
+      const tableObj = new simpleDatatables.DataTable("#tableUsuarios");   
+    }
+
+    $("#newNotificationButton").click(function () {
+      $("#newNotification").modal("show")
+    })
 
     var notificacionesList = '<%- notificaciones %>';
     notificacionesList = handleJSON(notificacionesList)
+    console.log(notificacionesList)
+
+    $(document).ready(function () {
+      printTable(notificacionesList.notificaciones)
+    })
 
   </script>
 

@@ -15,7 +15,10 @@ router.get('/detail/:id', indexController.catalogoDetail);
 router.get('/informes/ranking', indexController.ranking);
 router.get('/informes/movimientos', indexController.movimientos);
 router.get('/informes/movimientos/:id', indexController.movimientosUser);
+router.get('/informes/productos', indexController.informeProductos);
+router.get('/informes/productosDate/:date', indexController.informeProductosByDate);
 router.get('/informes/blancosBiologicos', indexController.blancosBiologicos);
+router.get('/informes/evaluaciones', indexController.evaluaciones);
 
 
 

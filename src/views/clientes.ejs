@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
   <title>
     Clientes
   </title>
@@ -19,7 +20,12 @@
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
-
+    .noSorter .dataTable-sorter::after{
+      opacity: 0;
+    }
+    .noSorter .dataTable-sorter::before{
+      opacity: 0;
+    }
   </style>
 </head>
 
@@ -36,20 +42,20 @@
     <!-- Cotent -->
     <div class="p-4 m-4">
 
-      <h1>Clientes (falta formatear json)</h1>
+      <h6>Clientes</h6>
       
       <div class="card p-3">
-        <table>
+        <table id="tableUsuarios">
           <thead>
             <tr id="tableHead">
-              <th class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Foto</th>
-              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre</th>
-              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Departamento</th>
-              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ciudad</th>
-              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Asesor</th>
-              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Cap</th>
-              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rec</th>
-              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Detalle</th>
+              <th class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Foto</th>
+              <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Nombre</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Departamento</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter" >Ciudad</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Asesor</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Cap</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Rec</th>
+              <th  class="text-start text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Detalle</th>
             </tr> 
           </thead>  
         </table>
@@ -76,11 +82,12 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Datatable -->
+  <script src="../js/plugins/datatables.js"></script>
 
   <script>
 
     const handleJSON = (s) => {
-      console.log(s)
       if (s == null && s == "") { return }
 
       // Remove special characters
@@ -95,16 +102,47 @@
            .replace(/[\u0000-\u0019]+/g,"")
            .replace(/\n/g, "\\\\n")
            .replace(/\r/g, "\\\\r")
-           .replace(/\t/g, "\\\\t");        
-
-
+           .replace(/\t/g, "\\\\t")
+           .replace (/\*""/g, "\"" );
       s = JSON.parse(s)
       return s
+    };
+
+    const printTable = (data) =>{
+      var tableBody = "<tbody id='tableBody'>"
+
+      for (let i = 0; i < data.length; i++) {
+        let tableRow = `
+          <tr data-user='${JSON.stringify(data[i])}'>
+            <td>
+              <div style="width: 50px; height: 50px; border-radius: 50%">
+                <img src="http://104.236.159.193:3010/${data[i].foto}" onerror='this.onerror=null;  this.src="http://104.236.159.193:8850/images/logoamigoinvesa.png"' alt=""  style="max-height: 100%; max-width: 100%; border-radius: 50%">
+              </div>
+            </td>
+            <td>${data[i].nombre}</td>
+            <td class="text-center">${data[i].departamento}</td>
+            <td class="text-center">${data[i].ciudad}</td>
+            <td class="text-center">${data[i].usuario}</td>
+            <td class="text-center">${data[i].capacitaciones}</td>
+            <td class="text-center">${data[i].recomendaciones}</td>
+            <td class="text-center" style="cursor: pointer" data-id="${data[i].id}"><i class="fas fa-info-circle"></i></td>
+          </tr>
+        `;
+        tableBody += tableRow
+      }
+      tableBody += "</tbody>"
+      $("#tableUsuarios").append(tableBody);
+      const tableObj = new simpleDatatables.DataTable("#tableUsuarios");   
     }
 
     let clientes= '<%- clientes %>';
-    clientes = handleJSON(clientes)
-    console.log(clientes)
+    clientes = handleJSON(clientes);
+
+    $(document).ready(function () {
+      printTable(clientes.lista_cliente)
+    })
+
+
 
   </script>
 
