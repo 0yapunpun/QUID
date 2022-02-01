@@ -554,9 +554,11 @@ controller = {
 		})
 	},
 
-	getMapaCalorInformes: (data, req, res, cb) => {
-		let fechaInicio = data.dateInit;
-		let fechaFinal = data.dateFin;
+	getMapaCalorInformes: (req, cb) => {
+		let fechaInicio = firstDayOfYear();
+		let fechaFinal = currentDate();
+		fechaInicio = fechaInicio.replace(/\//g, "");
+		fechaFinal = fechaFinal.replace(/\//g, "");
 		var options = {
 			method: 'GET',
 			url: "http://104.236.159.193:3010/get_analytics?fechaInicial="+fechaInicio+"&fechaFinal="+fechaFinal

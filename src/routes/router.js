@@ -19,6 +19,8 @@ router.get('/informes/productos', indexController.informeProductos);
 router.get('/informes/productosDate/:date', indexController.informeProductosByDate);
 router.get('/informes/blancosBiologicos', indexController.blancosBiologicos);
 router.get('/informes/evaluaciones', indexController.evaluaciones);
+router.get('/informes/mapaCalor', indexController.mapaCalor);
+
 
 
 

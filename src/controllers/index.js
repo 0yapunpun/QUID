@@ -163,6 +163,13 @@ const evaluaciones = (req, res) => {
     })
 }
 
+const mapaCalor = (req, res) => {
+    controller.getMapaCalorInformes(req, (resp) => {
+        res.render("mapaCalor", {"data": resp})
+
+    })
+}
+
 
 
 module.exports = {
@@ -190,5 +197,6 @@ module.exports = {
     blancosBiologicos,
     informeProductos,
     informeProductosByDate,
-    evaluaciones
+    evaluaciones,
+    mapaCalor
 }

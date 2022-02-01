@@ -52,7 +52,7 @@
       </div>
       <div id="cardsContainer" class="d-flex gap-1"><!-- Contenido Dinamico --></div>
 
-      <div class="pt-2" id="chartsContainer"></div>
+      <div class="pt-2 " id="chartsContainer" ></div>
     </div>
       
   </main>
@@ -175,7 +175,7 @@
         } 
         
         let element = `
-          <div class="chart card p-3 mt-2" >
+          <div class="chart card p-3 mt-2" style="height: 400px">
             <h6 style="text-transform: capitalize">${x} recomendados por mes</h6>
             <canvas id="${x}" class="chart-canvas" height="300"></canvas>
           </div>
@@ -195,7 +195,10 @@
               backgroundColor: chartColor(x),
               data: dataChart,
               fill: false
-            }]
+            }],
+            options: {
+              maintainAspectRatio: true,
+            }
           }
         });
       }
