@@ -124,7 +124,7 @@ const rankingUser = (req, res) => {
 
 const movimientos = (req, res) => {
     controller.getMovimientosAllInforme(req, (resp) => {
-        res.render('movimientos', {"data": resp})
+        res.render('movimientos', {"data": resp.data, "clientes": resp.clientes, "recomendaciones": resp.recomendaciones, "ficha": resp.ficha, "capacitaciones": resp.capacitaciones, "aporte": resp.aporte, "acompañamiento": resp.acompañamiento})
     })
 }
 
@@ -170,6 +170,31 @@ const mapaCalor = (req, res) => {
     })
 }
 
+const mapaBlancosBiologicos = (req, res)  => {
+    controller.getBlancosBiologicosMapa(req, (resp) => {
+        res.render("mapaBlancosBiologicos", {"data": resp})
+
+    })
+}
+
+const seccionesCatalogo = (req, res) => {
+    controller.getSeccionesCatalogo(req, (resp) => {
+        res.render("seccionesCatalogo", {"data": resp[0], "dataSecciones": resp[1]})
+    })
+}
+
+const crearPropiedades = (req, res) => {
+    controller.getListPropiedades(req, (resp) => {
+        res.render("crearPropiedades", {"data": resp})
+    })
+}
+
+const contenidoSecciones = (req, res) => {
+    controller.getContenidoSecciones(req, (resp) => {
+        res.render("contenidoSecciones", {"catalogos": resp.catalogos, "catalogosSecciones": resp.catalogosSecciones, "catalogoSeccionesSubsecciones": resp.catalogoSeccionesSubsecciones, "subsecciones": resp.subsecciones})
+    })
+}
+
 
 
 module.exports = {
@@ -198,5 +223,10 @@ module.exports = {
     informeProductos,
     informeProductosByDate,
     evaluaciones,
-    mapaCalor
+    mapaCalor,
+    mapaBlancosBiologicos,
+    seccionesCatalogo,
+    crearPropiedades,
+    contenidoSecciones
+    
 }

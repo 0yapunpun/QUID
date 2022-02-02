@@ -48,6 +48,8 @@
     <div class="p-4 m-4">
       <h6>Movimientos Por Fecha</h6>
       <div id="cardsContainer" class="d-flex gap-1"><!-- Contenido Dinamico --></div>
+
+      <div id="chartsContainer"></div>
     </div>
       
   </main>
@@ -68,6 +70,8 @@
   <script src="/js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="/js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Chart JS -->
+  <script src="/js/plugins/chartjs.min.js"></script>
 
   <script>
 
@@ -119,16 +123,16 @@
               <div class="card-body p-3 d-flex justify-content-center align-items-center flex-column" style="cursor: pointer" >
                 <div class="text-center">
                   <h2 style="color: #${color}"> <span>${data[x]}</span></h2>
-                  <h4>Aportes</h4> 
+                  <h4 style="text-transform: capitalize;">${x}</h4> 
                 </div> 
                 <div style="width: 100%; margin-top: 20px" >   
                   <div class="border-top d-flex justify-content-between" >   
                     <h6>Mes</h6>
-                    <h6 class="opacity-7">1</h6>
+                    <h6 class="opacity-7" id="mes${x}"></h6>
                   </div>
                   <div class="border-top d-flex justify-content-between" >   
                     <h6>Año</h6>
-                    <h6 class="opacity-7">1</h6>
+                    <h6 class="opacity-7" id="año${x}"></h6>
                   </div>
                 </div>
               </div>
@@ -137,15 +141,273 @@
         `;
 
         $("#cardsContainer").append(element);
-        
       }
     }
 
+    const chartClients = (data) => {
+      console.log(data)
+      $("#mesclientes").html(data.mes)
+      $("#añoclientes").html(data.ano)
+      
+      let element = `
+        <div class="chart card p-3 mt-2 " >
+          <h6 style="text-transform: capitalize">Clientes Registrados por mes</h6>
+          <canvas id="clientes" class="chart-canvas" height="300"></canvas>
+        </div>
+      `;
+      $("#chartsContainer").append(element)
+
+      let monthsCli = [];
+      let dataCli = [];
+      for (let i = 0; i < data.cuenta.data.length; i++) {
+        monthsCli.push(data.cuenta.data[i].name)
+        dataCli.push(data.cuenta.data[i].y)
+      }
+
+      var clientes = document.getElementById("clientes").getContext("2d");
+      new Chart(clientes, {
+          type: "bar",
+          data: {
+          labels: monthsCli,
+          datasets: [{
+              label: "",
+              weight: 5,
+              borderWidth: 0,
+              borderRadius: 4,
+              backgroundColor: "#3F51B4",
+              data: dataCli,
+              fill: false
+          }]
+          }
+      });
+    }
+
+    const chartRecomendation = (data) => {
+      console.log(data)
+      $("#mesrecomendaciones").html(data.mes)
+      $("#añorecomendaciones").html(data.ano)
+      
+      let element = `
+        <div class="chart card p-3 mt-2 " >
+          <h6 style="text-transform: capitalize">Recomendaciones Generadas por mes</h6>
+          <canvas id="recomendaciones" class="chart-canvas" height="300"></canvas>
+        </div>
+      `;
+      $("#chartsContainer").append(element)
+
+      let monthsRE = [];
+      let dataRE = [];
+      for (let i = 0; i < data.cuenta.data.length; i++) {
+        monthsRE.push(data.cuenta.data[i].name)
+        dataRE.push(data.cuenta.data[i].y)
+      }
+
+      var recomendation = document.getElementById("recomendaciones").getContext("2d");
+      new Chart(recomendation, {
+          type: "bar",
+          data: {
+          labels: monthsRE,
+          datasets: [{
+              label: "",
+              weight: 5,
+              borderWidth: 0,
+              borderRadius: 4,
+              backgroundColor: "#E91E63",
+              data: dataRE,
+              fill: false
+          }]
+          }
+      });
+    }
+
+    const chartFichas = (data) => {
+      console.log(data)
+      $("#mesfichas").html(data.mes)
+      $("#añofichas").html(data.ano)
+      
+      let element = `
+        <div class="chart card p-3 mt-2 " >
+          <h6 style="text-transform: capitalize">Fichas Generadas por mes</h6>
+          <canvas id="fichas" class="chart-canvas" height="300"></canvas>
+        </div>
+      `;
+      $("#chartsContainer").append(element)
+
+      let monthsFi = [];
+      let dataFi = [];
+      for (let i = 0; i < data.cuenta.data.length; i++) {
+        monthsFi.push(data.cuenta.data[i].name)
+        dataFi.push(data.cuenta.data[i].y)
+      }
+
+      var fichas = document.getElementById("fichas").getContext("2d");
+      new Chart(fichas, {
+          type: "bar",
+          data: {
+          labels: monthsFi,
+          datasets: [{
+              label: "",
+              weight: 5,
+              borderWidth: 0,
+              borderRadius: 4,
+              backgroundColor: "#FA5622",
+              data: dataFi,
+              fill: false
+          }]
+          }
+      });
+    }
+
+    const chartCapacitaciones = (data) => {
+      console.log(data)
+      $("#mescapacitaciones").html(data.mes)
+      $("#añocapacitaciones").html(data.ano)
+      
+      let element = `
+        <div class="chart card p-3 mt-2 " >
+          <h6 style="text-transform: capitalize">Capacitaciones Generadas por mes</h6>
+          <canvas id="capacitaciones" class="chart-canvas" height="300"></canvas>
+        </div>
+      `;
+      $("#chartsContainer").append(element)
+
+      let monthsCap = [];
+      let dataCap = [];
+      for (let i = 0; i < data.cuenta.data.length; i++) {
+        monthsCap.push(data.cuenta.data[i].name)
+        dataCap.push(data.cuenta.data[i].y)
+      }
+
+      var capacitaciones = document.getElementById("capacitaciones").getContext("2d");
+      new Chart(capacitaciones, {
+          type: "bar",
+          data: {
+          labels: monthsCap,
+          datasets: [{
+              label: "",
+              weight: 5,
+              borderWidth: 0,
+              borderRadius: 4,
+              backgroundColor: "#6639B6",
+              data: dataCap,
+              fill: false
+          }]
+          }
+      });
+    }
+
+    const chartAportes = (data) => {
+      console.log(data)
+      $("#mesaportes").html(data.mes)
+      $("#añoaportes").html(data.ano)
+      
+      let element = `
+        <div class="chart card p-3 mt-2 " >
+          <h6 style="text-transform: capitalize">Aportes Generados por mes</h6>
+          <canvas id="aportes" class="chart-canvas" height="300"></canvas>
+        </div>
+      `;
+      $("#chartsContainer").append(element)
+
+      let monthsApo = [];
+      let dataApo = [];
+      for (let i = 0; i < data.cuenta.data.length; i++) {
+        monthsApo.push(data.cuenta.data[i].name)
+        dataApo.push(data.cuenta.data[i].y)
+      }
+
+      var aportes = document.getElementById("aportes").getContext("2d");
+      new Chart(aportes, {
+          type: "bar",
+          data: {
+          labels: monthsApo,
+          datasets: [{
+              label: "",
+              weight: 5,
+              borderWidth: 0,
+              borderRadius: 4,
+              backgroundColor: "#FCC108",
+              data: dataApo,
+              fill: false
+          }]
+          }
+      });
+    }
+
+
+    const chartAcompañamiento = (data) => {
+      console.log(data)
+      $("#mesacompañamiento").html(data.mes)
+      $("#añoacompañamiento").html(data.ano)
+      
+      let element = `
+        <div class="chart card p-3 mt-2 " >
+          <h6 style="text-transform: capitalize">Aportes Generados por mes</h6>
+          <canvas id="acompañamineto" class="chart-canvas" height="300"></canvas>
+        </div>
+      `;
+      $("#chartsContainer").append(element)
+
+      let monthsAco = [];
+      let dataAco = [];
+      for (let i = 0; i < data.cuenta.data.length; i++) {
+        monthsAco.push(data.cuenta.data[i].name)
+        dataAco.push(data.cuenta.data[i].y)
+      }
+
+      var acompañamineto = document.getElementById("acompañamineto").getContext("2d");
+      new Chart(acompañamineto, {
+          type: "bar",
+          data: {
+          labels: monthsAco,
+          datasets: [{
+              label: "",
+              weight: 5,
+              borderWidth: 0,
+              borderRadius: 4,
+              backgroundColor: "#4CAF50",
+              data: dataAco,
+              fill: false
+          }]
+          }
+      });
+    }
+
+    
+
+    var movimientos = '<%- data %>';
+    movimientos = handleJSON(movimientos)
+
+    var clientes = '<%- clientes %>';
+    clientes = handleJSON(clientes)
+
+    var recomendaciones = '<%- recomendaciones %>';
+    recomendaciones = handleJSON(recomendaciones)
+
+    var ficha = '<%- ficha %>';
+    ficha = handleJSON(ficha)
+    // console.log(ficha)
+
+    var capacitaciones = '<%- capacitaciones %>';
+    capacitaciones = handleJSON(capacitaciones)
+    // console.log(capacitaciones)
+
+    var aporte = '<%- aporte %>'; 
+    aporte = handleJSON(aporte)
+    // console.log(aporte)
+
+    var acompañamiento = '<%- acompañamiento %>';
+    acompañamiento = handleJSON(acompañamiento)
+    // console.log(acompañamiento)
+    
     $(document).ready(function () {
-      var movimientos = '<%- data %>';
-      movimientos = handleJSON(movimientos)
       loadCards(movimientos.cuenta)
-      console.log(movimientos.cuenta)
+      chartRecomendation(recomendaciones.cuenta)
+      chartClients(clientes.cuenta)
+      chartFichas(ficha.cuenta)
+      chartCapacitaciones(capacitaciones.cuenta)
+      chartAportes(aporte.cuenta)
+      chartAcompañamiento(acompañamiento.cuenta)
     })
 
   </script>

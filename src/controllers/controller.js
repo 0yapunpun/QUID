@@ -352,15 +352,86 @@ controller = {
 		})
 	}, 
 
+	// http://104.236.159.193:3010/contar_clientes_fecha?fecha=2022-02-01
+	// http://104.236.159.193:3010/contar_recomendaciones_fecha?fecha=2022-02-01
+	// http://104.236.159.193:3010/contar_ficha_fecha?fecha=2022-02-01
+	// http://104.236.159.193:3010/contar_capacitacion_fecha?fecha=2022-02-01
+	// http://104.236.159.193:3010/contar_aporte_fecha?fecha=2022-02-01
+	// http://104.236.159.193:3010/contar_acompanamientos_fecha?fecha=2022-02-01
+
+	// // USUARIO ESPECIFICO
+	// http://104.236.159.193:3010/contar_clientes_fecha?fecha=2022-02-01&id_usuario=101
+
+
 	getMovimientosAllInforme: (req, cb) => {
+		let date = currentDate();
+
 		var options = {
 			method: 'GET',
 			url: 'http://104.236.159.193:3010/contar_principales',
 		};
+		var clientes = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/contar_clientes_fecha?fecha='+date,
+		};
+		var recomendaciones = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/contar_recomendaciones_fecha?fecha='+date,
+		};
+		var ficha = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/contar_ficha_fecha?fecha='+date,
+		};
+		var capacitaciones = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/contar_capacitacion_fecha?fecha='+date,
+		};
+		var aporte = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/contar_aporte_fecha?fecha='+date,
+		};
+		var acompañamiento = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/contar_acompanamientos_fecha?fecha='+date,
+		};
 
 		request(options, function(err, res, resp) {
-			if (err) { console.error(err); resp = false; }
-			cb(resp);
+
+			request(clientes, function(err, res, respClientes) {
+				if (err) { console.error(err); respClientes = false; }
+
+				request(recomendaciones, function(err, res, respReco) {
+					if (err) { console.error(err); respReco = false; }
+
+					request(ficha, function(err, res, respFicha) {
+						if (err) { console.error(err); respFicha = false; }
+
+						request(capacitaciones, function(err, res, respCapa) {
+							if (err) { console.error(err); respCapa = false; }
+
+							request(aporte, function(err, res, respAport) {
+								if (err) { console.error(err); respAport = false; }
+
+								request(acompañamiento, function(err, res, respAcomp) {
+									if (err) { console.error(err); respAcomp = false; }
+
+									let response = {
+										data : resp,
+										clientes: respClientes,
+										recomendaciones : respReco,
+										ficha : respFicha,
+										capacitaciones: respCapa,
+										aporte: respAport,
+										acompañamiento: respAcomp
+									}
+									cb(response);
+								})
+							})
+						})
+					})
+				})
+	
+			})
 		})
 	}, 
 
@@ -542,7 +613,7 @@ controller = {
 		})
 	},
 
-	getBlancosBiologicosMapa: (req, res, cb) => {
+	getBlancosBiologicosMapa: (req, cb) => {
 		var options = {
 			method: 'GET',
 			url: "http://104.236.159.193:3010/geolocalizacion_blancos_biologicos"
@@ -608,7 +679,7 @@ controller = {
 		})
 	},
 
-	getListPropiedades: (req, res, cb) => { //Los titulos que van con un text area
+	getListPropiedades: (req, cb) => { //Los titulos que van con un text area
 		var options = {
 			method: 'GET',
 			url: "http://104.236.159.193:3010/campo_propiedad"
@@ -647,7 +718,7 @@ controller = {
 		})
 	},
 
-	getContenidoSecciones: (req, res, cb) => { 
+	getContenidoSecciones: (req, cb) => { 
 		var options = { // Las partes del paginador con el catalogo al que pertenecen
 			method: 'GET',
 			url: "http://104.236.159.193:3010/catalogo_secciones"
@@ -692,7 +763,29 @@ controller = {
 				})
 			})
 		})
-	}
+	},
+
+	getSeccionesCatalogo: (req, cb) => { //Los titulos que van con un text area
+		var options = {
+			method: 'GET',
+			url: "http://104.236.159.193:3010/catalogo_secciones"
+		};
+
+		var options2 = {
+			method: 'GET',
+			url: "http://104.236.159.193:3010/secciones"
+		};
+
+		request(options, function(err, res, resp) {
+			if (err) { console.error(err); resp = false; }
+
+			request(options2, function(err, res, resp2) {
+				if (err) { console.error(err); resp2 = false; }
+				let response = [resp, resp2]
+				cb(response);
+			})
+		})
+	},
 
 }
 

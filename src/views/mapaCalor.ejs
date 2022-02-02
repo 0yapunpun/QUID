@@ -64,9 +64,11 @@
         </div>
       </div>
 
-      <div class="card p-3" id="tableContainer"> <!-- Contenido Dinamico --> </div>
-      
-      <div class="d-flex gap-1" id="chartsContainer"> <!-- Contenido Dinamico -->  </div>
+      <div class="d-flex gap-1" id="chartsContainer"> <!-- Contenido Dinamico -->  </div> 
+      <div class="d-flex gap-1">
+        <div class="card p-3 mt-2" id="tableContainer"> <!-- Contenido Dinamico --> </div>
+        <div class="card p-3 mt-2" id="tableContainer2"> <!-- Contenido Dinamico --> </div>
+      </div>
       
     </div>
       
@@ -90,11 +92,12 @@
   <script src="/js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Chart JS -->
   <script src="/js/plugins/chartjs.min.js"></script>
+  <!-- Datatable -->
+  <script src="../js/plugins/datatables.js"></script>
 
   <script>
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
-      console.log(s)
       // Remove special characters
       s = s.replace(/\\n/g, "\\n")  
            .replace(/\\'/g, "\\'")
@@ -109,21 +112,45 @@
       return JSON.parse(s)
     }
 
-    var evaluaciones = '<%- data %>';
-    evaluaciones = handleJSON(evaluaciones);
-    console.log(evaluaciones)
+    var data = '<%- data %>';
+    data = handleJSON(data);
+    console.log(data)
 
+    function percentage(partialValue, totalValue) {
+      return (100 * partialValue) / totalValue;
+    } 
 
     const printTable = (data) => {
+      let secciones = [];
+      for (let i = 0; i < data.length; i++) {
+        if (!(data[i].nodo in secciones)){
+          secciones[data[i].nodo] = 1
+        } else {
+          secciones[data[i].nodo] += 1
+        }
+      }
+      
+
+      let usuarios = [];
+      for (let i = 0; i < data.length; i++) {
+        if (!(data[i].nombre in usuarios)){
+          usuarios[data[i].nombre] = 1
+        } else {
+          usuarios[data[i].nombre] += 1
+        }
+      }
+      console.log(usuarios)
+      
+
+      // Table Secciones
       $("#tableContainer").html("");
       let thead = `
+        <h6>Uso de la Aplicación por Sección</h6>
         <table id="tableInformes" style="table-layout: fixed;">
           <thead>
             <tr id="tableHead">
-              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Departamento</th>
-              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Asesores</th>
-              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Evaluaciones</th>
-              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Promedio</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">% Uso</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Sección</th>
             </tr> 
           </thead>  
         </table>
@@ -131,19 +158,48 @@
       $("#tableContainer").append(thead)
 
       let tbody = "<tbody>";
-      for (let i = 0; i < data.length; i++) {
+      for (const x in secciones) {
         let element = `
           <tr>
-            <td class="text-center">${data[i].departamento}</td>
-            <td class="text-center">${data[i].asesores}</td>
-            <td class="text-center">${data[i].cuenta}</td>
-            <td class="text-center">${data[i].promedio_evaluacion}</td>
+            <td class="text-center">${percentage(secciones[x], data.length).toFixed(2)}%</td>
+            <td class="text-center">${x}</td>
           </tr>
         `;  
         tbody += element;      
       }
       tbody += "</tbody>"
       $("#tableInformes").append(tbody)
+      const tableObj = new simpleDatatables.DataTable("#tableInformes"); 
+      
+      
+      // Table Usuarios
+      $("#tableContainer2").html("");
+      let thead2 = `
+        <h6>Uso de la Aplicación por Usuario</h6>
+        <table id="tableUsuarios" style="table-layout: fixed;">
+          <thead>
+            <tr id="tableHead">
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Uso</th>
+              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Usuario</th>
+            </tr> 
+          </thead>  
+        </table>
+      `;
+      $("#tableContainer2").append(thead2)
+
+      let tbody2 = "<tbody>";
+      for (const x in usuarios) {
+        let element = `
+          <tr>
+            <td class="text-center">${usuarios[x]}</td> 
+            <td class="text-center">${x}</td>
+          </tr>
+        `;  
+        tbody2 += element;      
+      }
+      tbody2 += "</tbody>"
+      $("#tableUsuarios").append(tbody2)
+      const tableObj2 = new simpleDatatables.DataTable("#tableUsuarios"); 
     }
 
 
@@ -151,57 +207,94 @@
       $("#chartsContainer").html();
       let element = `
         <div class="chart card p-3 mt-2 flex-fill w-50" >
-          <h6 style="text-transform: capitalize">Registro por departamentos</h6>
-          <canvas id="registro" class="chart-canvas" height="300"></canvas>
+          <h6 style="text-transform: capitalize">Secciones Más Usadas Android</h6>
+          <canvas id="chartAndroid" class="chart-canvas" height="300"></canvas>
         </div>
   
         <div class="chart card p-3 mt-2 flex-fill w-50" >
-          <h6 style="text-transform: capitalize">Promedio por departamentos</h6>
-          <canvas id="promedio" class="chart-canvas" height="300"></canvas>
+          <h6 style="text-transform: capitalize">Secciones Más Usadas iOS</h6>
+          <canvas id="chartIOS" class="chart-canvas" height="300"></canvas>
         </div>
       `;
       $("#chartsContainer").html(element);
 
-      let dataRegistroDep = [];
-      let dataRegistroDta = [];
-      let dataPromedio = [];
-      for (let i = 0; i < data.length; i++) {
-        dataRegistroDep.push(data[i].departamento)
-        dataRegistroDta.push(data[i].cuenta)
-        dataPromedio.push(data[i].promedio_evaluacion)
+      // Android data
+      let android = _.where(data, {plataforma: 1});
+      let androidNodos = {};
+      let androidLabels = [];
+      let androidData = [];
+      for (let i = 0; i < android.length; i++) {
+        if (!(android[i].nodo in androidNodos)){
+          androidNodos[android[i].nodo] = 1
+        } else {
+          androidNodos[android[i].nodo] += 1
+        }
       }
-
-      var chartRegistro = document.getElementById("registro").getContext("2d");
-      new Chart(chartRegistro, {
-          type: "bar",
+      for (x in androidNodos) {
+        androidLabels.push(x);
+        androidData.push(androidNodos[x]);
+      }
+      
+      // Ios data
+      let ios = _.where(data, {plataforma: 2});
+      let iosNodos = {};
+      let iosLabels = [];
+      let iosData = [];
+      for (let i = 0; i < ios.length; i++) {
+        if (!(ios[i].nodo in iosNodos)){
+          iosNodos[ios[i].nodo] = 1
+        } else {
+          iosNodos[ios[i].nodo] += 1
+        }
+      }
+      for (x in iosNodos) {
+        iosLabels.push(x);
+        iosData.push(iosNodos[x]);
+      }
+      
+      var chart1 = document.getElementById("chartAndroid").getContext("2d");
+      new Chart(chart1, {
+          type: "line",
           data: {
-          labels: dataRegistroDep,
+          labels: androidLabels,
           datasets: [{
               label: "",
               weight: 5,
-              borderWidth: 0,
-              borderRadius: 4,
-              backgroundColor: "#FFB7C6",
-              data: dataRegistroDta,
-              fill: false
-          }]
+              fill: false,
+              borderColor: 'rgb(75, 192, 192)',
+              tension: 0.1,
+              data: androidData,
+            }]
+          },
+          options:{
+            scales:{
+                  x: {
+                      display: false
+                  }
+              }
           }
       });
 
-      var chartPromedio = document.getElementById("promedio").getContext("2d");
+      var chartPromedio = document.getElementById("chartIOS").getContext("2d");
       new Chart(chartPromedio, {
-          type: "bar",
+          type: "line",
           data: {
-          labels: dataRegistroDep,
+          labels: iosLabels,
           datasets: [{
               label: "",
               weight: 5,
-              borderWidth: 0,
-              borderRadius: 4,
-              backgroundColor: "#FFB7C6",
-              data: dataPromedio,
-              fill: false
+              fill: false,
+              borderColor: '#FCB7C6',
+              tension: 0.1,
+              data: iosData,
           }]
+          },
+          options:{
+            scales:{
+                  x: {
+                      display: false
+                  }
+              }
           }
       });
     }
@@ -213,25 +306,24 @@
       dateStart = dateStart.replace(/-/g, "");
       dateEnd = dateEnd.replace(/-/g, "");
 
-      let link = `http://104.236.159.193:3010/obtener_evaluacionesDepto?fechaInicial=${dateStart}&fechaFinal=${dateEnd}`;
+      let link = `http://104.236.159.193:3010/get_analytics?fechaInicial=${dateStart}&fechaFinal=${dateEnd}`;
 
       fetch(link)
       .then(res => res.json())
       .then(res => {
         console.log(res)
+        alert("?")
 
-        printCharts(res.datosEncuesta);
-        printTable(res.datosEncuesta);
+        printCharts(res.analytics);
+        printTable(res.analytics);
       })
       .catch(error => console.error(error));
-
-      console.log(dateEnd, dateStart)
     }
     
 
     $(document).ready(function () {
-      // printCharts(evaluaciones.datosEncuesta);
-      // printTable(evaluaciones.datosEncuesta);
+      printCharts(data.analytics);
+      printTable(data.analytics);
 
       let currentDate = new Date();
       currentDate = currentDate.toISOString().substr(0, 10)

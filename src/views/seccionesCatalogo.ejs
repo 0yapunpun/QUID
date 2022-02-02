@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
+  <title>
+    Secciones Catalogo
+  </title>
+  <!-- Fonts and icons -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+
+  <style>
+
+  </style>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+
+  <!-- Menu -->
+  <%- include('./partials/menu.ejs') %>
+
+  <main class="main-content max-height-vh-100 h-100">
+
+    <!-- Navbar -->
+    <%- include('./partials/head.ejs') %>
+
+    <!-- Cotent -->
+    <div class="p-4 m-4 text-center"> 
+
+      <h6 class="ms-2">Secciones Catálogos</h6>
+        
+      <div class="d-flex gap-2 justify-content-center">
+        <div class="card p-2 w-45"> 
+          <h6>Secciones</h6>
+          <div id="seccionesContainer"></div>
+          <div class="d-flex justify-content-center gap-2">
+            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Crear sección catalogo" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <i class="fas fa-plus" ></i>
+            </div>
+            <div onclick="saveConfiguration()" data-bs-toggle="tooltip" data-bs-placement="top" title="Guardar configuración" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <i class="fas fa-save"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-45 d-flex flex-column gap-1">
+          <div class="card p-2" id="cultivosContainer">
+            <h6>Cultivos</h6>
+          </div>
+          <div class="card p-2" id="enfermedadesContainer">
+            <h6>Enfermedades</h6>
+          </div>
+          <div class="card p-2" id="malezasContainer">
+            <h6>Malezas</h6>
+          </div>
+          <div class="card p-2" id="plagasContainer">
+            <h6>Plagas</h6>
+          </div>
+          <div class="card p-2" id="productosContainer">
+            <h6>Productos</h6>
+          </div>
+        </div>
+
+      </div>
+
+    </div>  
+      
+  </main>
+
+  <!--   Core JS Files   -->
+  <script src="../js/core/popper.min.js"></script>
+  <script src="../js/core/bootstrap.min.js"></script>
+  <script src="../js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="../js/plugins/choices.min.js"></script>
+  <!-- Kanban scripts -->
+  <script src="../js/plugins/dragula/dragula.min.js"></script>
+  <script src="../js/plugins/jkanban/jkanban.js"></script>
+  <!-- Jquery -->
+  <script src="../js/jquery.js"></script>
+  <script src="../js/jquery-ui.min.js"></script>
+  <!-- Underscore -->
+  <script src="../js/underscore-min.js"></script>
+  <!-- Script Plantilla -->
+  <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Datatable -->
+  <script src="../js/plugins/datatables.js"></script>
+
+  <script>  
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    const handleJSON = (s) => {
+      if (s == null && s == "") { return }
+      // Remove special characters
+      s = s.replace(/\\n/g, "\\n")  
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f")
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\n");
+
+      // Remove New Lines
+      return JSON.parse(s)
+    }
+
+    const printSecciones = (data) => {
+      for (let i = 0; i < data.length; i++) {
+        let element = `
+          <div data-id="${data[i].id}">
+            <h6 class="text-xs font-weight-bolder opacity-7">${data[i].descripcion}</h6>
+            <hr class="horizontal dark mt-0">
+          </div>
+        `;
+        $("#seccionesContainer").append(element)
+      }
+    }
+
+    const printSeccionesCatalogo = (data) => {
+      console.log(data)
+      for (let i = 0; i < data.length; i++) {
+        let element = `
+          <div class="infoHarvest" id-catalogo="${data[i].id_catalogo}" id-seccion="${data[i].id_seccion}" data-orden="${data[i].orden}" id="${data[i].id}">
+            <div class = "d-flex gap-2">
+              <i class="fas fa-times removeSection" style="cursor: pointer"></i>
+              <h6 class="text-xs font-weight-bolder opacity-7 m-0">${data[i].titulo}</h6>
+            </div>
+            <hr class="horizontal dark mt-0">
+          </div>
+        `;
+
+        if (data[i].descripcion == "Cultivos") {$("#cultivosContainer").append(element)}
+        if (data[i].descripcion == "Enfermedades") {$("#enfermedadesContainer").append(element)}
+        if (data[i].descripcion == "Malezas") {$("#malezasContainer").append(element)}
+        if (data[i].descripcion == "Plagas") {$("#plagasContainer").append(element)}
+        if (data[i].descripcion == "Productos") {$("#productosContainer").append(element)}
+      }
+    } 
+
+    const saveConfiguration = () => {
+      let fields = $(".infoHarvest");
+      console.log(fields)
+
+      let data = {};
+      for (let i = 0; i < fields.length; i++) {
+        data["seccion_catalogo_editar["+i+"][id]"] = Number($(fields[i]).attr("id"));
+        data["seccion_catalogo_editar["+i+"][id_catalogo]"] = Number($(fields[i]).attr("id-catalogo"));
+        data["seccion_catalogo_editar["+i+"][id_seccion]"] = Number($(fields[i]).attr("id-seccion"));
+        data["seccion_catalogo_editar["+i+"][orden]"] = Number($(fields[i]).attr("data-orden"));
+      };
+
+      fetch('http://104.236.159.193:3010/catalogo_secciones', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.success) {} 
+        else {console.error("No fue posbile actualizar")}
+      });
+    }
+
+    $(document).on("click", ".removeSection", function () {
+      if (!confirm("¿Esta seguro de eliminar esta seccion?")) {return}
+      $(this).parent().parent().remove()
+    })
+
+
+    var datos = '<%- data %>';
+    datos = handleJSON(datos)
+    console.log(datos)
+
+    var dataSecciones = '<%- dataSecciones %>';
+    dataSecciones = handleJSON(dataSecciones)
+    console.log(dataSecciones)
+
+    $(document).ready(function () {
+      printSecciones(dataSecciones.secciones)
+      printSeccionesCatalogo(datos.catalogo_secciones)
+    })
+
+
+
+  </script>
+
+</body>
+</html>

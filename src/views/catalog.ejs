@@ -73,7 +73,7 @@
             <div id="showInactive" data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Fichas Inactivas" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
               <i class="fas fa-ban"></i>
             </div>
-            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Ficha" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+            <div onclick="newUser()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Ficha" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
               <i class="fas fa-plus" ></i>
             </div>
             <div class="searchFieldContent">
@@ -166,6 +166,10 @@
       $("#catalogName").text(data[0].nombre_catalogo)
     };
 
+    const newUser = () => {
+      window.location.href = "/detail/-1";
+    }
+
     $(document).on("click", ".cardCatalog", function () {
       let idCard = $(this).attr("id");
       window.location.href = "/detail/"+idCard;
@@ -204,7 +208,6 @@
       printItems(catalogContent.catalogo_enc)
     })
 
-    // http://104.236.159.193:3010/catalogodetalle/259
 
   </script>
 

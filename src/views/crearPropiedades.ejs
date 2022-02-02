@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
+  <title>
+    Crear Propiedades
+  </title>
+  <!-- Fonts and icons -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+
+  <style>
+
+  </style>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+
+  <!-- Menu -->
+  <%- include('./partials/menu.ejs') %>
+
+  <main class="main-content max-height-vh-100 h-100">
+
+    <!-- Navbar -->
+    <%- include('./partials/head.ejs') %>
+
+    <!-- Cotent -->
+    <div class="p-4 m-4 text-center"> 
+
+      <h6 class="ms-2">Propiedades</h6>
+        
+      <div class="d-flex gap-2 justify-content-center">
+        <div class="card p-2 w-45"> 
+          <h6>Secciones</h6>
+          <div id="propiedades" style="max-height: 70vh; overflow: scroll;">
+
+          </div>
+
+        </div>
+
+        <div class="w-45 d-flex flex-column">
+          <div class="card p-2" id="" style="text-align: left;">
+            <label for="">Titulo</label>
+            <input type="text" class="form-control" id="inputTitle">
+            <label for="">Tipo de propiedad</label>
+            <div id="selectCampoContainer">
+              <select name="" id="selectCampo">
+                  <option value="" selected disabled hidden>...</option>
+                  <option value="1">Texto</option>
+                  <option value="2">Imagen</option>
+                  <option value="4">Combo</option>
+                  <option value="8">Label</option>
+                  <option value="10">Carga PDF</option>
+                  <option value="11">Lista Productos</option>
+                  <option value="12">URL</option>
+              </select>
+            </div>
+
+            <div class="form-check form-switch ps-0  mt-2 ">
+              <label for="">Visibilidad</label>
+              <div class="d-flex align-items-center gap-2 ms-2">
+                <div> 
+                  <h6  class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No es visible</h6>
+                </div>
+                <div>
+                  <input class="form-check-input m-0 disableToggle" type="checkbox" id="toggleButtonVisibilidad" checked="" >
+                </div>
+                <div>
+                  <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Es visible</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-check form-switch ps-0  mt-2 ">
+              <label for="">Propiedad Busqueda</label>
+              <div class="d-flex align-items-center gap-2 ms-2">
+                <div> 
+                  <h6  class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Es busqueda</h6>
+                </div>
+                <div>
+                  <input class="form-check-input m-0 disableToggle" type="checkbox" id="toggleButtonBusqueda" checked="" >
+                </div>
+                <div>
+                  <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No es Busqueda</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 d-flex  gap-2 justify-content-center ">
+
+              <div data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+                <i class="fas fa-plus" ></i>
+              </div>
+
+              <div data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+                <i class="fas fa-save"></i>
+              </div>
+
+              <div data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+                <i class="fas fa-trash-alt"></i>
+              </div>
+            </div>
+
+          </div>
+          
+        </div>
+
+      </div>
+
+    </div>  
+      
+  </main>
+
+  <!--   Core JS Files   -->
+  <script src="../js/core/popper.min.js"></script>
+  <script src="../js/core/bootstrap.min.js"></script>
+  <script src="../js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="../js/plugins/choices.min.js"></script>
+  <!-- Kanban scripts -->
+  <script src="../js/plugins/dragula/dragula.min.js"></script>
+  <script src="../js/plugins/jkanban/jkanban.js"></script>
+  <!-- Jquery -->
+  <script src="../js/jquery.js"></script>
+  <script src="../js/jquery-ui.min.js"></script>
+  <!-- Underscore -->
+  <script src="../js/underscore-min.js"></script>
+  <!-- Script Plantilla -->
+  <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Datatable -->
+  <script src="../js/plugins/datatables.js"></script>
+
+  <script>  
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    const choiceCampo = new Choices($('#selectCampo')[0]);
+
+    const handleJSON = (s) => {
+      if (s == null && s == "") { return }
+      // Remove special characters
+      s = s.replace(/\\n/g, "\\n")  
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f")
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\n");
+
+      // Remove New Lines
+      return JSON.parse(s)
+    }
+
+    const printPropiedades = (data) => {
+      for (let i = 0; i < data.length; i++) {
+        let element = `
+          <div class="detailPropiedad" data-id="${data[i].id}" data-visible="${data[i].visible}" data-idCampo="${data[i].id_campo}" data-filtro="${data[i].filtro}" data-titulo="${data[i].titulo}" style="cursor: pointer"> 
+            <h6 class="text-xs font-weight-bolder opacity-7">${data[i].titulo}</h6>
+            <hr class="horizontal dark mt-0">
+          </div>
+        `;
+        $("#propiedades").append(element)
+      }
+    }
+
+    const saveConfiguration = () => {
+      let fields = $(".infoHarvest");
+      console.log(fields)
+
+      let data = {};
+      for (let i = 0; i < fields.length; i++) {
+        data["seccion_catalogo_editar["+i+"][id]"] = Number($(fields[i]).attr("id"));
+        data["seccion_catalogo_editar["+i+"][id_catalogo]"] = Number($(fields[i]).attr("id-catalogo"));
+        data["seccion_catalogo_editar["+i+"][id_seccion]"] = Number($(fields[i]).attr("id-seccion"));
+        data["seccion_catalogo_editar["+i+"][orden]"] = Number($(fields[i]).attr("data-orden"));
+      };
+
+      fetch('http://104.236.159.193:3010/catalogo_secciones', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.success) {} 
+        else {console.error("No fue posbile actualizar")}
+      });
+    }
+
+    let campos = [
+      { "id": 1, "descripcion": "Texto", "maestro": 0},
+      { "id": 2, "descripcion": "Imagen", "maestro": 0},
+      { "id": 4, "descripcion": "Combo", "maestro": 1},
+      { "id": 8, "descripcion": "Label", "maestro": 0},
+      { "id": 10, "descripcion": "Carga Pdf", "maestro": 0},
+      { "id": 11, "descripcion": "Lista Productos", "maestro": 0 },
+      { "id": 12, "descripcion": "Url", "maestro": 0}
+    ];
+
+    $(document).on("click", ".detailPropiedad", function () {
+      // if (!confirm("¿Esta seguro de eliminar esta seccion?")) {return}
+
+      let title = $(this).attr("data-titulo");
+      let visible = $(this).attr("data-visible");
+      let campo = $(this).attr("data-idCampo");
+      let filtro = $(this).attr("data-filtro");
+
+      $("#inputTitle").val(title)
+      $("#selectCampo").val(campo);
+
+      $("#selectCampoContainer").html('<select name="" id="selectCampo"></select>')
+      for (let i = 0; i < campos.length; i++) {
+        let element = `
+          <option value="${campos[i].id}" ${(campos[i].id == Number(campo) ? "selected" : "")}>${campos[i].descripcion}</option>
+        `;
+        $("#selectCampo").append(element);
+      };
+      const choiceCampo = new Choices($('#selectCampo')[0]);
+
+      if (visible == "1") {
+        $("#toggleButtonVisibilidad").prop("checked", true);
+      } else {
+        $("#toggleButtonVisibilidad").prop("checked", false);
+      }
+
+      if (filtro == "1") {
+        $("#toggleButtonBusqueda").prop("checked", true);
+      } else {
+        $("#toggleButtonBusqueda").prop("checked", false);
+      }
+
+
+    })
+
+
+    var datos = '<%- data %>';
+    datos = handleJSON(datos)
+    console.log(datos)
+
+    $(document).ready(function () {
+        printPropiedades(datos.campo_propiedad)
+    })
+
+
+
+  </script>
+
+</body>
+</html>

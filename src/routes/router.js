@@ -11,6 +11,12 @@ router.get('/catalogos/plagas', indexController.catalogoPlagas);
 router.get('/catalogos/productos', indexController.catalogoProductos);
 router.get('/detail/:id', indexController.catalogoDetail);
 
+// Configuraciones Catalogo
+router.get('/catalogo/crearPropiedades', indexController.crearPropiedades);
+router.get('/catalogo/seccionesCatalogo', indexController.seccionesCatalogo);
+router.get('/catalogo/contenidoSecciones', indexController.contenidoSecciones);
+
+
 // Informes
 router.get('/informes/ranking', indexController.ranking);
 router.get('/informes/movimientos', indexController.movimientos);
@@ -20,8 +26,7 @@ router.get('/informes/productosDate/:date', indexController.informeProductosByDa
 router.get('/informes/blancosBiologicos', indexController.blancosBiologicos);
 router.get('/informes/evaluaciones', indexController.evaluaciones);
 router.get('/informes/mapaCalor', indexController.mapaCalor);
-
-
+router.get('/informes/mapaBlancosBiologicos', indexController.mapaBlancosBiologicos);
 
 
 router.get('/aportes', indexController.aportes);
@@ -34,7 +39,6 @@ router.get('/permisos', indexController.permisos);
 // Usuarios
 router.get('/usuarios', indexController.usuarios);
 router.get('/usuarios/:id', indexController.rankingUser);
-
 
 // Solicitud Informacion
 router.get('/solicitudInformacion', indexController.solicitudInformacion);
