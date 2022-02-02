@@ -321,7 +321,7 @@
             </div>
           </div> -->
           <div class="d-flex justify-content-end" style="width: 150px;">
-            <button onclick="updateData()" class="btn btn-outline-primary m-0 " id="saveButton" style="display: none;">
+            <button onclick="sendData()" class="btn btn-outline-primary m-0 " id="saveButton" style="display: none;">
               <i class="far fa-save ms-2"></i>
               Guardar
             </button>
@@ -358,6 +358,25 @@
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {return new bootstrap.Tooltip(tooltipTriggerEl)})
 
+    const handleJSON = (s) => {
+      if (s == null && s == "") { return }
+      // console.log(s)
+      // Remove special characters
+      s = s.replace(/\\n/g, "\\n")  
+           .replace(/\\'/g, "\\'")
+           .replace(/\\"/g, '\\"')
+           .replace(/\\&/g, "\\&")
+           .replace(/\\r/g, "\\r")
+           .replace(/\\t/g, "\\t")
+           .replace(/\\b/g, "\\b")
+           .replace(/\\f/g, "\\f")
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\n") ;
+
+      return JSON.parse(s)
+     }
+
+    //  Controlar modo vista y editar
     $("#editButton").on("click", function () {
       $(this).hide();
       $(".removeImgButton").show();
@@ -388,30 +407,41 @@
       $("#imgEncabezadoContainer").css("border-color", "transparent")
     });
 
+    //  Esconder secciones dependiendo del catálogo desde el que se abra
+    const handleSectionByCatalog = (catalog) => {
+      if (catalog == "Productos") {
+        $("#sectionImagenes").remove()
+        $("#sectionBB").remove()
+        $("#sectionMapa").remove()
+      }
+      if (catalog != "Cultivos") {
+        $("#sectionBB").remove()
+      }
+      $("#sectionMapa").remove() // Esconder Geolocalización por defecto ya que ninguna ficha recibe esta info
+    }
+
+    //  Image events
     $(document).on("click", ".removeImgButton", function () {
       let imgContainer = $(this).closest(".fichaImages");
       let id = Number($(this).parent().attr("id"))
-      
       $(imgContainer).remove();
-      printImagesIndicator();
-
+      imageAmountIndicator();
       fetch("http://104.236.159.193:3010/catalogo_detalle_imagen/"+id)
     })
 
+    //  Detalle Imagenes
     $("#addImage").on("click", function () {
       let imagesAmount = $("#imgContainer").find(".fichaImages").length
-      if (imagesAmount == 5) { alert("No es posible agregar más imagenes, elimine alguna antes de intentar insertar otra"); return}
+      if (imagesAmount == 5) { alert("No es posible agregar más imagenes, elimine alguna antes de insertar otra"); return}
 
       let element = `
         <div class="inputField">
-        <input type="file" name="" id="imgInput${imagesAmount + 1}" accept="image/*">
+          <input type="file" name="" id="imgInput${imagesAmount + 1}" accept="image/*">
         </div>
       `;
-
       $("#inputsContainer").append(element);
 
       let inputFile = $("#inputsContainer input").last();
-
       $(inputFile).change(function () {
         let file = $(this).prop('files')[0];
         if (file) {
@@ -426,7 +456,7 @@
             </div>
           `;
           $("#imgContainer").append(element);
-          printImagesIndicator();
+          imageAmountIndicator();
         }
       });
 
@@ -439,7 +469,8 @@
       $("#removeImageEncabezado").hide();
 
       let id = Number($("main").attr("id-item"))
-      fetch("http://104.236.159.193:3010/catalogo_imagen/"+id)
+      fetch("http://104.236.159.193:3010/catalogo_imagen/"+id) 
+      //TODO pasar petición al front-end
     }
 
     const addImageEncabezado = () => {
@@ -454,54 +485,184 @@
       $("#newImgEncabezado").trigger('click');
     }
 
-    const printImagesIndicator = () =>{
+    const imageAmountIndicator = () =>{
       let imagesAmount = $("#imgContainer").find(".fichaImages").length;
       $("#imagesAmount").text(imagesAmount)
     }
 
-    const textAreaSize = () => {
-      let textAreas = $(".textArea");
-      for (let i = 0; i < textAreas.length; i++) {
-        // auto_grow(textAreas[i])
-        let element = textAreas[i]
+    const updateImg = () => {
+      var formData = new FormData($('#newImgEncabezadoForm')[0]);
+      var myFile = document.querySelector("#newImgEncabezado")
+      
+      formData.append('idcatalogoenc', $("main").attr("id-item"));
+      formData.append('nombre_archivo', "imagen_catalogo");
+      formData.append('img', myFile.files[0]);
 
+      console.log(myFile)
+      console.log([...formData])
+
+      fetch('http://104.236.159.193:3010/catalogo', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.success) {} 
+        else {console.error("No fue posbile actualizar la ficha")}
+      });
+    };
+
+    const sendData = () => {
+      let data = {
+        "id": Number($("main").attr("id-item")),
+        "id_catalogo" : Number($("main").attr("id-catalog")),
+        "nombre": $("#fichaName").val(),
+        "codigo": "",
+        "titulo": $("#fichaTitle").val(),
+        "subtitulo": $("#fichaGenericName").val(),
+        "idtipoproducto": "",
+        "estado": ($('#toggleButton').is(':checked') ? "A" : "I")
+      };
+
+      let fields = $(".dataHarvest");
+      for (let i = 0; i < fields.length; i++) {
+        data["catalogo_detalle["+i+"][id_catalogo_propiedad]"] = Number($(fields[i]).attr("data-propiedad"));   
+        data["catalogo_detalle["+i+"][id_catalogo_seccion]"] = Number($(fields[i]).attr("data-seccion"));   
+        data["catalogo_detalle["+i+"][id_campo_maestro]"] = ($(fields[i]).attr("data-maestro") ? $(fields[i]).attr("data-maestro") : undefined);   
+        data["catalogo_detalle["+i+"][contenido]"] = $(fields[i]).find("textarea").val();  
+        data["catalogo_detalle["+i+"][es_archivo]"] = ($(fields[i]).attr("data-isArchivo") ? $(fields[i]).attr("data-isArchivo") : 0);        
+        data["catalogo_detalle["+i+"][orden]"] = Number($(fields[i]).attr("data-orden"));  
+      }
+
+      let fieldProducts = $(".dataHarvestProducts");
+      for (let i = 0; i < fieldProducts.length; i++) {
+        data["catalogo_producto["+i+"][id_catalogo_encabezado_producto]"] = Number($(fieldProducts[i]).attr("data-id"));   
+        data["catalogo_producto["+i+"][dosis]"] = "Dosis no agregada"   
+      }
+
+      let fieldBB = $(".dataHarvestBB");
+      for (let i = 0; i < fieldBB.length; i++) {
+        data["catalogo_blanco_biologico["+i+"][id_blanco_biologico]"] = Number($(fieldBB[i]).attr("data-id"));   
+        data["catalogo_blanco_biologico["+i+"][id_tipo_catalogo]"] = Number($(fieldBB[i]).attr("data-catalog"));    
+      }
+
+      console.log(data)
+    
+      fetch('http://104.236.159.193:3010/catalogo', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.success) {} 
+        // if (res.success) {location.reload()} 
+        else {console.error("No fue posbile actualizar la ficha")}
+      });
+    };
+
+    $(document).on("change", "#newImgEncabezado", function () {
+      let file = $(this).prop('files')[0];
+      if (file) {
+        let url = URL.createObjectURL(file);
+        $("#imgEncabezado").attr("src", url);
+        $("#addImageEncabezado").hide()
+        $("#removeImageEncabezado").show()
+      }
+    });
+
+    const textAreaSize = (element) => {
+      if (element) { 
         element.style.height = "5px";
         element.style.height = (element.scrollHeight)+"px";
+        return
+      }
+      let textAreas = $(".textArea")
+      for (let i = 0; i < textAreas.length; i++) {
+        textAreas[i].style.height = "5px";
+        textAreas[i].style.height = (textAreas[i].scrollHeight)+"px";
       }
     }
 
-    const handleJSON = (s) => {
-      if (s == null && s == "") { return }
+    // Funciones seccion productos y blancos biológicos
+    $(document).on("click", ".cardBlancosBiologicos", function (params) {
+      let container = $(this).parent().parent().parent().siblings(".relatedElementsBBpage");
+      let img = $(this).attr("data-img")
+      let nombre = $(this).attr("data-n")
+      let titulo = $(this).attr("data-t")
+      let subtitulo = $(this).attr("data-s")
+      let id = $(this).attr("id")
+      let idCatalog = $(this).attr("id-catalog")
 
-      // Remove special characters
-      s = s.replace(/\\n/g, "\\n")  
-           .replace(/\\'/g, "\\'")
-           .replace(/\\"/g, '\\"')
-           .replace(/\\&/g, "\\&")
-           .replace(/\\r/g, "\\r")
-           .replace(/\\t/g, "\\t")
-           .replace(/\\b/g, "\\b")
-           .replace(/\\f/g, "\\f")
-           .replace(/[\u0000-\u0019]+/g,""); 
+      let element = `
+        <div class="d-flex align-items-center my-2 hoverCards dataHarvestBB" data-id="${id}" data-catalog="${idCatalog}" style="padding: 10px; border-radius: 0.5rem">
+          <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 rounded">
+            <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
+          </div>
+          <div class="ms-2">
+            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+              <span >${nombre}</span> <br>
+              <span>${titulo}</span> <br>
+              <span>${subtitulo}</span>
+            </h6>
+          </div>
+        </div>
+        <hr class="horizontal dark mt-0">
+      `
+      $(this).remove()
+      $(container).append(element)
+    })
 
-      // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
-      s = JSON.parse(s)
-      return s
-     }
+    $(document).on("click", ".relateProduct", function () {
+      let id = $(this).attr("id");
+      let img = $(this).attr("data-img");
+      let nombre = $(this).attr("data-n");
+      let titulo = $(this).attr("data-t");
+      let subtitulo = $(this).attr("data-s");
 
-    const printData = (detailProducto, detailPropiedad, detailCatalogoProducts, detailCatalogoCultivos, detailCatalogoMaleza, detailCatalogoPlagas, detailCatalogoEnfermedades) => {
-      let datosEncabezado = detailPropiedad.catalogo_detalle_propiedad[0];
-      let imagesFicha = detailProducto.catalogo_detalle_imagen;
-      let detalleFicha = detailPropiedad.catalogo_detalle_propiedad;
-      let productosFicha = detailProducto.catalogo_detalle_producto;
-      let productsList = detailCatalogoProducts.catalogo_enc;
-      let blancosBiologicos = detailProducto.catalogo_detalle_blancos_biologicos;
+      let element = `
+        <div class="d-flex align-items-center my-2 dataHarvestProducts" data-id="${id}">
+          <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
+            <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
+          </div>
+          <div>
+            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+              <span >${nombre}</span> <br>
+              <span>${titulo}</span> <br>
+              <span>${subtitulo}</span>
+            </h6>
+          </div>
+        </div>
+        <hr class="horizontal dark mt-0">
+      `;
+      $(this).remove();
+      $("#detailRelatedProducts").append(element);
+    })
 
-      let catalogoCultivos = detailCatalogoCultivos.catalogo_enc;
-      let catalogoPlagas = detailCatalogoPlagas.catalogo_enc;
-      let catalogoEnfermedades = detailCatalogoEnfermedades.catalogo_enc;
-      let catalogoMalezas = detailCatalogoMaleza.catalogo_enc;
+    $(document).on("click", ".iconBlancosBiologicos", function () {
+      $(".iconBlancosBiologicos").removeClass("iconBlancosBiologicosActive");
+      $(this).addClass("iconBlancosBiologicosActive")
+      $("#relatedElementsBBpageName").text($(this).attr("name"))
+    })
+
+    const printData = (detailProducto, detailPropiedad, catalogos) => {
+      //  Encabezado ficha
+      let datosEncabezado = detailPropiedad.catalogo_detalle_propiedad[0],
+          detalleFicha = detailPropiedad.catalogo_detalle_propiedad;
+
+      // Detalle ficha
+      let imagesFicha = detailProducto.catalogo_detalle_imagen,
+          productosFicha = detailProducto.catalogo_detalle_producto,
+          blancosBiologicos = detailProducto.catalogo_detalle_blancos_biologicos;
+
+      // Productos
+      let productsList = catalogos.productos,
+          catalogoCultivos = catalogos.cultivos,
+          catalogoPlagas = catalogos.plagas,
+          catalogoEnfermedades = catalogos.enfermedades,
+          catalogoMalezas = catalogos.malezas;
 
       // ** Encabezado
       $("#fichaName").val(datosEncabezado.nombre)
@@ -538,7 +699,6 @@
       // ** Detalle
       let sections = [];
       // Get sections
-      
       for (let i = 0; i < detalleFicha.length; i++) {
         if (!sections.includes(detalleFicha[i].seccion)) {
           sections.push(detalleFicha[i].seccion)
@@ -570,7 +730,7 @@
 
         if (detalleFicha[i].seccion == "Productos") { //Elementos fantasma para la recolleccion de datos, 
           let element = `
-          <div style="display: none" class="infoHarvest" data-propiedad="${detalleFicha[i].id_catalogo_propiedad}" data-seccion="${detalleFicha[i].id_catologo_seccion}" data-maestro="${detalleFicha[i].campo_maestro}" data-orden="${detalleFicha[i].orden_propiedad}" data-isArchivo="${detalleFicha[i].foto}">
+          <div style="display: none" class="dataHarvest" data-propiedad="${detalleFicha[i].id_catalogo_propiedad}" data-seccion="${detalleFicha[i].id_catologo_seccion}" data-maestro="${detalleFicha[i].campo_maestro}" data-orden="${detalleFicha[i].orden_propiedad}" data-isArchivo="${detalleFicha[i].foto}">
             <textarea name="" id="" class="form-control textArea textAreaDisable"></textarea>
           </div>
           `;
@@ -580,9 +740,9 @@
         } 
 
         let element = `
-          <div class="mt-2 mb-3 px-3 infoHarvest" data-propiedad="${detalleFicha[i].id_catalogo_propiedad}" data-seccion="${detalleFicha[i].id_catologo_seccion}" data-maestro="${detalleFicha[i].campo_maestro}" data-orden="${detalleFicha[i].orden_propiedad}" data-isArchivo="${detalleFicha[i].foto}">
+          <div class="mt-2 mb-3 px-3 dataHarvest" data-propiedad="${detalleFicha[i].id_catalogo_propiedad}" data-seccion="${detalleFicha[i].id_catologo_seccion}" data-maestro="${detalleFicha[i].campo_maestro}" data-orden="${detalleFicha[i].orden_propiedad}" data-isArchivo="${detalleFicha[i].foto}">
             <h6 class="text-muted">${detalleFicha[i].titulo}</h6>
-            <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="auto_grow(this)" >${detalleFicha[i].contenido}</textarea>
+            <textarea name="" id="" class="form-control textArea textAreaDisable" oninput="textAreaSize(this)" >${detalleFicha[i].contenido}</textarea>
           </div>
         `;
         let navName = detalleFicha[i].seccion.replace(/\s+/g, '');
@@ -611,6 +771,8 @@
         `;
         $("#detailContainerProductos").append(element);
 
+
+        console.log(productsList)
         for (let i = 0; i < productsList.length; i++) {
           let productExist = _.findWhere(productosFicha, {id: productsList[i].id}); // La seccion de productos tiene una estructura diferente
           if (productExist) {continue}
@@ -635,7 +797,7 @@
 
         for (let i = 0; i < productosFicha.length; i++) {
           let elementP = `
-            <div class="d-flex align-items-center my-2 infoHarvestProducts" data-id="${productosFicha[i].id}">
+            <div class="d-flex align-items-center my-2 dataHarvestProducts" data-id="${productosFicha[i].id}">
               <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
                 <img src="http://104.236.159.193:3010/${productosFicha[i].foto}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
               </div>
@@ -656,14 +818,6 @@
 
         // ** Blancos Biologicos
         let sectionsBlancosBiologicos = [2, 3, 4]; 
-        // Esta parte la hice pensando que los BB eran dinamicos, pero siempre van a ser los tres mismos. Refactirzar obviando esto y el switch case
-        // for (let i = 0; i < blancosBiologicos.length; i++) {
-        //   if (!sectionsBlancosBiologicos.includes(blancosBiologicos[i].id_tipo_catalogo)) {
-        //     sectionsBlancosBiologicos.push(blancosBiologicos[i].id_tipo_catalogo)
-        //   }
-        // }
-
-        // Print Sections 
         for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
           let icon;
           let iconName;
@@ -717,7 +871,6 @@
           `;
           $("#BBicons").append(element)
           $("#relatedElementsBB").append(elementC)
-
         };
 
         for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
@@ -788,189 +941,137 @@
       }
     }
 
-    $(document).on("click", ".cardBlancosBiologicos", function (params) {
-      let container = $(this).parent().parent().parent().siblings(".relatedElementsBBpage");
-      let img = $(this).attr("data-img")
-      let nombre = $(this).attr("data-n")
-      let titulo = $(this).attr("data-t")
-      let subtitulo = $(this).attr("data-s")
-      let id = $(this).attr("id")
-      let idCatalog = $(this).attr("id-catalog")
-
+    //  Separo estas partes del codigo para poder cargar solo los masters en la vista de edición
+    const printMastersProducts = () => {
       let element = `
-        <div class="d-flex align-items-center my-2 hoverCards dataHarvestBB" data-id="${id}" data-catalog="${idCatalog}" style="padding: 10px; border-radius: 0.5rem">
-          <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 rounded">
-            <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
+          <div class="d-flex">
+            <div class="w-45 mt-2 ps-4" style="display: none;" id="addRelatedProduct">
+              <h6>Relacionar Producto</h6>
+              <div class="dropdown">
+                <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                    Lista Productos
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2" id="detailRelatedProductsListComplete"></ul>
+              </div>
+            </div>
+            <div class="mt-2 w-40" style="margin: 0 auto; text-align: left;" id="detailRelatedProducts">
+              <div class="text-center my-1">
+                <h6>Productos Relacionados</h6>
+              </div>
+            </div>
           </div>
-          <div class="ms-2">
-            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-              <span >${nombre}</span> <br>
-              <span>${titulo}</span> <br>
-              <span>${subtitulo}</span>
-            </h6>
-          </div>
-        </div>
-        <hr class="horizontal dark mt-0">
-      `
-      $(this).remove()
-      $(container).append(element)
-    })
-
-    $(document).on("click", ".relateProduct", function () {
-      let id = $(this).attr("id")
-      let img = $(this).attr("data-img")
-      let nombre = $(this).attr("data-n")
-      let titulo = $(this).attr("data-t")
-      let subtitulo = $(this).attr("data-s")
-
-      let element = `
-        <div class="d-flex align-items-center my-2 infoHarvestProducts" data-id="${id}">
-          <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
-            <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
-          </div>
-          <div>
-            <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
-              <span >${nombre}</span> <br>
-              <span>${titulo}</span> <br>
-              <span>${subtitulo}</span>
-            </h6>
-          </div>
-        </div>
-        <hr class="horizontal dark mt-0">
-      `;
-      // No es subtitulo si no dosis
-
-      $(this).remove()
-      $("#detailRelatedProducts").append(element)
-
-    })
+        `;
+        $("#detailContainerProductos").append(element);
 
 
-    //  Event for input file 
-    $(document).on("change", "#newImgEncabezado", function () {
-      let file = $(this).prop('files')[0];
-      if (file) {
-        let url = URL.createObjectURL(file);
-        $("#imgEncabezado").attr("src", url);
-        $("#addImageEncabezado").hide()
-        $("#removeImageEncabezado").show()
-      }
-    })
+        console.log(productsList)
+        for (let i = 0; i < productsList.length; i++) {
+          let productExist = _.findWhere(productosFicha, {id: productsList[i].id}); // La seccion de productos tiene una estructura diferente
+          if (productExist) {continue}
 
-    $(document).on("click", ".iconBlancosBiologicos", function () {
-      $(".iconBlancosBiologicos").removeClass("iconBlancosBiologicosActive");
-      $(this).addClass("iconBlancosBiologicosActive")
-      $("#relatedElementsBBpageName").text($(this).attr("name"))
-    })
-
-
-    const handleSectionByCatalog = (catalog) => {
-      if (catalog == "Productos") {
-        $("#sectionImagenes").remove()
-        $("#sectionBB").remove()
-        $("#sectionMapa").remove()
-      }
-      if (catalog != "Cultivos") {
-        $("#sectionBB").remove()
-      }
-      $("#sectionMapa").remove() // Esconder Geolocalización ya que ninguna ficha envia esta info
+          let elementL = `
+            <li id="${productsList[i].id}" class="relateProduct" data-img="${productsList[i].foto}" data-n="${productsList[i].nombre}" data-t="${productsList[i].titulo}" data-s="${productsList[i].subtitulo}">
+              <a class="dropdown-item" href="javascript:;">
+                <div class="d-flex align-items-center gap-1">
+                  <div style="width: 50px; height: 50px;">
+                    <img src="http://104.236.159.193:3010/${productsList[i].foto}" class="imgCard"/> 
+                  </div>
+                  <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
+                    <span >${productsList[i].nombre}</span> <br>
+                    <span>${productsList[i].subtitulo}</span> <br>
+                  </h6>
+                </div>
+              </a>
+            </li>
+          `;
+          $("#detailRelatedProductsListComplete").append(elementL);
+        }
     }
 
-    // POST METHODS
-    const updateData = () => {
-      let data = {
-        "id": Number($("main").attr("id-item")),
-        "id_catalogo" : Number($("main").attr("id-catalog")),
-        "nombre": $("#fichaName").val(),
-        "codigo": "",
-        "titulo": $("#fichaTitle").val(),
-        "subtitulo": $("#fichaGenericName").val(),
-        "idtipoproducto": "",
-        "estado": ($('#toggleButton').is(':checked') ? "A" : "I")
-      };
 
-      let fields = $(".infoHarvest");
-      for (let i = 0; i < fields.length; i++) {
-        data["catalogo_detalle["+i+"][id_catalogo_propiedad]"] = Number($(fields[i]).attr("data-propiedad"));   
-        data["catalogo_detalle["+i+"][id_catalogo_seccion]"] = Number($(fields[i]).attr("data-seccion"));   
-        data["catalogo_detalle["+i+"][id_campo_maestro]"] = ($(fields[i]).attr("data-maestro") ? $(fields[i]).attr("data-maestro") : undefined);   
-        data["catalogo_detalle["+i+"][contenido]"] = $(fields[i]).find("textarea").val();  
-        data["catalogo_detalle["+i+"][es_archivo]"] = ($(fields[i]).attr("data-isArchivo") ? $(fields[i]).attr("data-isArchivo") : 0);        
-        data["catalogo_detalle["+i+"][orden]"] = Number($(fields[i]).attr("data-orden"));  
-      }
+    const prinMastersBB = () => {
+      // ** Blancos Biologicos
+      let sectionsBlancosBiologicos = [2, 3, 4]; 
+        for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
+          let icon;
+          let iconName;
+          switch (sectionsBlancosBiologicos[i]) {
+            case 1:
+              icon = "http://api.pedbox.co:8850/images/icono_cultivos.png"
+              iconName = "Cultivos"
+              break;
+            case 2:
+              icon = "http://api.pedbox.co:8850/images/icono_enfermedades.png"
+              iconName = "Enfermedades"
+              break;
+            case 3:
+              icon = "http://api.pedbox.co:8850/images/icono_malezas.png"
+              iconName = "Malezas"
+              break;
+            case 4:
+              icon = "http://api.pedbox.co:8850/images/icono_plagas.png"
+              iconName = "Plagas"
+              break;
+            case 5:
+              icon = "http://api.pedbox.co:8850/images/icono_productos.png"
+              iconName = "Productos"
+              break;
+          }
 
-      let fieldProducts = $(".infoHarvestProducts");
-      for (let i = 0; i < fieldProducts.length; i++) {
-        data["catalogo_producto["+i+"][id_catalogo_encabezado_producto]"] = Number($(fieldProducts[i]).attr("data-id"));   
-        data["catalogo_producto["+i+"][dosis]"] = "Dosis no agregada"   
-      }
+          let isActive;
+          if (i == 0) {isActive = "iconBlancosBiologicosActive"} else {isActive = ""}
+          let element = `
+            <div class="bg-gray-100 iconBlancosBiologicos ${isActive}" name="${iconName}"><img src="${icon}" alt="" class="imgCard" id="BBtipo${sectionsBlancosBiologicos[i]}" onclick='$(".pageBB").hide(); $("#pageBB${sectionsBlancosBiologicos[i]}").fadeIn();'></div>
+          `;
 
-      let fieldBB = $(".dataHarvestBB");
-      for (let i = 0; i < fieldBB.length; i++) {
-        data["catalogo_blanco_biologico["+i+"][id_blanco_biologico]"] = Number($(fieldBB[i]).attr("data-id"));   
-        data["catalogo_blanco_biologico["+i+"][id_tipo_catalogo]"] = Number($(fieldBB[i]).attr("data-catalog"));    
-      }
-
-      console.log(data)
-    
-      fetch('http://104.236.159.193:3010/catalogo', {
-        method: 'POST',
-        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(res => {
-        console.log(res)
-        if (res.success) {} 
-        // if (res.success) {location.reload()} 
-        else {console.error("No fue posbile actualizar la ficha")}
-      });
-    };
-
-    const updateImg = () => {
-      var formData = new FormData($('#newImgEncabezadoForm')[0]);
-      var myFile = document.querySelector("#newImgEncabezado")
-      
-      formData.append('idcatalogoenc', $("main").attr("id-item"));
-      formData.append('nombre_archivo', "imagen_catalogo");
-      formData.append('img', myFile.files[0]);
-
-      console.log(myFile)
-      console.log([...formData])
-
-      fetch('http://104.236.159.193:3010/catalogo', {
-        method: 'POST',
-        body: formData
-      })
-        .then(res => res.json())
-        .then(res => {
-          console.log(res)
-          if (res.success) {} 
-          else {console.error("No fue posbile actualizar la ficha")}
-        });
+          let isVisible;
+          if (!i == 0) {isVisible = "style='display: none'"} else {isVisible = ""; $("#relatedElementsBBpageName").text(iconName)}
+          let elementC = `
+            <div class="pageBB w-100" id="pageBB${sectionsBlancosBiologicos[i]}" ${isVisible} >
+              <div class="d-flex">
+                <div class="w-45 mt-2 ps-4 addRelatedElementsBB" style="display: none">
+                  <h6>Relacionar Item </h6>  
+                  <div class="dropdown">
+                    <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="DropdownBB${sectionsBlancosBiologicos[i]}">
+                        Lista Productos
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="DropdownBB${sectionsBlancosBiologicos[i]}" id="DropdownBBContainer${sectionsBlancosBiologicos[i]}"></ul>
+                  </div>  
+                </div>
+                <div class="w-40 mt-2 relatedElementsBBpage" style="margin: 0 auto; text-align: left;"> 
+                </div>
+              </div>
+            </div>
+          `;
+          $("#BBicons").append(element)
+          $("#relatedElementsBB").append(elementC)
+        };
     }
 
-    const getCatalogId = (cultivos, malezas, plagas, enfermedades, productos) => {
+    // Sí, todo esto para sacar la id del catalogo
+    const getCatalogId = (catalogos) => {
       let idItem = Number($("main").attr("id-item"))
 
       let catalogId;
-      catalogId = _.findWhere(cultivos, {id: idItem});
+      catalogId = _.findWhere(catalogos.cultivos, {id: idItem});
       if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return}
 
-      catalogId = _.findWhere(malezas, {id: idItem});
+      catalogId = _.findWhere(catalogos.malezas, {id: idItem});
       if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
 
-      catalogId = _.findWhere(plagas, {id: idItem});
+      catalogId = _.findWhere(catalogos.plagas, {id: idItem});
       if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
 
-      catalogId = _.findWhere(enfermedades, {id: idItem});
+      catalogId = _.findWhere(catalogos.enfermedades, {id: idItem});
       if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
 
-      catalogId = _.findWhere(productos, {id: idItem});
+      catalogId = _.findWhere(catalogos.productos, {id: idItem});
       if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
     }
 
     $(document).ready(function () {
+      let id = '<%- id %>';
+
       let detailProducto= '<%- detalleProducto %>';
       detailProducto = handleJSON(detailProducto)
 
@@ -992,18 +1093,22 @@
       let detailCatalogoEnfermedades = '<%- catalogoEnfermedades %>';
       detailCatalogoEnfermedades = handleJSON(detailCatalogoEnfermedades)
 
-      let id = '<%- id %>';
-
-      // ME APETECE MORIR
-      if (!(id == "-1")) {
-        printData(detailProducto, detailPropiedad, detailCatalogoProducts, detailCatalogoCultivos, detailCatalogoMaleza, detailCatalogoPlagas, detailCatalogoEnfermedades)
+      var catalogos = {
+        "productos" : detailCatalogoProducts.catalogo_enc,
+        "cultivos" : detailCatalogoCultivos.catalogo_enc,
+        "malezas" : detailCatalogoMaleza.catalogo_enc,
+        "plagas" : detailCatalogoPlagas.catalogo_enc,
+        "enfermedades" : detailCatalogoEnfermedades.catalogo_enc
       }
 
-      printImagesIndicator();
-      textAreaSize();
-      handleSectionByCatalog(detailPropiedad.catalogo_detalle_propiedad[0].descripcion_catalogo)
-      getCatalogId(detailCatalogoCultivos.catalogo_enc, detailCatalogoMaleza.catalogo_enc, detailCatalogoPlagas.catalogo_enc, detailCatalogoEnfermedades.catalogo_enc, detailCatalogoProducts.catalogo_enc);
 
+      printData(detailProducto, detailPropiedad, catalogos);
+      getCatalogId(catalogos);
+      textAreaSize();
+      imageAmountIndicator();
+      
+      let currentCatalog = detailPropiedad.catalogo_detalle_propiedad[0].descripcion_catalogo;
+      handleSectionByCatalog(currentCatalog);
     })
   </script>
 

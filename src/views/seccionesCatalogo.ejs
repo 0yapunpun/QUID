@@ -136,9 +136,9 @@
       console.log(data)
       for (let i = 0; i < data.length; i++) {
         let element = `
-          <div class="infoHarvest" id-catalogo="${data[i].id_catalogo}" id-seccion="${data[i].id_seccion}" data-orden="${data[i].orden}" id="${data[i].id}">
+          <div class="infoHarvest ms-3" id-catalogo="${data[i].id_catalogo}" id-seccion="${data[i].id_seccion}" data-orden="${data[i].orden}" id="${data[i].id}">
             <div class = "d-flex gap-2">
-              <i class="fas fa-times removeSection" style="cursor: pointer"></i>
+              <i class="fas fa-times removeSection" style="cursor: pointer;"></i>
               <h6 class="text-xs font-weight-bolder opacity-7 m-0">${data[i].titulo}</h6>
             </div>
             <hr class="horizontal dark mt-0">
