@@ -633,9 +633,20 @@ controller = {
 			url: "http://104.236.159.193:3010/geolocalizacion_blancos_biologicos"
 		};
 
+		var departamentos = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/departamentociudad',
+		};
+
 		request(options, function(err, res, resp) {
 			if (err) { console.error(err); resp = false; }
-			cb(resp);
+
+			request(departamentos, function(err, res, resp2) {
+				if (err) { console.error(err); resp2 = false; }
+
+				let response = [resp, resp2]
+				cb(response);
+			})
 		})
 	},
 

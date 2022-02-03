@@ -46,5 +46,8 @@ router.get('/solicitudInformacion/pending', indexController.solicitudInformacion
 router.get('/solicitudInformacion/closed', indexController.solicitudInformacionClosed);
 router.get('/solicitudInformacion/:id', indexController.solicitudInformacionDetail);
 
+// Login
+router.get('/login', indexController.login);
+
 
 module.exports = router;

@@ -167,13 +167,12 @@ const evaluaciones = (req, res) => {
 const mapaCalor = (req, res) => {
     controller.getMapaCalorInformes(req, (resp) => {
         res.render("mapaCalor", {"data": resp})
-
     })
 }
 
 const mapaBlancosBiologicos = (req, res)  => {
     controller.getBlancosBiologicosMapa(req, (resp) => {
-        res.render("mapaBlancosBiologicos", {"data": resp})
+        res.render("mapaBlancosBiologicos", {"data": resp[0], "dptos": resp[1]})
 
     })
 }
@@ -196,7 +195,9 @@ const contenidoSecciones = (req, res) => {
     })
 }
 
-
+const login = (req, res) => {
+    res.render("login")
+}
 
 module.exports = {
 	catalogoCultivos,
@@ -228,6 +229,7 @@ module.exports = {
     mapaBlancosBiologicos,
     seccionesCatalogo,
     crearPropiedades,
-    contenidoSecciones
+    contenidoSecciones,
+    login
     
 }

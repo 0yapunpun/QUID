@@ -20,6 +20,10 @@
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
+    .btnColor{
+      background-image: none !important;
+      background-color: #4CAF50 !important;
+    }
     .searchFieldContent{
       position: relative;
     }
@@ -76,6 +80,66 @@
       opacity: 0;
     }
 
+    #preloader{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 100000;
+      background-color: rgb(0,0, 0, 0.7)
+    }
+
+    #preloader div{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+
+      position: relative;
+      margin: 100px auto;
+    }
+
+    .double-bounce1, .double-bounce2 {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: white;
+      opacity: 0.6;
+      position: absolute;
+      top: 0;
+      left: 0;
+      
+      -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+        animation: sk-bounce 2.0s infinite ease-in-out;
+    }
+
+    .double-bounce2 {
+      -webkit-animation-delay: -1.0s;
+      animation-delay: -1.0s;
+    }
+
+    @-webkit-keyframes sk-bounce {
+      0%, 100% { -webkit-transform: scale(0.0) }
+      50% { -webkit-transform: scale(1.0) }
+    }
+
+    @keyframes sk-bounce {
+      0%, 100% { 
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+      } 50% { 
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+      }
+    }
+
 
   </style>
 </head>
@@ -97,10 +161,10 @@
         <div class="d-flex justify-content-between align-items-center">
           <h5 class="m-0 ms-3">Sucursales  </h5>  
           <div class="w-50 d-flex gap-1 justify-content-end align-items-center">
-            <div onclick="toggleStateViewActive()" id="showInactive"  data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Sucursales Inactivas" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+            <div onclick="toggleStateViewActive()" id="showInactive"  data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Sucursales Inactivas" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
               <i class="fas fa-ban"></i>
             </div>
-            <div onclick="newSucursal()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Sucursal" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+            <div onclick="newSucursal()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Sucursal" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
               <i class="fas fa-plus" ></i>
             </div>
 
@@ -111,132 +175,145 @@
 
     </div>
 
-        <!-- Modales -->
-        <div class="modal fade" tabindex="-1" id="detailModal" role="dialog" aria-labelledby="detailModalModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Detalle Sucursal </h5>
-                <div class="d-flex justify-content-center align-items-center gap-2">
-                  <button type="button" class="btn-close rounded-circle me-1" style="background-color: gray" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-              </div>
-              <div class="modal-body bg-gray-100 d-flex" data-idUser="" id="userDetail">
-    
-                <div class="infoUser d-flex flex-column flex-fill w-40 align-items-center text-left border-end text-center" >
-                  <div style="width: 150px; height: 150px; background-color: lightgrey; border-radius: 50%" class="mb-5 mt-3">
-                    <img src="http://104.236.159.193:8850/images/miAmigoInvesa.png" alt="" id="userImg" style="max-height: 100%; max-width: 100%; border-radius: 50%; min-width: 100%; min-height: 100%; object-fit: cover">
-                  </div>
-                  <div class="d-flex flex-column ">
-                    <div class="d-flex flex-column" style="font-size:13px">
-                      <h6 class="my-2 fs-17">Datos Surcursal</h6>
-                      <div class="fs-15">
-                        <div ><h6>Nombre: <br>  <span class="opacity-7" id="userName"> </span></h6></div>
-                        <div><h6>Tipo de usuario:  <br> <span class="opacity-7" id="userKind"></span></h6></div>
-                        <div>
-                          <h6>Ubicación:  <br> 
-                            <span class="opacity-7" id="userCity"></span> -
-                            <span class="opacity-7" id="userDep"></span> 
-                          </h6>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-    
-                  <div class="updateDataButton">
-                    <hr class="horizontal dark mt-0">
-                    <div class="updateData" style="cursor: pointer;">
-                      <h6 class="m-0">
-                        <i class="fas fa-pen"></i>
-                        Actulizar datos
-                      </h6>
-                    </div>
-                    <div class="createUser" style="display: none; cursor: pointer;" onclick="newSucursalData()">
-                      <h6 class="m-0" style="color: green;">
-                        <i class="fas fa-plus"></i>
-                        Crear Sucursal 
-                      </h6>
-                    </div>
-                    <div class="saveData" style="display: none; cursor: pointer;" onclick="updateSucursalData()">
-                      <h6 class="m-0" style="color: green" >
-                        <i class="fas fa-save"></i>
-                        Guardar datos
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-    
-                <div class="flex-fill w-60 p-1">
-                  <div id="detailSection" class="p-3 fs-13" >
-                    <div class="userView">
-                      <div ><h6 class="m-0">Tipo de usuario: </h6> 
-                        <input type="text" class="form-control inputField inactiveField" id="" value="Sucursal" readonly>
-                      </div>
-                      <div >
-                        <h6 class="m-0">Nombre: </h6> 
-                        <input type="text" class="form-control inputField inactiveField" id="inputName" oninput="$('#userName').text($(this).val())">
-                      </div>
-                      <div >
-                        <h6 class="m-0">Celular: </h6> 
-                        <input type="number" class="form-control inputField inactiveField" id="userPhone">
-                      </div>
-                      <div id="directionContainer" class="d-flex gap-2">
-                        <div class="flex-fill">
-                          <h6 class="m-0">Telefono: </h6> 
-                          <input type="number" class="form-control inputField inactiveField" id="telefonoField">
-                        </div>
-                        <div class="flex-fill">
-                          <h6 class="m-0">Ext: </h6> 
-                          <input type="number" class="form-control inputField inactiveField" id="extensionField">
-                        </div>
-                      </div>
-
-                      <div >
-                        <h6 class="m-0">Dirección: </h6> 
-                        <input type="text" class="form-control inputField inactiveField" id="direccionField">
-                      </div>
-
-                      <div ><h6 class="m-0">Departamento: </h6> 
-                        <div id="selectDepartamentContainer" class="inputSelect inactiveSelect">
-                          <select class="" name="" id="selectDepartment">
-                            <!-- Contenido Dinamico -->
-                          </select>
-                        </div>
-                      </div>
-                      <div>
-                        <h6 class="m-0">Ciudad: </h6> 
-                        <div id="selectCityContainer" class="inputSelect inactiveSelect" onchange="printMasterCity()">
-                          <select name="" id="selectCity">
-                            <!-- Contenido Dinamico -->
-                          </select>
-                        </div>
-                      </div>
-                      <div class="form-check form-switch ps-0  mt-2 ">
-                        <label for="">Estado</label>
-                        <div class="d-flex align-items-center gap-2 ms-2">
-                          <div> 
-                            <h6  class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Inactivo</h6>
-                          </div>
-                          <div>
-                            <input class="form-check-input m-0 disableToggle inputField inactiveField" type="checkbox" id="toggleButton" checked="" >
-                          </div>
-                          <div>
-                            <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Activo</h6>
-                          </div>
-                        </div>
-                      </div>
-
-                      <span id="userID"></span>
-                    </div>
-                    
-                  </div>
-
-                </div>
-    
-              </div>
+    <!-- Modales -->
+    <div class="modal fade" tabindex="-1" id="detailModal" role="dialog" aria-labelledby="detailModalModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Detalle Sucursal </h5>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+              <button type="button" class="btn-close rounded-circle me-1" style="background-color: gray" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
           </div>
+          <div class="modal-body bg-gray-100 d-flex" data-idUser="" id="userDetail">
+
+            <div class="infoUser d-flex flex-column flex-fill w-40 align-items-center text-left border-end text-center" >
+              <div style="width: 150px; height: 150px; background-color: lightgrey; border-radius: 50%" class="mb-5 mt-3">
+                <img src="http://104.236.159.193:8850/images/miAmigoInvesa.png" alt="" id="userImg" style="max-height: 100%; max-width: 100%; border-radius: 50%; min-width: 100%; min-height: 100%; object-fit: cover">
+              </div>
+              <div class="d-flex flex-column ">
+                <div class="d-flex flex-column" style="font-size:13px">
+                  <h6 class="my-2 fs-17">Datos Surcursal</h6>
+                  <div class="fs-15">
+                    <div ><h6>Nombre: <br>  <span class="opacity-7" id="userName"> </span></h6></div>
+                    <div><h6>Tipo de usuario:  <br> <span class="opacity-7" id="userKind"></span></h6></div>
+                    <div>
+                      <h6>Ubicación:  <br> 
+                        <span class="opacity-7" id="userCity"></span> -
+                        <span class="opacity-7" id="userDep"></span> 
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="updateDataButton">
+                <hr class="horizontal dark mt-0">
+                <div class="updateData" style="cursor: pointer;">
+                  <h6 class="m-0">
+                    <i class="fas fa-pen"></i>
+                    Actulizar datos
+                  </h6>
+                </div>
+                <div class="createUser" style="display: none; cursor: pointer;" onclick="newSucursalData()">
+                  <h6 class="m-0" style="color: green;">
+                    <i class="fas fa-plus"></i>
+                    Crear Sucursal 
+                  </h6>
+                </div>
+                <div class="saveData" style="display: none; cursor: pointer;" onclick="updateSucursalData()">
+                  <h6 class="m-0" style="color: green" >
+                    <i class="fas fa-save"></i>
+                    Guardar datos
+                  </h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-fill w-60 p-1">
+              <div id="detailSection" class="p-3 fs-13" >
+                <div class="userView">
+                  <div ><h6 class="m-0">Tipo de usuario: </h6> 
+                    <input type="text" class="form-control inputField inactiveField" id="" value="Sucursal" readonly>
+                  </div>
+                  <div >
+                    <h6 class="m-0">Nombre: </h6> 
+                    <input type="text" class="form-control inputField inactiveField" id="inputName" oninput="$('#userName').text($(this).val())">
+                  </div>
+                  <div >
+                    <h6 class="m-0">Celular: </h6> 
+                    <input type="number" class="form-control inputField inactiveField" id="userPhone">
+                  </div>
+                  <div id="directionContainer" class="d-flex gap-2">
+                    <div class="flex-fill">
+                      <h6 class="m-0">Telefono: </h6> 
+                      <input type="number" class="form-control inputField inactiveField" id="telefonoField">
+                    </div>
+                    <div class="flex-fill">
+                      <h6 class="m-0">Ext: </h6> 
+                      <input type="number" class="form-control inputField inactiveField" id="extensionField">
+                    </div>
+                  </div>
+
+                  <div >
+                    <h6 class="m-0">Dirección: </h6> 
+                    <input type="text" class="form-control inputField inactiveField" id="direccionField">
+                  </div>
+
+                  <div ><h6 class="m-0">Departamento: </h6> 
+                    <div id="selectDepartamentContainer" class="inputSelect inactiveSelect">
+                      <select class="" name="" id="selectDepartment">
+                        <!-- Contenido Dinamico -->
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="m-0">Ciudad: </h6> 
+                    <div id="selectCityContainer" class="inputSelect inactiveSelect" onchange="printMasterCity()">
+                      <select name="" id="selectCity">
+                        <!-- Contenido Dinamico -->
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-check form-switch ps-0  mt-2 ">
+                    <label for="">Estado</label>
+                    <div class="d-flex align-items-center gap-2 ms-2">
+                      <div> 
+                        <h6  class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Inactivo</h6>
+                      </div>
+                      <div>
+                        <input class="form-check-input m-0 disableToggle inputField inactiveField" type="checkbox" id="toggleButton" checked="" >
+                      </div>
+                      <div>
+                        <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Activo</h6>
+                      </div>
+                    </div>
+                  </div>
+
+                  <span id="userID"></span>
+                </div>
+                
+              </div>
+
+            </div>
+
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Preloader -->
+    <div id="preloader" style="display: none;">
+      <div>
+        <div class="spinner" style="width: 100px; height: 100px; margin-bottom: 10px;">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+        </div>
+        <h5 style="color: white;">Cargando Contenido ...</h5>
+      </div>
+    </div>
+
+
       
   </main>
 
@@ -325,9 +402,8 @@
     }
 
     $(document).on("click", ".cardUser", function () {
-      let data = JSON.parse($(this).attr("data-user"));
-      console.log(data)
 
+      let data = JSON.parse($(this).attr("data-user"));
       let currentDepartament = _.findWhere(departamentos.deptociudad, {descripcion: data.departamento})
       currentDepartament = currentDepartament.id
 

@@ -31,6 +31,10 @@
     .nuevaPropiedadButton:hover{
       border-color: lightgray;
     }
+    .btnColor{
+      background-image: none !important;
+      background-color: #4CAF50 !important;
+    }
   </style>
 </head>
 
@@ -114,15 +118,15 @@
 
             <div class="mt-4 d-flex  gap-2 justify-content-center ">
 
-              <div onclick="createPropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" id="addButon">
+              <div onclick="createPropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" id="addButon">
                 <i class="fas fa-plus" ></i>
               </div>
 
-              <div onclick="updatePropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative; display: none;" id="editButon">
+              <div onclick="updatePropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative; display: none;" id="editButon">
                 <i class="fas fa-save"></i>
               </div>
 
-              <div  onclick="deletePropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative; display: none;" id="removeButon">
+              <div  onclick="deletePropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative; display: none;" id="removeButon">
                 <i class="fas fa-trash-alt"></i>
               </div>
             </div>

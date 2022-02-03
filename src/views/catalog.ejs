@@ -50,10 +50,75 @@
       transform: scale(1.05);
       filter: grayscale(100%);
     }
+
+    .btnColor{
+      background-image: none !important;
+      background-color: #4CAF50 !important;
+    }
+
+    #preloader{
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 100000;
+      background-color: rgb(0,0, 0, 0.7)
+    }
+
+    #preloader div{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+
+      position: relative;
+      margin: 100px auto;
+    }
+
+    .double-bounce1, .double-bounce2 {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: white;
+      opacity: 0.6;
+      position: absolute;
+      top: 0;
+      left: 0;
+      
+      -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+        animation: sk-bounce 2.0s infinite ease-in-out;
+    }
+
+    .double-bounce2 {
+      -webkit-animation-delay: -1.0s;
+      animation-delay: -1.0s;
+    }
+
+    @-webkit-keyframes sk-bounce {
+      0%, 100% { -webkit-transform: scale(0.0) }
+      50% { -webkit-transform: scale(1.0) }
+    }
+
+    @keyframes sk-bounce {
+      0%, 100% { 
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+      } 50% { 
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+      }
+    }
   </style>
 </head>
 
-<body class="g-sidenav-show bg-gray-100">
+<body class="g-sidenav-show bg-gray-100" onunload='$("#preloader").hide();'>
 
   <!-- Menu -->
   <%- include('./partials/menu.ejs') %>
@@ -71,10 +136,10 @@
         <div class="d-flex justify-content-between align-items-center">
           <h5 class="m-0 ms-3">Fichas <span id="catalogName"></span> </h5>  
           <div class="w-50 d-flex gap-1 justify-content-end align-items-center">
-            <div id="showInactive" data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Fichas Inactivas" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+            <div id="showInactive" data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Fichas Inactivas" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
               <i class="fas fa-ban"></i>
             </div>
-            <div onclick="newUser()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Ficha" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+            <div onclick="newUser()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Ficha" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
               <i class="fas fa-plus" ></i>
             </div>
             <div class="searchFieldContent">
@@ -87,9 +152,20 @@
 
       <!-- Cards Catalogo -->
       <div id="itemsCatalog" class="d-flex flex-wrap justify-content-center gap-3 mt-3"> <!-- Contenido dinamico --> </div>
+
+      <!-- Preloader -->
+      <div id="preloader" style="display: none;">
+        <div>
+          <div class="spinner" style="width: 100px; height: 100px; margin-bottom: 10px;">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+          </div>
+          <h5 style="color: white;">Cargando Contenido ...</h5>
+        </div>
+      </div>
     </div>
       
-  </main>
+  </main> 
 
   <!--   Core JS Files   -->
   <script src="../js/core/popper.min.js"></script>
@@ -168,11 +244,13 @@
     };
 
     const newUser = () => {
+      $("#preloader").show();
       window.location.href = "/detail/-1";
     }
 
     $(document).on("click", ".cardCatalog", function () {
       let idCard = $(this).attr("id");
+      $("#preloader").show();
       window.location.href = "/detail/"+idCard;
     })
 
@@ -198,8 +276,15 @@
       };
     });
 
+    // script.onreadystatechange(function(){ 
+    //   if(script.readyState == 'loaded' || script.readyState == 'complete') {
+    //     $("#preloader").hide();
+    //   } 
+    // });
 
 
+
+    history.navigationMode = 'compatible';
     $(document).ready(function () {
       catalogContent= '<%- catalogContent %>';
       catalogContent = removeSpecialCharacters(catalogContent)
@@ -207,6 +292,7 @@
       console.log(catalogContent)
 
       printItems(catalogContent.catalogo_enc)
+      $("#preloader").hide();
     })
 
 

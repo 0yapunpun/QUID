@@ -23,6 +23,22 @@
     .sectionContenido{
       text-align: left
     }
+    .btnColor{
+      background-image: none !important;
+      background-color: #4CAF50 !important;
+    }
+    .iconAporte{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .iconAporte:hover{
+      background-color: lightgray;
+    }
   </style>
 </head>
 
@@ -42,16 +58,14 @@
       <h6 class="ms-2">Contenido Secciones</h6>
         
       <div class="d-flex gap-2 justify-content-center">
-        <div class="card p-2 w-45"> 
+
+        <div class="card p-2 w-45" style="display: none;"> 
           <h6>Secciones</h6>
           <div id="propiedades" style="max-height: 70vh; overflow: scroll;">
-
           </div>  
-
         </div>
 
-        <div class="w-45 d-flex flex-column">
-
+        <div class="w-70 d-flex flex-column">
           <div class="card p-2">
             <h6>Tipo Catálogo</h6>
             <div class="nav-wrapper position-relative end-0">
@@ -173,17 +187,17 @@
         data["seccion_catalogo_editar["+i+"][orden]"] = Number($(fields[i]).attr("data-orden"));
       };
 
-      fetch('http://104.236.159.193:3010/catalogo_secciones', {
-        method: 'POST',
-        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(res => {
-        console.log(res)
-        if (res.success) {} 
-        else {console.error("No fue posbile actualizar")}
-      });
+      // fetch('http://104.236.159.193:3010/catalogo_secciones', {
+      //   method: 'POST',
+      //   headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+      //   body: JSON.stringify(data)
+      // })
+      // .then(res => res.json())
+      // .then(res => {
+      //   console.log(res)
+      //   if (res.success) {} 
+      //   else {console.error("No fue posbile actualizar")}
+      // });
     };
 
     let campos = [
@@ -215,18 +229,24 @@
         console.log(subSectionConent);
 
         let element = `
+          <h6 class="text-xs">${cultivosSecciones[i]}</h6>
           <div id="cultivos${cultivosSecciones[i]}" class="ms-2 mt-2">
-            <h6 class="text-xs">${cultivosSecciones[i]}</h6>
+          
           </div>
         `;
         $("#sectionCultivos").append(element);
 
         for (let e = 0; e < subSectionConent.length; e++) {
           let elementX = `
-            <div class="ms-2">${subSectionConent[e].titulo}</div>
+            <div class="ms-2 d-flex gap-3" data-position="${e + 1}">
+              <div class="iconAporte moveUp"><i class="fas fa-arrow-up"></i></div>
+              <div class="iconAporte moveDown"><i class="fas fa-arrow-down"></i></div>
+              ${subSectionConent[e].titulo}
+            </div>
           `
           $("#cultivos"+cultivosSecciones[i]).append(elementX)
         };
+        $("#sectionCultivos").append(`<div class="dotIcon iconAporte" title="Aprobar Aporte" style="margin-left: 33px"><i class="fas fa-plus"></i></div>`)
       };
 
       // Enfermedades
@@ -251,7 +271,11 @@
 
         for (let e = 0; e < subSectionConent2.length; e++) {
           let elementX = `
-            <div class="ms-2">${subSectionConent2[e].titulo}</div>
+            <div class="ms-2 d-flex gap-2">
+              <div><i class="fas fa-arrow-up"></i></div>
+              <div><i class="fas fa-arrow-down"></i></div>
+              ${subSectionConent2[e].titulo}
+            </div>
           `
           $("#enfermedades"+EnfermedadesSecciones[i]).append(elementX)
         };
@@ -279,7 +303,11 @@
 
         for (let e = 0; e < subSectionConent3.length; e++) {
           let elementX = `
-            <div class="ms-2">${subSectionConent3[e].titulo}</div>
+            <div class="ms-2 d-flex gap-2">
+              <div><i class="fas fa-arrow-up"></i></div>
+              <div><i class="fas fa-arrow-down"></i></div>
+              ${subSectionConent3[e].titulo}
+            </div>
           `
           $("#malezas"+malezasSecciones[i]).append(elementX)
         };
@@ -307,7 +335,11 @@
 
         for (let e = 0; e < subSectionConent4.length; e++) {
           let elementX = `
-            <div class="ms-2">${subSectionConent4[e].titulo}</div>
+            <div class="ms-2 d-flex gap-2">
+              <div><i class="fas fa-arrow-up"></i></div>
+              <div><i class="fas fa-arrow-down"></i></div>
+              ${subSectionConent4[e].titulo}
+            </div>
           `
           $("#plagas"+plagasSecciones[i]).append(elementX)
         };
@@ -334,12 +366,32 @@
 
         for (let e = 0; e < subSectionConent5.length; e++) {
           let elementX = `
-            <div class="ms-2">${subSectionConent5[e].titulo}</div>
+            <div class="ms-2 d-flex gap-2" data-position="${e}">
+              <div><i class="fas fa-arrow-up"></i></div>
+              <div><i class="fas fa-arrow-down"></i></div>
+              ${subSectionConent5[e].titulo}
+            </div>
           `
           $("#productos"+productosSecciones[i]).append(elementX)
         };
       };
     }  
+
+    $(document).on("click", ".moveUp", function () {
+      let previus = $(this).parent().prev();
+      if (previus.length == 0) {
+        alert("soy el primero")
+      }
+      console.log($(this).parent().prev())
+    })
+
+    $(document).on("click", ".moveDown", function () {
+      let next = $(this).parent().next();
+      if (next.length == 0) {
+        alert("soy el ultimo")
+      }
+      console.log($(this).parent().next())
+    })
 
 
     var catalogos = '<%- catalogos %>';
@@ -369,3 +421,193 @@
 
 </body>
 </html>
+
+<!-- POST -->
+<!-- http://104.236.159.193:3010/catalogo_propiedad/ -->
+
+<!-- PAYLOAD -->
+<!-- parametros_actualizar[0][id]: 276
+parametros_actualizar[0][id_catalogo]: 5
+parametros_actualizar[0][id_propiedad]: 46
+parametros_actualizar[0][id_catalogo_seccion]: 16
+parametros_actualizar[0][orden]: 1
+parametros_actualizar[1][id]: 280
+parametros_actualizar[1][id_catalogo]: 5
+parametros_actualizar[1][id_propiedad]: 150
+parametros_actualizar[1][id_catalogo_seccion]: 16
+parametros_actualizar[1][orden]: 2
+parametros_actualizar[2][id]: 244
+parametros_actualizar[2][id_catalogo]: 5
+parametros_actualizar[2][id_propiedad]: 17
+parametros_actualizar[2][id_catalogo_seccion]: 16
+parametros_actualizar[2][orden]: 3
+parametros_actualizar[3][id]: 80
+parametros_actualizar[3][id_catalogo]: 5
+parametros_actualizar[3][id_propiedad]: 49
+parametros_actualizar[3][id_catalogo_seccion]: 16
+parametros_actualizar[3][orden]: 4
+parametros_actualizar[4][id]: 156
+parametros_actualizar[4][id_catalogo]: 5
+parametros_actualizar[4][id_propiedad]: 50
+parametros_actualizar[4][id_catalogo_seccion]: 16
+parametros_actualizar[4][orden]: 5
+parametros_actualizar[5][id]: 157
+parametros_actualizar[5][id_catalogo]: 5
+parametros_actualizar[5][id_propiedad]: 51
+parametros_actualizar[5][id_catalogo_seccion]: 16
+parametros_actualizar[5][orden]: 6
+parametros_actualizar[6][id]: 245
+parametros_actualizar[6][id_catalogo]: 5
+parametros_actualizar[6][id_propiedad]: 47
+parametros_actualizar[6][id_catalogo_seccion]: 26
+parametros_actualizar[6][orden]: 1
+parametros_actualizar[7][id]: 214
+parametros_actualizar[7][id_catalogo]: 5
+parametros_actualizar[7][id_propiedad]: 102
+parametros_actualizar[7][id_catalogo_seccion]: 26
+parametros_actualizar[7][orden]: 2
+parametros_actualizar[8][id]: 216
+parametros_actualizar[8][id_catalogo]: 5
+parametros_actualizar[8][id_propiedad]: 104
+parametros_actualizar[8][id_catalogo_seccion]: 26
+parametros_actualizar[8][orden]: 3
+parametros_actualizar[9][id]: 284
+parametros_actualizar[9][id_catalogo]: 5
+parametros_actualizar[9][id_propiedad]: 151
+parametros_actualizar[9][id_catalogo_seccion]: 26
+parametros_actualizar[9][orden]: 4
+parametros_actualizar[10][id]: 218
+parametros_actualizar[10][id_catalogo]: 5
+parametros_actualizar[10][id_propiedad]: 106
+parametros_actualizar[10][id_catalogo_seccion]: 26
+parametros_actualizar[10][orden]: 5
+parametros_actualizar[11][id]: 219
+parametros_actualizar[11][id_catalogo]: 5
+parametros_actualizar[11][id_propiedad]: 108
+parametros_actualizar[11][id_catalogo_seccion]: 26
+parametros_actualizar[11][orden]: 6
+parametros_actualizar[12][id]: 227
+parametros_actualizar[12][id_catalogo]: 5
+parametros_actualizar[12][id_propiedad]: 116
+parametros_actualizar[12][id_catalogo_seccion]: 26
+parametros_actualizar[12][orden]: 7
+parametros_actualizar[13][id]: 220
+parametros_actualizar[13][id_catalogo]: 5
+parametros_actualizar[13][id_propiedad]: 109
+parametros_actualizar[13][id_catalogo_seccion]: 26
+parametros_actualizar[13][orden]: 8
+parametros_actualizar[14][id]: 238
+parametros_actualizar[14][id_catalogo]: 5
+parametros_actualizar[14][id_propiedad]: 129
+parametros_actualizar[14][id_catalogo_seccion]: 26
+parametros_actualizar[14][orden]: 9
+parametros_actualizar[15][id]: 239
+parametros_actualizar[15][id_catalogo]: 5
+parametros_actualizar[15][id_propiedad]: 130
+parametros_actualizar[15][id_catalogo_seccion]: 26
+parametros_actualizar[15][orden]: 10
+parametros_actualizar[16][id]: 240
+parametros_actualizar[16][id_catalogo]: 5
+parametros_actualizar[16][id_propiedad]: 131
+parametros_actualizar[16][id_catalogo_seccion]: 26
+parametros_actualizar[16][orden]: 11
+parametros_actualizar[17][id]: 246
+parametros_actualizar[17][id_catalogo]: 5
+parametros_actualizar[17][id_propiedad]: 132
+parametros_actualizar[17][id_catalogo_seccion]: 27
+parametros_actualizar[17][orden]: 1
+parametros_actualizar[18][id]: 285
+parametros_actualizar[18][id_catalogo]: 5
+parametros_actualizar[18][id_propiedad]: 152
+parametros_actualizar[18][id_catalogo_seccion]: 27
+parametros_actualizar[18][orden]: 2
+parametros_actualizar[19][id]: 286
+parametros_actualizar[19][id_catalogo]: 5
+parametros_actualizar[19][id_propiedad]: 153
+parametros_actualizar[19][id_catalogo_seccion]: 27
+parametros_actualizar[19][orden]: 3
+parametros_actualizar[20][id]: 228
+parametros_actualizar[20][id_catalogo]: 5
+parametros_actualizar[20][id_propiedad]: 117
+parametros_actualizar[20][id_catalogo_seccion]: 27
+parametros_actualizar[20][orden]: 4
+parametros_actualizar[21][id]: 230
+parametros_actualizar[21][id_catalogo]: 5
+parametros_actualizar[21][id_propiedad]: 119
+parametros_actualizar[21][id_catalogo_seccion]: 27
+parametros_actualizar[21][orden]: 5
+parametros_actualizar[22][id]: 236
+parametros_actualizar[22][id_catalogo]: 5
+parametros_actualizar[22][id_propiedad]: 126
+parametros_actualizar[22][id_catalogo_seccion]: 27
+parametros_actualizar[22][orden]: 6
+parametros_actualizar[23][id]: 237
+parametros_actualizar[23][id_catalogo]: 5
+parametros_actualizar[23][id_propiedad]: 128
+parametros_actualizar[23][id_catalogo_seccion]: 27
+parametros_actualizar[23][orden]: 7
+parametros_actualizar[24][id]: 231
+parametros_actualizar[24][id_catalogo]: 5
+parametros_actualizar[24][id_propiedad]: 121
+parametros_actualizar[24][id_catalogo_seccion]: 27
+parametros_actualizar[24][orden]: 8
+parametros_actualizar[25][id]: 232
+parametros_actualizar[25][id_catalogo]: 5
+parametros_actualizar[25][id_propiedad]: 122
+parametros_actualizar[25][id_catalogo_seccion]: 27
+parametros_actualizar[25][orden]: 9
+parametros_actualizar[26][id]: 233
+parametros_actualizar[26][id_catalogo]: 5
+parametros_actualizar[26][id_propiedad]: 123
+parametros_actualizar[26][id_catalogo_seccion]: 27
+parametros_actualizar[26][orden]: 10
+parametros_actualizar[27][id]: 234
+parametros_actualizar[27][id_catalogo]: 5
+parametros_actualizar[27][id_propiedad]: 124
+parametros_actualizar[27][id_catalogo_seccion]: 27
+parametros_actualizar[27][orden]: 11
+parametros_actualizar[28][id]: 235
+parametros_actualizar[28][id_catalogo]: 5
+parametros_actualizar[28][id_propiedad]: 125
+parametros_actualizar[28][id_catalogo_seccion]: 27
+parametros_actualizar[28][orden]: 12
+parametros_actualizar[29][id]: 248
+parametros_actualizar[29][id_catalogo]: 5
+parametros_actualizar[29][id_propiedad]: 110
+parametros_actualizar[29][id_catalogo_seccion]: 27
+parametros_actualizar[29][orden]: 13
+parametros_actualizar[30][id]: 249
+parametros_actualizar[30][id_catalogo]: 5
+parametros_actualizar[30][id_propiedad]: 111
+parametros_actualizar[30][id_catalogo_seccion]: 27
+parametros_actualizar[30][orden]: 14
+parametros_actualizar[31][id]: 250
+parametros_actualizar[31][id_catalogo]: 5
+parametros_actualizar[31][id_propiedad]: 112
+parametros_actualizar[31][id_catalogo_seccion]: 27
+parametros_actualizar[31][orden]: 15
+parametros_actualizar[32][id]: 251
+parametros_actualizar[32][id_catalogo]: 5
+parametros_actualizar[32][id_propiedad]: 113
+parametros_actualizar[32][id_catalogo_seccion]: 27
+parametros_actualizar[32][orden]: 16
+parametros_actualizar[33][id]: 252
+parametros_actualizar[33][id_catalogo]: 5
+parametros_actualizar[33][id_propiedad]: 114
+parametros_actualizar[33][id_catalogo_seccion]: 27
+parametros_actualizar[33][orden]: 17
+parametros_actualizar[34][id]: 241
+parametros_actualizar[34][id_catalogo]: 5
+parametros_actualizar[34][id_propiedad]: 129
+parametros_actualizar[34][id_catalogo_seccion]: 27
+parametros_actualizar[34][orden]: 18
+parametros_actualizar[35][id]: 243
+parametros_actualizar[35][id_catalogo]: 5
+parametros_actualizar[35][id_propiedad]: 130
+parametros_actualizar[35][id_catalogo_seccion]: 27
+parametros_actualizar[35][orden]: 19
+parametros_actualizar[36][id]: 242
+parametros_actualizar[36][id_catalogo]: 5
+parametros_actualizar[36][id_propiedad]: 131
+parametros_actualizar[36][id_catalogo_seccion]: 27
+parametros_actualizar[36][orden]: 20 -->
