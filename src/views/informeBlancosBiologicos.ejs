@@ -107,16 +107,16 @@
               <div class="card-body p-3 d-flex justify-content-center align-items-center flex-column" style="cursor: pointer" >
                 <div class="text-center">
                   <h2 style="color: #${color}"> <span>${data[x]}</span></h2>
-                  <h4>Aportes</h4> 
+                  <h4 style="text-transform: capitalize;">${x}</h4> 
                 </div> 
                 <div style="width: 100%; margin-top: 20px" >   
                   <div class="border-top d-flex justify-content-between" >   
                     <h6>Mes</h6>
-                    <h6 class="opacity-7">1</h6>
+                    <h6 class="opacity-7"></h6>
                   </div>
                   <div class="border-top d-flex justify-content-between" >   
                     <h6>Año</h6>
-                    <h6 class="opacity-7">1</h6>
+                    <h6 class="opacity-7"></h6>
                   </div>
                 </div>
               </div>
@@ -144,3 +144,339 @@
 
 </body>
 </html>
+
+<!-- 
+  /** front_geolocalizacion.js
+*============================================================================================
+Author: Santiago Restrepo
+* Cargo: Ingeniero de Software
+* Fecha CreaciÃ³n: 17/05/2017
+* Fecha Final: 17/05/2017
+*============================================================================================
+*/
+//Declarar el Clousure
+var Geolocalizacion = (function()
+{
+	var result = [];
+	var data = [];
+	var map;
+	var markers = [];
+	var infowindow;
+	var catalogs = {"enfermedades": true, "malezas": true, "plagas": true};
+
+	var cargar_datos = function(callback) {
+
+		App_datagro.App.Util.consumir_datos('get', '/geolocalizacion_blancos_biologicos',undefined, function (resultado) {
+			if (resultado.datos.datos.length > 0) {
+				result = resultado.datos;
+
+				// tags filter
+				$('#tags').tagsInput({
+					'defaultText' : '',
+					'height':'50px',
+					'width':'100%',
+					onRemoveTag: function(a) {
+						var i = _.lastIndexOf(data, _.find(data, function(o){ return o.text == a; }))
+						data.splice(i,1);
+						if (data.length == 0) {
+							catalogs = {"enfermedades": true, "malezas": true, "plagas": true};
+							$('.chk_g').prop('checked', true);
+							filterByCatalog();
+						} else {
+							fitlerByData();
+						}
+					}
+				});
+
+				$('#tags_tag').attr('readonly', true);
+
+				// Autocompletar
+				$('#search-enfermedades').keyup(function() {
+					filter("enfermedades");
+				});
+				$('#search-malezas').keyup(function() {
+					filter("malezas");
+				});
+				$('#search-plagas').keyup(function() {
+					filter("plagas");
+				});
+				$('#search-dpto').keyup(function() {
+					var tmp = _.filter(result.datos, function(obj) { return obj.departamento.toLowerCase().indexOf($('#search-dpto').val().toLowerCase()) != -1 });
+					var resultado = '';
+					_.each(tmp, function(data, i) {
+						if (resultado.indexOf(data.departamento) == -1) {
+							resultado += '<li>' + data.departamento + '</li>';
+						}
+					});
+					$('#result-dpto').show();
+					$('#result-dpto').html(resultado);
+
+					$('#result-dpto').on({
+						mouseenter: function() {
+							$(this).addClass("inside");
+						}, mouseleave: function() {
+							$(this).removeClass("inside");
+						}
+					});
+
+					$('#search-dpto').parent().focusout(function(){
+						if ($('#result-dpto').attr('class').indexOf('inside') == -1) {
+							$('#result-dpto').hide();
+						}
+					});
+					$('#result-dpto').on({
+						click: function() {
+							$('.s-input').val('');
+
+							if (!$('#tags').tagExist($(this).text())){
+								$('#tags').addTag($(this).text());
+								data.push({'text':$(this).text(), 'type':'departamento'});
+								fitlerByData();
+							}
+
+							catalogs.enfermedades = false;
+							catalogs.malezas = false;
+							catalogs.plagas = false;
+							$('.chk_g').prop('checked', false);
+							$('#result-dpto').hide();
+						}
+					}, 'li')
+				});
+				$('#search-municipio').keyup(function() {
+					var tmp = _.filter(result.datos, function(obj) { return obj.ciudad.toLowerCase().indexOf($('#search-municipio').val().toLowerCase()) != -1 });
+					var resultado = '';
+					_.each(tmp, function(data, i) {
+						if (resultado.indexOf(data.ciudad) == -1) {
+							resultado += '<li data-departamento="'+data.departamento+'">' + data.ciudad + '</li>';
+						}
+					});
+					$('#result-municipio').show();
+					$('#result-municipio').html(resultado);
+
+					$('#result-municipio').on({
+						mouseenter: function() {
+							$(this).addClass("inside");
+						}, mouseleave: function() {
+							$(this).removeClass("inside");
+						}
+					});
+
+					$('#search-municipio').parent().focusout(function(){
+						if ($('#result-municipio').attr('class').indexOf('inside') == -1) {
+							$('#result-municipio').hide();
+						}
+					});
+					$('#result-municipio').on({
+						click: function() {
+							$('.s-input').val('');
+							if (!$('#tags').tagExist($(this).text())){
+								if (!$('#tags').tagExist($(this).data('departamento'))) {
+									$('#tags').addTag($(this).text());
+									data.push({'text':$(this).text(), 'type':'ciudad'});
+									fitlerByData();
+								}
+							}
+
+							//fitlerByUbicacion($(this).text());
+							catalogs.enfermedades = false;
+							catalogs.malezas = false;
+							catalogs.plagas = false;
+							$('.chk_g').prop('checked', false);
+							$('#result-municipio').hide();
+						}
+					}, 'li')
+				});
+				fillCounter();
+				drawMap();
+				showMarkers(result.datos);
+
+				$('.chk_g').change(function(){
+					var t = this;
+					catalogs[$(t).data('catalogo')] = t.checked;
+					$('.s-input').val('');
+					$('#search-municipio').val('');
+					$('#search-dpto').val('');
+					filterByCatalog();
+				});
+			} else {
+				alert("no se encontraron registro")
+			}
+		});
+	};
+	var filter = function(tipo, callback) {
+		var arreglo = _.groupBy(result.datos, function(obj) { return obj.catalogo.toLowerCase() == tipo; }).true;
+		var tmp = _.filter(arreglo, function(obj) { return obj.titulo.toLowerCase().indexOf($('#search-'+tipo).val().toLowerCase()) != -1 });
+		var resultado = '';
+		_.each(tmp, function(data, i) {
+			if (resultado.indexOf(data.titulo) == -1) {
+				resultado += '<li>' + data.titulo + '</li>';
+			}
+		});
+		$('#result-'+tipo).show();
+		$('#result-'+tipo).html(resultado);
+
+		$('#result-'+tipo).on({
+			mouseenter: function() {
+				$(this).addClass("inside");
+			}, mouseleave: function() {
+				$(this).removeClass("inside");
+			}
+		});
+
+		$('#search-'+tipo).parent().focusout(function(){
+			if ($('#result-'+tipo).attr('class').indexOf('inside') == -1) {
+				$('#result-'+tipo).hide();
+			}
+		});
+		$('#result-'+tipo).on({
+			click: function() {
+				$('.s-input').val('');
+
+				if (!$('#tags').tagExist($(this).text())){
+					$('#tags').addTag($(this).text());
+					data.push({'text':$(this).text(), 'type':'titulo'});
+					fitlerByData();
+				}
+
+				catalogs.enfermedades = false;
+				catalogs.malezas = false;
+				catalogs.plagas = false;
+				$('.chk_g').prop('checked', false);
+				$('#result-'+tipo).hide();
+			}
+		}, 'li')
+	};
+	var fillCounter = function() {
+		var cEnfermedades = _.groupBy(result.datos, function(obj) { return obj.catalogo.toLowerCase() == "enfermedades"; }).true;
+		var cMalezas = _.groupBy(result.datos, function(obj) { return obj.catalogo.toLowerCase() == "malezas"; }).true;
+		var cPlagas = _.groupBy(result.datos, function(obj) { return obj.catalogo.toLowerCase() == "plagas"; }).true;
+
+		$('#total-enfemedades').text(cEnfermedades.length);
+		$('#total-malezas').text(cMalezas.length);
+		$('#total-plagas').text(cPlagas.length);
+	};
+	var drawMap = function() {
+		var styles = [{
+			"stylers": [
+				{ "saturation": -100 },
+				{ "gamma": 1.07 }
+			]}
+		];
+		// End Styles
+		var mapa = new google.maps.LatLng(5.2445497,-72.4879592);
+		var styledMap = new google.maps.StyledMapType(styles,{name: "Styled Map"});
+		var mapOptions = {
+			zoom: 6,
+			center: mapa,
+			// disableDefaultUI: true,
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			mapTypeControlOptions: {
+				mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'map_style']
+			}
+		}
+		map = new google.maps.Map($("#geolocalizacion_bb")[0], mapOptions);
+		map.mapTypes.set('map_style', styledMap);
+		map.setMapTypeId('map_style');
+
+		var currentPlace = null;
+		var info = $('#placeDetails');
+		infowindow = new google.maps.InfoWindow();
+	};
+	var showMarkers = function(data) {
+		markers = [];
+		_.each(data, function(d,i){
+			var place = d;
+			var icon = "images/marker1.png";
+			if (place.id_catalogo == 3) {
+				icon = "images/marker2.png";
+			} else if (place.id_catalogo == 4) {
+				icon = "images/marker3.png";
+			}
+			marker = new google.maps.Marker({
+				position: new google.maps.LatLng(place.latitud, place.longitud),
+				map: map,
+				//icon: '../images/user-ico.png'
+				icon: icon
+			});
+			markers.push(marker);
+			bindInfoWindow(marker, map, place.titulo);
+		});
+	};
+	var clearMarkers = function() {
+		for (var i = 0; i < markers.length; i++ ) {
+			markers[i].setMap(null);
+		}
+		markers = [];
+	};
+	var bindInfoWindow = function(marker, map, description) {
+		google.maps.event.addListener(marker, 'click', function() {
+			infowindow.setContent(description);
+			infowindow.open(map, marker);
+		});
+	};
+	var fitlerByData = function() {
+		clearMarkers();
+		var r = [];
+		console.log(data,'data');
+		_.each(data, function(o) {
+			var tmp = _.groupBy(result.datos, function(obj) { return obj[o.type].toLowerCase() == o.text.toLowerCase() }).true;
+			r = r.concat(tmp);
+		});
+		console.log(r,'r');
+		showMarkers(r);
+	};
+	var filterByCatalog = function() {
+		clearMarkers();
+		var r = [];
+		if (catalogs.enfermedades) {
+			var tmp = _.groupBy(result.datos, function(obj) { return obj.catalogo.toLowerCase() == "enfermedades" }).true;
+			r = r.concat(tmp);
+		}
+		if (catalogs.malezas) {
+			var tmp = _.groupBy(result.datos, function(obj) { return obj.catalogo.toLowerCase() == "malezas" }).true;
+			r = r.concat(tmp);
+		}
+		if (catalogs.plagas) {
+			var tmp = _.groupBy(result.datos, function(obj) { return obj.catalogo.toLowerCase() == "plagas" }).true;
+			r = r.concat(tmp);
+		}
+		showMarkers(r);
+	};
+	var fitlerByTitle = function(title){
+		clearMarkers();
+		$('.chk_g').prop('checked', false);
+		var r = _.groupBy(result.datos, function(obj) { return obj.titulo.toLowerCase() == title.toLowerCase() }).true;
+		showMarkers(r);
+	};
+	var fitlerByUbicacion = function(ubicacion) {
+		clearMarkers();
+		$('.chk_g').prop('checked', false);
+		var r = _.groupBy(result.datos, function(obj) { return obj.ciudad.toLowerCase() == ubicacion.toLowerCase() }).true;
+		showMarkers(r);
+	};
+	var filterByDepartamento = function(depto) {
+		clearMarkers();
+		$('.chk_g').prop('checked', false);
+		var r = _.groupBy(result.datos, function(obj) { return obj.departamento.toLowerCase() == depto.toLowerCase() }).true;
+		showMarkers(r);
+	};
+	return {
+		Collections: {},
+		Models: {},
+		Views: {},
+		Routers: {},
+		InicializarGeolocalizacion: function(callback) {
+			async.waterfall([
+				function(callback){
+					cargar_datos(function(){
+						callback(null);
+					});
+				}
+			], function(err, callback){
+				callback();
+			})
+		}
+	}
+
+})();
+ -->

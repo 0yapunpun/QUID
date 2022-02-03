@@ -51,17 +51,17 @@
       <!-- Paginador -->
       <div class="nav-wrapper position-relative end-0">
         <ul class="nav nav-pills nav-fill p-1" role="tablist">
-          <li id="sectionEncabezado" class="nav-item" onclick='getAbiertas()'>
+          <li id="sectionEncabezado" class="nav-item" onclick='getAbiertas(); $(".stateRequest").show()'>
             <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
             Abiertas
             </a>
           </li>
-          <li id="sectionImagenes" class="nav-item" onclick='getPendientes()'>
+          <li id="sectionImagenes" class="nav-item" onclick='getPendientes(); $(".stateRequest").show()'>
             <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
             Pendientes
             </a>
           </li>
-          <li id="sectionDetalle" class="nav-item" onclick='getCerradas()'>
+          <li id="sectionDetalle" class="nav-item" onclick='getCerradas(); $(".stateRequest").hide()'>
             <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
             Cerradas
             </a>
@@ -144,8 +144,55 @@
                   </div>
                 </div>
               </div>
-
             </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="modalStateRequest" role="dialog" aria-labelledby="modalStateRequestLabel" aria-hidden="true">
+      <div class="modal-dialog ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Cambiar Estado - Agregar Notas</h5>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+              <button type="button" class="btn-close rounded-circle me-1" style="background-color: gray" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="modal-body bg-gray-100" >
+            <label for="">Estado Solicitud:</label>
+            <div class="d-flex gap-3">
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="radio" name="radioDefault" value="A">
+                <label class="custom-control-label" for="customRadio1">Abierto</label>
+              </div>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="radio" name="radioDefault" value="P">
+                <label class="custom-control-label" for="customRadio1">Pendiente</label>
+              </div>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="radio" name="radioDefault" value="C">
+                <label class="custom-control-label" for="customRadio1">Cerrado</label>
+              </div>
+            </div>
+
+            <div>
+              <label for="">Actividad:</label>
+              <input type="text" class="form-control" id="sendRequestActividad">
+            </div>
+
+            <div>
+              <label for="">Nota:</label>
+              <textarea name="" id="sendRequestNota" class="form-control dataHarvest" style="resize: none; height: 150px;"></textarea>
+            </div>
+          </div>
+          <div class="text-center">
+            <button class="btn btn-primary" onclick="sendDataRequest()">
+              Guardar
+            </button>
           </div>
         </div>
       </div>
@@ -252,8 +299,13 @@
             <td class="text-center">${data[i].fecha_contacto}</td>
             <td class="text-center">${data[i].dias}</td>
             <td class="text-center">
-              <div class="detailRequest" id="${data[i].id}">
-                <i class="fas fa-info-circle" tittle="Ver Detalle" style="cursor: pointer"></i>
+              <div class="d-flex gap-2 align-items-center justify-content-center" >
+                <div class="stateRequest" id="${data[i].id}" style="cursor: pointer">
+                  <i class="fas fa-edit"></i>
+                </div>
+                <div class="detailRequest" id="${data[i].id}">
+                  <i class="fas fa-info-circle" tittle="Ver Detalle" style="cursor: pointer"></i>
+                </div>
               </div>
             </td>
           </tr>
@@ -316,7 +368,7 @@
 
     $(document).on("click", ".detailRequest", function () {
       let id = $(this).attr("id");
-      let rowData = JSON.parse($(this).parent().parent().attr("data-row"))
+      let rowData = JSON.parse($(this).parent().parent().parent().attr("data-row"))
       console.log(rowData)
 
       fetch('/solicitudInformacion/'+id)
@@ -332,6 +384,34 @@
         else {console.error("No fue posbile obtener detalle de la solicitud")}
       });
     })
+
+    $(document).on("click", ".stateRequest", function () {
+      let id = $(this).attr("id");
+      let rowData = JSON.parse($(this).parent().parent().parent().attr("data-row"))
+
+      $("#modalStateRequest").attr("data-id", id);
+      $("#modalStateRequest").modal("show");
+    })
+
+    const sendDataRequest = () => {
+      let dataSend = {
+        "id_solicitud": Number($("#modalStateRequest").attr("data-id")),
+        "estado": $('input[name="radioDefault"]:checked').val(),
+        "actividad": $("#sendRequestActividad").val(),
+        "nota": $("#sendRequestNota").val()
+      };
+
+      fetch('http://104.236.159.193:3010/guardar_nota_solicitud', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(dataSend)
+      })
+      .then(res => res.json())
+      .then(res => {
+        $("#modalStateRequest").modal("hide");
+      });
+
+    }
 
 
 

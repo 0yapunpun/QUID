@@ -311,9 +311,6 @@
       fetch(link)
       .then(res => res.json())
       .then(res => {
-        console.log(res)
-        alert("?")
-
         printCharts(res.analytics);
         printTable(res.analytics);
       })

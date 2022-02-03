@@ -20,7 +20,17 @@
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
 
   <style>
-
+    .nuevaPropiedadButton{
+      position: absolute; 
+      right: 5%;
+      top: 0%; 
+      cursor: pointer;
+      border-bottom: solid 1px transparent;
+      transition: 0.3s;
+    }
+    .nuevaPropiedadButton:hover{
+      border-color: lightgray;
+    }
   </style>
 </head>
 
@@ -37,19 +47,25 @@
     <!-- Cotent -->
     <div class="p-4 m-4 text-center"> 
 
-      <h6 class="ms-2">Propiedades</h6>
+      <div style="position: relative;">
+        <h6 class="ms-2">Propiedades</h6>
+        <div id="nuevaPropiedadIndicator" style="display: none;">
+          <div class="d-flex align-items-center gap-1 nuevaPropiedadButton">
+            <i class="fas fa-plus" style="font-size: 13px;"></i>
+            <h6 class="m-0" style="font-size: 13px;">Crear Nueva Propiedad</h6>
+          </div>
+        </div>
+      </div>
         
       <div class="d-flex gap-2 justify-content-center">
         <div class="card p-2 w-45"> 
           <h6>Secciones</h6>
-          <div id="propiedades" style="max-height: 70vh; overflow: scroll;">
-
-          </div>
-
+          <div id="propiedades" style="max-height: 70vh; overflow: scroll;"> <!-- Contenido Dinamico --> </div>
         </div>
 
         <div class="w-45 d-flex flex-column">
           <div class="card p-2" id="" style="text-align: left;">
+            <span id="idCache" style="display: none;"></span>
             <label for="">Titulo</label>
             <input type="text" class="form-control" id="inputTitle">
             <label for="">Tipo de propiedad</label>
@@ -98,21 +114,19 @@
 
             <div class="mt-4 d-flex  gap-2 justify-content-center ">
 
-              <div data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <div onclick="createPropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" id="addButon">
                 <i class="fas fa-plus" ></i>
               </div>
 
-              <div data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <div onclick="updatePropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative; display: none;" id="editButon">
                 <i class="fas fa-save"></i>
               </div>
 
-              <div data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative;" >
+              <div  onclick="deletePropiedad()" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar Propiedad" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg" style="cursor: pointer; position: relative; display: none;" id="removeButon">
                 <i class="fas fa-trash-alt"></i>
               </div>
             </div>
-
           </div>
-          
         </div>
 
       </div>
@@ -213,14 +227,31 @@
       { "id": 12, "descripcion": "Url", "maestro": 0}
     ];
 
+    $("#nuevaPropiedadIndicator").click(function () {
+      $("#addButon").show()
+      $("#nuevaPropiedadIndicator").hide()
+      $("#editButon").hide()
+      $("#removeButon").hide()
+
+      $("#toggleButtonVisibilidad").prop("checked", false);
+      $("#toggleButtonBusqueda").prop("checked", false);
+      $("#inputTitle").val("")
+    })
+
     $(document).on("click", ".detailPropiedad", function () {
-      // if (!confirm("¿Esta seguro de eliminar esta seccion?")) {return}
+      $("#nuevaPropiedadIndicator").show()
+      $("#addButon").hide()
+      $("#editButon").show()
+      $("#removeButon").show()
+
 
       let title = $(this).attr("data-titulo");
       let visible = $(this).attr("data-visible");
       let campo = $(this).attr("data-idCampo");
       let filtro = $(this).attr("data-filtro");
+      let id = $(this).attr("data-id");
 
+      $("#idCache").attr("data-id", id)
       $("#inputTitle").val(title)
       $("#selectCampo").val(campo);
 
@@ -244,10 +275,55 @@
       } else {
         $("#toggleButtonBusqueda").prop("checked", false);
       }
+    });
 
+    const createPropiedad = () => {
+      if ($("#inputTitle").val() == "") {alert("Ingrese titulo antes de enviar"); return}
+      let dataSend = {
+        "id": 0,
+        "id_campo": Number($( "#selectCampo option:selected" ).val()),
+        "titulo": $("#inputTitle").val(),
+        "visible": ($("#toggleButtonVisibilidad").is(":checked") ? 1 : 0),
+        "filtro": ($('#toggleButtonBusqueda').is(":checked") ? 1 : 0)
+      };
 
-    })
+      fetch('http://104.236.159.193:3010/campo_propiedad', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(dataSend)
+      })
+      .then(res => res.json())
+      .then(res => {location.reload()});
+    }
 
+    const deletePropiedad = () => {
+      if (!confirm("Esta seguro de eliminar esta propiedad")) {return}
+      let id = $("#idCache").attr("data-id");
+      fetch('http://104.236.159.193:3010/campo_propiedad_eliminar/'+id, {
+        method: 'DELETE',
+      })
+      .then(res => res.json())
+      .then(res => {location.reload()});
+    }
+
+    const updatePropiedad = () => {
+      if ($("#inputTitle").val() == "") {alert("Ingrese titulo antes de enviar"); return}
+      let dataSend = {
+        "id": Number($("#idCache").attr("data-id")),
+        "id_campo": Number($( "#selectCampo option:selected" ).val()),
+        "titulo": $("#inputTitle").val(),
+        "visible": ($("#toggleButtonVisibilidad").is(":checked") ? 1 : 0),
+        "filtro": ($('#toggleButtonBusqueda').is(":checked") ? 1 : 0)
+      };
+
+      fetch('http://104.236.159.193:3010/campo_propiedad', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(dataSend)
+      })
+      .then(res => res.json())
+      .then(res => {});
+    }
 
     var datos = '<%- data %>';
     datos = handleJSON(datos)
@@ -256,9 +332,6 @@
     $(document).ready(function () {
         printPropiedades(datos.campo_propiedad)
     })
-
-
-
   </script>
 
 </body>

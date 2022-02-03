@@ -153,11 +153,11 @@
         <div class="w-50">
           <div class="headerRight px-2">
             <div>&nbsp;</div>
-            <div><h6 class="m-0">Aporte </h6></div>
+            <div style="margin-left: 60px;"><h6 class="m-0">Aporte </h6></div>
             <div id="aporteState">
               <div  class="d-flex justify-content-center alig-items-center gap-2">
-                <div class="dotIcon iconAporte" title="Aprobar Aporte"><i class="fas fa-times"></i></div>
-                <div class="dotIcon iconAporte" title="Rechazar Aporte"><i class="fas fa-check"></i></div>
+                <div class="dotIcon iconAporte" title="Aprobar Aporte"><i class="fas fa-times" onclick="sendAporte('A')"></i></div>
+                <div class="dotIcon iconAporte" title="Rechazar Aporte"><i class="fas fa-check" onclick="sendAporte('R')"></i></div>
               </div>
             </div>
           </div>
@@ -200,6 +200,7 @@
             <hr class="horizontal dark my-4">
             <div class="">
               <h6 style="font-size: 15px;" class="my-2">Datos del Aporte</h6>
+              <span style="display: none;" id="idAporte"></span>
               <div class="d-flex">
                 <div class="w-60"><h6>Blanco Biológico: <span class="opacity-7 dataAporteBB"></span></h6></div>
                 <div class="w-40"><h6>Lugar: <span class="opacity-7" id="dataAportPlace"></span></h6></div>
@@ -314,6 +315,10 @@
       let data = JSON.parse($(this).attr("data-aporte"))
       console.log(data)
 
+      
+      $("#idAporte").attr("data-idAporte", data.id)
+      $("#idAporte").attr("data-idUser", data.id_user)
+
       $("#dataAporteName").text(data.nombre)
       $("#dataAporteDate").text(data.fecha)
       $(".dataAporteBB").text(data.descripcion_blanco_biologico)
@@ -342,6 +347,25 @@
 
       $("#rightSideContainer").show();
     })
+
+    let sendAporte = (state) => {
+      let dataSend = {
+        "id_aporte": Number($("#idAporte").attr("data-idAporte")),
+        "estado": state,
+        "id_usuario": Number($("#idAporte").attr("data-idUser"))
+      }
+
+      fetch('http://104.236.159.193:3010/actualizar_aporte', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(dataSend)
+      })
+      .then(res => res.json())
+      .then(res => {
+        location.reload();
+      });
+    }
+
 
     $(document).ready(function () {
       printAportes(creados)

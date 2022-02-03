@@ -1,8 +1,8 @@
 <style>
     /* Style Scrollbar */
-    .removeScrollbar::-webkit-scrollbar {
+    /* .removeScrollbar::-webkit-scrollbar {
       display: none;
-    }
+    } */
     /* .scrollBar::-webkit-scrollbar {
       width: 12px;              
     }
@@ -23,15 +23,19 @@
 
 
 <!-- Menu -->
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 removeScrollbar" id="sidenav-main" >
-  <div class="sidenav-header">
-    <div class="navbar-brand m-0 d-flex gap-2" style="font-size: 20px;">
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 removeScrollbar" id="sidenav-main" style="z-index: 1;" >
+  <div class="sidenav-header" style="background-color: #4caf50;">
+    <!-- <div class="navbar-brand m-0 d-flex gap-2" style="font-size: 20px;">
       <span class="ms-1 font-weight-bold">QUID</span>
+    </div> -->
+
+    <div style="width: 100%; height: 85px;" class="d-flex justify-content-center"> 
+      <img src="http://api.pedbox.co:8850/images/logo_quid_blanco.png" alt="" style="max-height: 100%; max-width: 100%;">
     </div>
   </div>
-  <hr class="horizontal dark mt-0">
+  
   <!-- Menu -->
-  <div class="collapse navbar-collapse  w-auto h-auto max-height-vh-100 h-100 scrollBar" id="sidenav-collapse-main">
+  <div class="collapse navbar-collapse  w-auto h-auto max-height-vh-100 h-100 scrollBar" id="sidenav-collapse-main" style="background-color: white;">
     <ul class="navbar-nav">
       <li class="nav-item" >
         <a class="nav-link"  data-bs-toggle="collapse" href="#collapseCatalog" >

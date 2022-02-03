@@ -151,14 +151,14 @@
                         Actulizar datos
                       </h6>
                     </div>
-                    <div class="createUser" style="display: none; cursor: pointer;">
+                    <div class="createUser" style="display: none; cursor: pointer;" onclick="newSucursalData()">
                       <h6 class="m-0" style="color: green;">
                         <i class="fas fa-plus"></i>
                         Crear Sucursal 
                       </h6>
                     </div>
-                    <div class="saveData" style="display: none; cursor: pointer;">
-                      <h6 class="m-0" style="color: green">
+                    <div class="saveData" style="display: none; cursor: pointer;" onclick="updateSucursalData()">
+                      <h6 class="m-0" style="color: green" >
                         <i class="fas fa-save"></i>
                         Guardar datos
                       </h6>
@@ -183,12 +183,17 @@
                       <div id="directionContainer" class="d-flex gap-2">
                         <div class="flex-fill">
                           <h6 class="m-0">Telefono: </h6> 
-                          <input type="number" class="form-control inputField inactiveField" id="userPhoneS">
+                          <input type="number" class="form-control inputField inactiveField" id="telefonoField">
                         </div>
                         <div class="flex-fill">
                           <h6 class="m-0">Ext: </h6> 
-                          <input type="number" class="form-control inputField inactiveField" id="phoneExtension">
+                          <input type="number" class="form-control inputField inactiveField" id="extensionField">
                         </div>
+                      </div>
+
+                      <div >
+                        <h6 class="m-0">Dirección: </h6> 
+                        <input type="text" class="form-control inputField inactiveField" id="direccionField">
                       </div>
 
                       <div ><h6 class="m-0">Departamento: </h6> 
@@ -220,6 +225,8 @@
                           </div>
                         </div>
                       </div>
+
+                      <span id="userID"></span>
                     </div>
                     
                   </div>
@@ -263,10 +270,10 @@
            .replace(/\\t/g, "\\t")
            .replace(/\\b/g, "\\b")
            .replace(/\\f/g, "\\f")
-           .replace(/[\u0000-\u0019]+/g,""); 
+           .replace(/[\u0000-\u0019]+/g,"")
+           .replace(/\n/g, "\\n"); 
 
       // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
       s = JSON.parse(s)
       console.log(s)
       return s
@@ -345,10 +352,13 @@
       $("#userCity").text(data.ciudad)
       $("#userDep").text(data.departamento)
 
+      $("#userID").attr("data-userId", data.id)
+      $("#userID").attr("data-isConfirm", data.confirmado)
       $("#inputName").val(data.nombre)
       $("#userPhone").val(data.celular)
-      $("#userPhoneS").val(data.telefono)
-      $("#phoneExtension").val(data.extension)
+      $("#telefonoField").val(data.telefono)
+      $("#extensionField").val(data.extension)
+      $("#direccionField").val(data.direccion)
 
       if (data.perfil == "S") {
         $("#toggleButton").prop("checked", true);
@@ -391,6 +401,76 @@
       $("#userDep").text("")
 
       $("#detailModal").modal("show")
+    }
+
+
+    const newSucursalData = () => {
+      if ($("#inputName").val() == "") {alert("Ingrese nombre del usuario"); return};
+
+      let data = {
+        "id_usuario": 0,
+        "nombre": $("#inputName").val(),
+        "usuario": "",
+        "clave": "",
+        "id_cargo": 26,
+        "confirmado": 0,
+        "id_ciudad": Number($( "#selectCity option:selected" ).val()),
+        "perfil": ($('#toggleButton').is(':checked') ? "A" : "I"),
+        "telefono": Number($("#telefonoField").val()),
+        "extension": Number($("#extensionField").val()),
+        "celular": Number($("#userPhone").val()),
+        "direccion": $("#direccionField").val(),
+        "id_rol": 5,
+      }
+
+      // fetch('http://104.236.159.193:3010/usuario', {
+      //   method: 'POST',
+      //   headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+      //   body: JSON.stringify(data)
+      // })
+      // .then(res => res.json())
+      // .then(res => {
+      //   console.log(res)
+      //   if (res.success) {} 
+      //   // if (res.success) {location.reload()} 
+      //   else {console.error("No fue posbile actualizar datos")}
+      // });
+
+      console.log(data)
+    };
+
+    const updateSucursalData = () => {
+      if ($("#inputName").val() == "") {alert("Ingrese nombre del usuario"); return};
+
+      let data = {
+        "id_usuario": Number($("#userID").attr("data-userId")),
+        "nombre": $("#inputName").val(),
+        "usuario": "",
+        "clave": "",
+        "id_cargo": 26,
+        "confirmado": Number($("#userID").attr("data-isConfirm")),
+        "id_ciudad": Number($( "#selectCity option:selected" ).val()),
+        "perfil": ($('#toggleButton').is(':checked') ? "A" : "I"),
+        "telefono": Number($("#telefonoField").val()),
+        "extension": Number($("#extensionField").val()),
+        "celular": Number($("#userPhone").val()),
+        "direccion": $("#direccionField").val(),
+        "id_rol": 5,
+      }
+      console.log(data)
+
+      // fetch('http://104.236.159.193:3010/usuario', {
+      //   method: 'PUT',
+      //   headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+      //   body: JSON.stringify(data)
+      // })
+      // .then(res => res.json())
+      // .then(res => {
+      //   console.log(res)
+      //   if (res.success) {} 
+      //   // if (res.success) {location.reload()} 
+      //   else {console.error("No fue posbile actualizar datos")}
+      // });
     }
 
     $(".updateData").on("click", function () {

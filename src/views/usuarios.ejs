@@ -61,7 +61,7 @@
 
 
     /* Style Scrollbar */
-    .removeScrollbar::-webkit-scrollbar {
+    /* .removeScrollbar::-webkit-scrollbar {
       display: none;
     }
     ::-webkit-scrollbar {
@@ -79,7 +79,7 @@
     .scrollBar {
       scrollbar-width: 5px;         
       scrollbar-color: white lightgray;   
-    }
+    } */
 
     /* Nav */
     .activeNav{
@@ -205,20 +205,20 @@
 
               <div class="updateDataButton">
                 <hr class="horizontal dark mt-0">
-                <div class="updateData" >
+                <div class="updateData">
                   <h6 class="m-0">
                     <i class="fas fa-pen"></i>
-                    Actulizar datos
+                    Actualizar datos
                   </h6>
                 </div>
-                <div class="createUser" style="display: none; ">
+                <div class="createUser" style="display: none;" onclick="createUser()">
                   <h6 class="m-0" style="color: green;">
                     <i class="fas fa-plus"></i>
                     Crear Usuario 
                   </h6>
                 </div>
-                <div class="saveData" style="display: none;">
-                  <h6 class="m-0" style="color: green">
+                <div class="saveData" style="display: none;" onclick="updateUserData()">
+                  <h6 class="m-0" style="color: green" >
                     <i class="fas fa-save"></i>
                     Guardar datos
                   </h6>
@@ -278,7 +278,7 @@
   
                   <div id="claveField" style="display: none">
                     <h6 class="m-0">Verificar Clave: </h6> 
-                    <input type="password" class="form-control inputField inactiveField" id="confirmPassword">
+                    <input type="password" class="form-control inputField inactiveField" id="passwordConfirm">
                   </div>
   
                   <div >
@@ -335,6 +335,8 @@
                       </div>
                     </div>
                   </div>
+
+                  <span id="isConfirm" style="display: none;"></span>
                 </div>
                 
                 <div class="sucursalView"> <!-- Para después --> </div>
@@ -393,7 +395,6 @@
   <script>  
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
-
       // Remove special characters
       s = s.replace(/\\n/g, "\\n")  
            .replace(/\\'/g, "\\'")
@@ -408,12 +409,7 @@
            .replace(/\r/g, "\\\\r")
            .replace(/\t/g, "\\\\t");
 
-      // Remove New Lines
-      
-      s = JSON.parse(s)
-      console.log(s)
-      return s
-      
+      return JSON.parse(s)
     }
 
     var activeUsers = '<%- activos %>';
@@ -424,7 +420,7 @@
 
     var cargos = '<%- cargos %>';
     cargos = handleJSON(cargos)
-
+    
     var roles = '<%- roles %>';
     roles = handleJSON(roles)
 
@@ -543,20 +539,20 @@
       $("#selectKindContainer").html('<select name="" id="selectKind"></select>')
       for (let i = 0; i < roles.roles.length; i++) {
         let element = `
-          <option value="${roles.roles[i].descripcion}" data-id="${roles.roles[i].id}" ${(roles.roles[i].id == data.id_rol ? "selected" : "")}>${roles.roles[i].descripcion}</option>
+          <option value="${roles.roles[i].id}" data-id="${roles.roles[i].id}" ${(roles.roles[i].id == data.id_rol ? "selected" : "")}>${roles.roles[i].descripcion}</option>
         `;
         $("#selectKind").append(element)
       }
-      $("#userKind").text($("#selectKind").val())
+      $("#userKind").text($("#selectKind option:selected").text())
 
       $("#selectCargoContainer").html('<select name="" id="selectCargo"></select>')
       for (let i = 0; i < cargos.cargos.length; i++) {
         let element = `
-          <option value="${cargos.cargos[i].descripcion}" data-id="${cargos.cargos[i].id}" ${(cargos.cargos[i].id == data.id_cargo ? "selected" : "")} >${cargos.cargos[i].descripcion}</option>
+          <option value="${cargos.cargos[i].id}" data-id="${cargos.cargos[i].id}" ${(cargos.cargos[i].id == data.id_cargo ? "selected" : "")} >${cargos.cargos[i].descripcion}</option>
         `;
         $("#selectCargo").append(element)
       }
-      $("#userCargo").text($("#selectCargo").val())
+      $("#userCargo").text($("#selectCargo option:selected").text())
 
       // Print Datos
       $("#inputName").val(data.nombre)
@@ -567,6 +563,8 @@
 
       $("#inputPassword").val(data.clave)
       $("#userPhone").val(data.celular)
+
+      $("#isConfirm").attr("isConfirm", data.confirmado)
 
       if (data.confirmado) {
         $("#toggleButton").prop("checked", true);
@@ -612,7 +610,7 @@
       $("#selectKindContainer").html('<select name="" id="selectKind"></select>')
       for (let i = 0; i < roles.roles.length; i++) {
         let element = `
-          <option value="${roles.roles[i].descripcion}" data-id="${roles.roles[i].id}">${roles.roles[i].descripcion}</option>
+          <option value="${roles.roles[i].id}" data-id="${roles.roles[i].id}">${roles.roles[i].descripcion}</option>
         `;
         $("#selectKind").append(element)
       }
@@ -622,7 +620,7 @@
       $("#selectCargoContainer").html('<select name="" id="selectCargo"></select>')
       for (let i = 0; i < cargos.cargos.length; i++) {
         let element = `
-        <option value="${cargos.cargos[i].descripcion}" data-id="${cargos.cargos[i].id}"  >${cargos.cargos[i].descripcion}</option>
+        <option value="${cargos.cargos[i].id}" data-id="${cargos.cargos[i].id}"  >${cargos.cargos[i].descripcion}</option>
         `;
         $("#selectCargo").append(element)
       }
@@ -688,26 +686,69 @@
       $("#pointsNavigator").show()
     })
 
-    const sendData = () =>{
+    const createUser = () => {
+      if ($("#inputName").val() == "") {alert("Ingrese nombre del usuario"); return};
+      if ($("#inputUser").val() == "") {alert("Ingrese Usuario"); return}
+      if ($("#inputPassword").val() == "") {alert("Ingrese contraseña del usuario"); return}
+      if ($("#inputPassword").val() != $("#passwordConfirm").val()) {alert("Las contraseñas no coinciden"); return}
+      if (Number($("#selectCargo option:selected" ).val()) == 0) {alert("Ingrese cargo del usuario"); return}
+      if (Number($("#selectKind option:selected" ).val()) == 0) {alert("Ingrese tipo de usuario"); return}
+
       let data = {
-        "id_usuario": Number($("#userDetail").attr("data-idUser")),
+        "id_usuario": 0,
         "nombre": $("#inputName").val(),
         "usuario": $("#inputUser").val(),
         "clave": $("#inputPassword").val(),
-        "id_cargo": 7,
-        "confirmado": 0,
-        "id_ciudad": 1,
+        "id_cargo": Number($("#selectCargo option:selected" ).val()),
+        "confirmado": ($("#isConfirm").attr("isConfirm") ? Number($("#isConfirm").attr("isConfirm")) : 1),
+        "id_ciudad": Number($( "#selectCity option:selected" ).val()),
         "perfil": ($('#toggleButton').is(':checked') ? "A" : "I"),
         "telefono": $("#telefonoField").val(),
         "extension": $("#extensionField").val(),
         "celular": Number($("#userPhone").val()),
         "direccion": $("#directionField").val(),
-        "id_rol": 2,
+        "id_rol": Number($( "#selectKind option:selected" ).val()),
+      }
+      console.log(data)
+
+      fetch('http://104.236.159.193:3010/usuario', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.success) {} 
+        // if (res.success) {location.reload()} 
+        else {console.error("No fue posbile crear el usuario")}
+      });
+    }
+
+    const updateUserData = () => {
+      if ($("#inputName").val() == "") {alert("Ingrese nombre del usuario"); return};
+      if ($("#inputUser").val() == "") {alert("Ingrese Usuario"); return}
+      if ($("#inputPassword").val() == "") {alert("Ingrese contraseña del usuario"); return}
+
+      let data = {
+        "id_usuario": Number($("#userDetail").attr("data-idUser")),
+        "nombre": $("#inputName").val(),
+        "usuario": $("#inputUser").val(),
+        "clave": $("#inputPassword").val(),
+        "id_cargo": Number($("#selectCargo option:selected" ).val()),
+        "confirmado": Number($("#isConfirm").attr("isConfirm")),
+        "id_ciudad": Number($( "#selectCity option:selected" ).val()),
+        "perfil": ($('#toggleButton').is(':checked') ? "A" : "I"),
+        "telefono": $("#telefonoField").val(),
+        "extension": $("#extensionField").val(),
+        "celular": Number($("#userPhone").val()),
+        "direccion": $("#directionField").val(),
+        "id_rol": Number($( "#selectKind option:selected" ).val()),
       }
       console.log(data)
 
       // fetch('http://104.236.159.193:3010/usuario', {
-      //   method: 'POST',
+      //   method: 'PUT',
       //   headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
       //   body: JSON.stringify(data)
       // })
@@ -721,11 +762,11 @@
     }
 
     $(document).on("change", "#selectCargo", function () {
-      $("#userCargo").text($(this).val())
+      $("#userCargo").text($(this).text())
     })
 
     $(document).on("change", "#selectKind", function () {
-      $("#userKind").text($(this).val())
+      $("#userKind").text($(this).text())
     })
 
     $(document).ready(function () {

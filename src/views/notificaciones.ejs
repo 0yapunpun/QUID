@@ -66,7 +66,6 @@
               <th  class="text-left text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-30 noSorter">Mensaje</th>
               <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter">Fecha</th>
               <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Destino</th>
-              <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Plataforma</th>
               <th  class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 noSorter ">Público</th>
             </tr> 
           </thead>  
@@ -88,53 +87,46 @@
           <div class="modal-body bg-gray-100 d-flex flex-column">
             <div>
               <label for="">Titulo</label>
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" id="titleForm">
             </div>
             <div>
               <label for="">Mensaje</label>
-              <textarea class="form-control" id="" cols="30" rows="10"></textarea>
-            </div>
-
-            <div>
-              <label for="">Plataforma</label>
-              <div class="d-flex justify-contet-center alig-items-center gap-3">
-                <div class="form-check mb-3">
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
-                  <label class="custom-control-label" for="customRadio1">Android</label>
-                </div>
-                <div class="form-check mb-3">
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
-                  <label class="custom-control-label" for="customRadio1">iOS</label>
-                </div>
-                <div class="form-check mb-3">
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
-                  <label class="custom-control-label" for="customRadio1">Ambas</label>
-                </div>
-              </div>
+              <textarea class="form-control" id="mesajeForm"></textarea>
             </div>
             
             <div>
               <label for="">Destino</label>
               <div class="d-flex justify-contet-center alig-items-center gap-3">
                 <div class="form-check mb-3">
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
-                  <label class="custom-control-label" for="customRadio1">Todos los asesores</label>
+                  <input class="form-check-input" type="radio" name="radioUser" value="asesores" onclick="$('#userSelectContainer').hide(); $('#asesorSelectContainer').hide()">
+                  <label class="custom-control-label" for="radioUser" value="asesores">Todos los asesores</label>
                 </div>
     
                 <div class="form-check mb-3">
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
-                  <label class="custom-control-label" for="customRadio1">Asesor único</label>
+                  <input class="form-check-input" type="radio" name="radioUser" value="asesor" onclick="$('#userSelectContainer').hide(); $('#asesorSelectContainer').show()">
+                  <label class="custom-control-label" for="radioUser" value="asesor">Asesor único</label>
                 </div>
     
                 <div class="form-check mb-3">
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
-                  <label class="custom-control-label" for="customRadio1">Usuario único</label>
+                  <input class="form-check-input" type="radio" name="radioUser" value="usuario" onclick="$('#userSelectContainer').show(); $('#asesorSelectContainer').hide()">
+                  <label class="custom-control-label" for="radioUser" >Usuario único</label>
                 </div>
               </div>
             </div>
+
+            <div id="userSelectContainer" style="display: none;">
+              <label for="">Escoger Usuario</label>
+              <select name="" id="selectUser"></select>
+            </div>
+
+            <div id="asesorSelectContainer" style="display: none;">
+              <label for="">Escoger Asesor</label>
+              <select name="" id="selectAsesor"></select>
+            </div>
+            
           </div>
           <div class="modal-footer justify-content-center">
-            <button type="button" class="btn btn-primary">Enviar Nitificación</button>
+            <button type="button" class="btn btn-primary" onclick="sendNewNotification()">Enviar Notificación</button>
           </div>
     
         </div>
@@ -199,7 +191,6 @@
             <td>${data[i].mensaje}</td>
             <td class="text-center">${data[i].fecha}</td>
             <td class="text-center">${data[i].destino}</td>
-            <td class="text-center">${data[i].plataforma}</td>
             <td class="text-center">${data[i].numero_publico}</td>
           </tr>
         `;
@@ -214,12 +205,73 @@
       $("#newNotification").modal("show")
     })
 
+    const sendNewNotification = () => {
+      let tipo = $('input[name="radioUser"]:checked').val();
+      let idUsuario;
+
+      if (tipo === "asesores") {idUsuario = 0;}
+      if (tipo === "usuario") {idUsuario = $( "#selectUser option:selected" ).val();}
+      if (tipo === "asesor") {idUsuario = $( "#selectAsesor option:selected" ).val();}
+      
+      let dataSend = {
+        "titulo": $("#titleForm").val(),
+        "mensaje": $("#mesajeForm").val(),
+        "tipo": $('input[name="radioUser"]:checked').val(),
+        "plataforma": 3,
+        "id_usuario": Number(idUsuario),
+        "asesores": false,
+      }
+
+      fetch('http://104.236.159.193:3010/enviar_notificacion', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(dataSend)
+      })
+      .then(res => res.json())
+      .then(res => {
+        $("#newNotification").modal("hide");
+      });
+    }
+
+    const printAsesoresUsuariosList = (data) => {
+      let usuarios = _.where(data, {perfil: "U"});
+      let asesores = _.where(data, {perfil: "A"});
+
+      // Usuarios
+      for (let i = 0; i < usuarios.length; i++) {
+        let element = `
+          <option value="${usuarios[i].id}">${usuarios[i].nombre}</option>
+        `;
+        $("#selectUser").append(element)
+      };
+      $("#selectUser").append(`<option value="" selected disabled hidden>...</option>`);
+      const choiceUer = new Choices($('#selectUser')[0]);
+
+      // Asesores
+      for (let i = 0; i < asesores.length; i++) {
+        let element = `
+          <option value="${asesores[i].id}">${asesores[i].nombre}</option>
+        `;
+        $("#selectAsesor").append(element)
+      };
+      $("#selectAsesor").append(`<option value="" selected disabled hidden>...</option>`);
+      const choiceAsesor = new Choices($('#selectAsesor')[0]);
+      
+
+      console.log(usuarios)
+    }
+
     var notificacionesList = '<%- notificaciones %>';
     notificacionesList = handleJSON(notificacionesList)
-    console.log(notificacionesList)
+    // console.log(notificacionesList)
+
+    var usuarios = '<%- usuarios %>';
+    usuarios = handleJSON(usuarios)
+    // console.log(usuarios)
 
     $(document).ready(function () {
       printTable(notificacionesList.notificaciones)
+      printAsesoresUsuariosList(usuarios.usuarios)
     })
 
   </script>

@@ -75,9 +75,10 @@ const solicitudInformacionDetail = (req, res) => {
     })
 }
 
+
 const notificaciones = (req, res) => {
     controller.getNotifications(req, (resp) => {
-        res.render('notificaciones', {"notificaciones": resp})
+        res.render('notificaciones', {"notificaciones": resp.notificaciones, "usuarios": resp.usuarios})
     })
 }
 

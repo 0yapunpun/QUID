@@ -75,7 +75,7 @@
     <%- include('./partials/head.ejs') %>
 
     <!-- Cotent -->
-    <div class="p-4 m-4">
+    <div class="p-4 ">
       <div class="w-100 p-3 ps-4">
         <h4>Asignación de permisos por rol</h4>
         <h6>Permisos para la plataforma</h6>
@@ -182,17 +182,37 @@
       }
 
       $("#displayFiltered").html("")
+      console.log(hasPermissions)
       for (let i = 0; i < hasPermissions.length; i++) {
         let element = `
-          <div class="form-switch d-flex justify-content-between px-4 pt-2" data-id="${hasPermissions[i].definicion}">
+          <div class="form-switch d-flex justify-content-between px-4 pt-2" data-id="${hasPermissions[i].id}" data-idRole="${hasPermissions[i].id_role}" data-idConfig="${hasPermissions[i].id_configuracion}">
             <label class="form-check-label" for="flexSwitchCheckDefault">${hasPermissions[i].descripcion}</label>
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" ${hasPermissions[i].contenido == "S" ? "checked" : ""}>
+            <input class="form-check-input checkboxPermission" type="checkbox" id="flexSwitchCheckDefault" ${hasPermissions[i].contenido == "S" ? "checked" : ""}>
           </div>
         `;
         $("#displayFiltered").append(element)
         $("#displayFiltered")
       }
     };
+
+    $(document).on("change", ".checkboxPermission", function () {
+      let dataSend = {
+        "id_role": Number($(this).parent().attr("data-idRole")),
+        "id_configuracion": Number($(this).parent().attr("data-idConfig")),
+        "contenido": ($(this).is(':checked') ? "S" : "N")
+      }
+
+      fetch('http://104.236.159.193:3010/guardar_permisos_rol', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(dataSend)
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+      });
+      console.log(dataSend)
+    })
 
     $(document).on('change','#rolesSelect',function(){
       let currentCatalog = Number($("#displayFiltered").attr("data-currentCatalog"))

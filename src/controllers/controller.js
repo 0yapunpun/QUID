@@ -202,9 +202,23 @@ controller = {
 			url: 'http://104.236.159.193:3010/obtener_notificaciones',
 		};
 
+		var users = {
+			method: 'GET',
+			url: 'http://104.236.159.193:3010/obtener_usuarios_notificacion',
+		};
+
 		request(options, function(err, res, resp) {
 			if (err) { console.error(err); resp = false; }
-			cb(resp);
+
+			request(users, function(err, res, resp2) {
+				if (err) { console.error(err); resp2 = false; }
+
+				let response = {
+					"notificaciones" : resp,
+					"usuarios": resp2
+				}
+				cb(response);
+			});
 		});
 	},
 
