@@ -214,19 +214,61 @@
       console.log("cosas pasan")
     });
 
+
+    //  Esta funcion deberia podr cargar todas la ventanas a la vez. No esta probrada, implementar
+    let catalogosLista = ["Cultivos", "Enfermedades", "Malezas", "Plagas", "Productos"]
+    const printSections = (data) => {
+
+      for (let c = 0; c < catalogosLista.length; c++) {
+        let dataCatalogo = _.where(catalogosLista, {descripcion_catalogo: catalogosLista[c]});
+        let sectionsCatalogo = [];
+        
+        for (let i = 0; i < dataCatalogo.length; i++) {
+          if (!sectionsCatalogo.includes(dataCatalogo[i].seccion)) {
+            sectionsCatalogo.push(dataCatalogo[i].seccion);
+          };
+        }
+
+        for (let i = 0; i < sectionsCatalogo.length; i++) {
+          let sectionsContentCatalog = [];
+          sectionsContentCatalog = _.where(data, {seccion: sectionsCatalogo[i], descripcion_catalogo: catalogosLista[c]});
+  
+          let element = `
+            <h6 class="text-xs">${sectionsCatalogo[i]}</h6>
+            <div id="${catalogosLista[c].sectionsCatalogo[i]}" class="ms-2 mt-2"></div>
+          `;
+          $("#section"+catalogosLista[c]).append(element);
+
+          for (let e = 0; e < sectionsContentCatalog.length; e++) {
+            let elementX = `
+              <div class="ms-2 d-flex gap-3" data-position="${e + 1}" id-section="${sectionsContentCatalog[e].id_campo}" id-campo="${sectionsCatalogo[e].id_campo}" id-propiedad="${sectionsCatalogo[e].id_propiedad}" id-catalogoSeccion="${sectionsCatalogo[e].id_catalogo_seccion}" id-catalogoPropiedad="${sectionsCatalogo[e].id_catalogo_propiedad}">
+                <div class="iconAporte moveUp"><i class="fas fa-arrow-up"></i></div>
+                <div class="iconAporte moveDown"><i class="fas fa-arrow-down"></i></div>
+                ${sectionsContentCatalog[e].titulo}
+              </div>
+            `;
+            $("#"+catalogosLista[c]+sectionsCatalogo[i]).append(elementX)
+          }
+        }
+        $("#section"+catalogosLista[c]).append(`<div class="dotIcon iconAporte" title="Aprobar Aporte" style="margin-left: 33px"><i class="fas fa-plus"></i></div>`)
+      }
+    };
+
     printSeccionesDetail = (data) => {
       // Cultivos
       let cultivos = _.where(data, {descripcion_catalogo: "Cultivos"});
+      console.log(cultivos)
       let cultivosSecciones = [];
       for (let i = 0; i < cultivos.length; i++) {
         if (!cultivosSecciones.includes(cultivos[i].seccion)) {
           cultivosSecciones.push(cultivos[i].seccion);
         }
       };
+      console.log(cultivosSecciones)
       for (let i = 0; i < cultivosSecciones.length; i++) {
         let subSectionConent = [];
         subSectionConent = _.where(data, {seccion: cultivosSecciones[i], descripcion_catalogo: "Cultivos"});
-        console.log(subSectionConent);
+        console.log("!!", subSectionConent);
 
         let element = `
           <h6 class="text-xs">${cultivosSecciones[i]}</h6>
@@ -260,7 +302,6 @@
       for (let i = 0; i < EnfermedadesSecciones.length; i++) {
         let subSectionConent2 = [];
         subSectionConent2 = _.where(data, {seccion: EnfermedadesSecciones[i], descripcion_catalogo: "Enfermedades"});
-        console.log(subSectionConent2);
 
         let element = `
           <div id="enfermedades${EnfermedadesSecciones[i]}" class="ms-2 mt-2">
@@ -292,7 +333,6 @@
       for (let i = 0; i < malezasSecciones.length; i++) {
         let subSectionConent3 = [];
         subSectionConent3 = _.where(data, {seccion: malezasSecciones[i], descripcion_catalogo: "Malezas"});
-        console.log(subSectionConent3);
 
         let element = `
           <div id="malezas${malezasSecciones[i]}" class="ms-2 mt-2">
@@ -324,7 +364,6 @@
       for (let i = 0; i < plagasSecciones.length; i++) {
         let subSectionConent4 = [];
         subSectionConent4 = _.where(data, {seccion: plagasSecciones[i], descripcion_catalogo: "Plagas"});
-        console.log(subSectionConent4);
 
         let element = `
           <div id="plagas${plagasSecciones[i]}" class="ms-2 mt-2">
@@ -379,36 +418,48 @@
 
     $(document).on("click", ".moveUp", function () {
       let previus = $(this).parent().prev();
-      if (previus.length == 0) {
-        alert("soy el primero")
-      }
-      console.log($(this).parent().prev())
+      let container = $(this).parent().parent();
+      let clone = $(this).parent().clone();
+
+      if (previus.length == 0) {return}
+
+      $(this).parent().remove();
+      $(previus).before(clone)
+
+      container = $(container).children();
+      for (let i = 0; i < container.length; i++) {
+        $(container[i]).attr("data-position", i + 1)
+        }
     })
 
     $(document).on("click", ".moveDown", function () {
       let next = $(this).parent().next();
-      if (next.length == 0) {
-        alert("soy el ultimo")
+      let container = $(this).parent().parent()
+      let clone = $(this).parent().clone();
+
+      if (next.length == 0) {return}
+
+      $(this).parent().remove();
+      $(next).after(clone);
+
+      container = $(container).children();
+      for (let i = 0; i < container.length; i++) {
+        $(container[i]).attr("data-position", i + 1)
       }
-      console.log($(this).parent().next())
     })
 
 
     var catalogos = '<%- catalogos %>';
     catalogos = handleJSON(catalogos)
-    console.log(catalogos)
 
     var catalogosSecciones = '<%- catalogosSecciones %>';
     catalogosSecciones = handleJSON(catalogosSecciones)
-    console.log(catalogosSecciones)
 
     var catalogoSeccionesSubsecciones = '<%- catalogoSeccionesSubsecciones %>';
     catalogoSeccionesSubsecciones = handleJSON(catalogoSeccionesSubsecciones)
-    console.log(catalogoSeccionesSubsecciones)
 
     var subsecciones = '<%- subsecciones %>';
     subsecciones = handleJSON(subsecciones)
-    console.log(subsecciones)
 
     $(document).ready(function () {
       printPropiedades(subsecciones.campo_propiedad)
