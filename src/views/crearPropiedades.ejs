@@ -330,11 +330,10 @@
     }
 
     var datos = '<%- data %>';
-    datos = handleJSON(datos)
-    console.log(datos)
-
+    datos = handleJSON(datos);
+    
     $(document).ready(function () {
-        printPropiedades(datos.campo_propiedad)
+        printPropiedades(datos.data.campo_propiedad)
     })
   </script>
 

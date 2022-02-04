@@ -131,10 +131,12 @@
 
     $(document).ready(function () {
       var movimientos = '<%- data %>';
-      movimientos = handleJSON(movimientos)
+      movimientos = handleJSON(movimientos);
+      movimientos = movimientos.data;
 
       var movimientos2 = '<%- data2 %>';
-      movimientos2 = handleJSON(movimientos2)
+      movimientos2 = handleJSON(movimientos2);
+      movimientos2 = movimientos2.data;
       
       loadCards(movimientos.cuenta)
       console.log(movimientos.cuenta)

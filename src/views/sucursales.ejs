@@ -350,21 +350,21 @@
            .replace(/[\u0000-\u0019]+/g,"")
            .replace(/\n/g, "\\n"); 
 
-      // Remove New Lines
       s = JSON.parse(s)
-      console.log(s)
       return s
-      
     }
 
     var activeSucursal = '<%- activos %>';
-    activeSucursal = handleJSON(activeSucursal)
+    activeSucursal = handleJSON(activeSucursal);
+    activeSucursal = activeSucursal.data;
 
     var inactiveSucursal = '<%- inactivos %>';
-    inactiveSucursal = handleJSON(inactiveSucursal)
+    inactiveSucursal = handleJSON(inactiveSucursal);
+    inactiveSucursal = inactiveSucursal.data;
 
     var departamentos = '<%- departamentos %>';
-    departamentos = handleJSON(departamentos)
+    departamentos = handleJSON(departamentos);
+    departamentos = departamentos.data;
 
     const printUsers = (data) => {
       $("#itemsUsers").html("")

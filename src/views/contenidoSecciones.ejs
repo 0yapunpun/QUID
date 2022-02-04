@@ -59,9 +59,10 @@
         
       <div class="d-flex gap-2 justify-content-center">
 
-        <div class="card p-2 w-45" style="display: none;"> 
+        <div id="propiedadesContainer" class="card p-2 w-45" style="display: none;"> 
           <h6>Secciones</h6>
-          <div id="propiedades" style="max-height: 70vh; overflow: scroll;">
+          <div id="propiedades" style="height: auto;" > 
+            <!-- Contenido dinamico -->
           </div>  
         </div>
 
@@ -104,6 +105,10 @@
              <div id="sectionMalezas" class="sectionContenido" style="display: none;"></div>
              <div id="sectionPlagas" class="sectionContenido" style="display: none;"></div>
              <div id="sectionProductos" class="sectionContenido" style="display: none;"></div>
+           </div>
+
+           <div>
+             <button onclick="saveConfiguration()" class="btn bnt-primary" style="background-color: #4caf50; color: white;">Guardar Cambios</button>
            </div>
 
           </div>
@@ -177,15 +182,24 @@
 
     const saveConfiguration = () => {
       let fields = $(".infoHarvest");
-      console.log(fields)
-
       let data = {};
       for (let i = 0; i < fields.length; i++) {
-        data["seccion_catalogo_editar["+i+"][id]"] = Number($(fields[i]).attr("id"));
-        data["seccion_catalogo_editar["+i+"][id_catalogo]"] = Number($(fields[i]).attr("id-catalogo"));
-        data["seccion_catalogo_editar["+i+"][id_seccion]"] = Number($(fields[i]).attr("id-seccion"));
-        data["seccion_catalogo_editar["+i+"][orden]"] = Number($(fields[i]).attr("data-orden"));
+        if (!($(fields[i]).attr("id-catalogo-propiedad"))) {
+          data["parametros["+i+"][id]"] = 0;
+          data["parametros["+i+"][id_catalogo]"] = Number($(fields[i]).attr("id-catalogo"));
+          data["parametros["+i+"][id_propiedad]"] = Number($(fields[i]).attr("id-propiedad"));
+          data["parametros["+i+"][id_catalogo_seccion]"] = Number($(fields[i]).attr("id-catalogo-seccion"));
+          data["parametros["+i+"][orden]"] = Number($(fields[i]).attr("data-position"));
+          continue
+        }
+
+        data["parametros_actualizar["+i+"][id]"] = Number($(fields[i]).attr("id-catalogo-propiedad"));
+        data["parametros_actualizar["+i+"][id_catalogo]"] = Number($(fields[i]).attr("id-catalogo"));
+        data["parametros_actualizar["+i+"][id_propiedad]"] = Number($(fields[i]).attr("id-propiedad"));
+        data["parametros_actualizar["+i+"][id_catalogo_seccion]"] = Number($(fields[i]).attr("id-catalogo-seccion"));
+        data["parametros_actualizar["+i+"][orden]"] = Number($(fields[i]).attr("data-position"));
       };
+      console.log(data)
 
       // fetch('http://104.236.159.193:3010/catalogo_secciones', {
       //   method: 'POST',
@@ -210,17 +224,11 @@
       { "id": 12, "descripcion": "Url", "maestro": 0}
     ];
 
-    $(document).on("click", ".detailPropiedad", function () {
-      console.log("cosas pasan")
-    });
-
-
     //  Esta funcion deberia podr cargar todas la ventanas a la vez. No esta probrada, implementar
     let catalogosLista = ["Cultivos", "Enfermedades", "Malezas", "Plagas", "Productos"]
     const printSections = (data) => {
-
       for (let c = 0; c < catalogosLista.length; c++) {
-        let dataCatalogo = _.where(catalogosLista, {descripcion_catalogo: catalogosLista[c]});
+        let dataCatalogo = _.where(data, {descripcion_catalogo: catalogosLista[c]});
         let sectionsCatalogo = [];
         
         for (let i = 0; i < dataCatalogo.length; i++) {
@@ -232,189 +240,74 @@
         for (let i = 0; i < sectionsCatalogo.length; i++) {
           let sectionsContentCatalog = [];
           sectionsContentCatalog = _.where(data, {seccion: sectionsCatalogo[i], descripcion_catalogo: catalogosLista[c]});
-  
+
           let element = `
-            <h6 class="text-xs">${sectionsCatalogo[i]}</h6>
-            <div id="${catalogosLista[c].sectionsCatalogo[i]}" class="ms-2 mt-2"></div>
+            <div class="text-center">
+              <h6 class="text-xs">${sectionsCatalogo[i]}</h6>
+              <div id="${catalogosLista[c] + sectionsCatalogo[i].replace(/\s/g, "")}" class="ms-2 mt-2"></div>
+            </div>
           `;
           $("#section"+catalogosLista[c]).append(element);
-
+          
           for (let e = 0; e < sectionsContentCatalog.length; e++) {
             let elementX = `
-              <div class="ms-2 d-flex gap-3" data-position="${e + 1}" id-section="${sectionsContentCatalog[e].id_campo}" id-campo="${sectionsCatalogo[e].id_campo}" id-propiedad="${sectionsCatalogo[e].id_propiedad}" id-catalogoSeccion="${sectionsCatalogo[e].id_catalogo_seccion}" id-catalogoPropiedad="${sectionsCatalogo[e].id_catalogo_propiedad}">
+              <div class="ms-2 d-flex gap-3 infoHarvest" data-position="${e + 1}" id-catalogo-propiedad="${sectionsContentCatalog[e].id_catalogo_propiedad}" id-catalogo="${sectionsContentCatalog[e].id_catalogo}" id-propiedad="${sectionsContentCatalog[e].id_propiedad}" id-catalogo-seccion="${sectionsContentCatalog[e].id_catologo_seccion}">
+                <div class="iconAporte removeSection" style="color: red"><i class="fas fa-trash"></i></div>
                 <div class="iconAporte moveUp"><i class="fas fa-arrow-up"></i></div>
                 <div class="iconAporte moveDown"><i class="fas fa-arrow-down"></i></div>
                 ${sectionsContentCatalog[e].titulo}
               </div>
             `;
-            $("#"+catalogosLista[c]+sectionsCatalogo[i]).append(elementX)
+            $("#"+catalogosLista[c]+sectionsCatalogo[i].replace(/\s/g, "")).append(elementX)
+            if (e === sectionsContentCatalog.length - 1) {
+              $("#"+catalogosLista[c]+sectionsCatalogo[i].replace(/\s/g, "")).parent().append(`<div class="iconAporte iconAdd" title="Agregar Propiedad a la sección" style="margin-left: 15px; color: green"><i class="fas fa-plus"></i></div>`)
+              $("#"+catalogosLista[c]+sectionsCatalogo[i].replace(/\s/g, "")).attr("id-catalogo", sectionsContentCatalog[e].id_catalogo)
+              $("#"+catalogosLista[c]+sectionsCatalogo[i].replace(/\s/g, "")).attr("id-catalogo-seccion", sectionsContentCatalog[e].id_catologo_seccion)
+            }
           }
         }
-        $("#section"+catalogosLista[c]).append(`<div class="dotIcon iconAporte" title="Aprobar Aporte" style="margin-left: 33px"><i class="fas fa-plus"></i></div>`)
       }
     };
 
-    printSeccionesDetail = (data) => {
-      // Cultivos
-      let cultivos = _.where(data, {descripcion_catalogo: "Cultivos"});
-      console.log(cultivos)
-      let cultivosSecciones = [];
-      for (let i = 0; i < cultivos.length; i++) {
-        if (!cultivosSecciones.includes(cultivos[i].seccion)) {
-          cultivosSecciones.push(cultivos[i].seccion);
-        }
-      };
-      console.log(cultivosSecciones)
-      for (let i = 0; i < cultivosSecciones.length; i++) {
-        let subSectionConent = [];
-        subSectionConent = _.where(data, {seccion: cultivosSecciones[i], descripcion_catalogo: "Cultivos"});
-        console.log("!!", subSectionConent);
+    var appendTo;
+    $(document).on("click", ".detailPropiedad", function () {
+      let text = $(this).text();
+      let id = $(this).attr("data-id")
+      let idCatalogo = $(appendTo).attr("id-catalogo")
+      let idCatalogoSeccion = $(appendTo).attr("id-catalogo-seccion")
 
-        let element = `
-          <h6 class="text-xs">${cultivosSecciones[i]}</h6>
-          <div id="cultivos${cultivosSecciones[i]}" class="ms-2 mt-2">
-          
-          </div>
-        `;
-        $("#sectionCultivos").append(element);
+      let element = `
+        <div class="ms-2 d-flex gap-3 infoHarvest" id-propiedad="${id}" id-catalogo="${idCatalogo}" id-catalogo-seccion="${idCatalogoSeccion}">
+          <div class="iconAporte removeSection" style="color: red"><i class="fas fa-trash"></i></div>
+          <div class="iconAporte moveUp"><i class="fas fa-arrow-up"></i></div>
+          <div class="iconAporte moveDown"><i class="fas fa-arrow-down"></i></div>
+          ${text}
+        </div>
+      `;
+      $(appendTo).append(element);
 
-        for (let e = 0; e < subSectionConent.length; e++) {
-          let elementX = `
-            <div class="ms-2 d-flex gap-3" data-position="${e + 1}">
-              <div class="iconAporte moveUp"><i class="fas fa-arrow-up"></i></div>
-              <div class="iconAporte moveDown"><i class="fas fa-arrow-down"></i></div>
-              ${subSectionConent[e].titulo}
-            </div>
-          `
-          $("#cultivos"+cultivosSecciones[i]).append(elementX)
-        };
-        $("#sectionCultivos").append(`<div class="dotIcon iconAporte" title="Aprobar Aporte" style="margin-left: 33px"><i class="fas fa-plus"></i></div>`)
-      };
+      // Calc position
+      appendTo = $(appendTo).children();
+      for (let i = 0; i < appendTo.length; i++) {
+        $(appendTo[i]).attr("data-position", i + 1)
+      }
+      appendTo = "";
+      $("#propiedadesContainer").hide();
+    });
 
-      // Enfermedades
-      let enfermedades = _.where(data, {descripcion_catalogo: "Enfermedades"});
-      let EnfermedadesSecciones = [];
-      for (let i = 0; i < enfermedades.length; i++) {
-        if (!EnfermedadesSecciones.includes(enfermedades[i].seccion)) {
-          EnfermedadesSecciones.push(enfermedades[i].seccion);
-        }
-      };
-      for (let i = 0; i < EnfermedadesSecciones.length; i++) {
-        let subSectionConent2 = [];
-        subSectionConent2 = _.where(data, {seccion: EnfermedadesSecciones[i], descripcion_catalogo: "Enfermedades"});
+    $(document).on("click", ".iconAdd", function () {
+      appendTo = $(this).prev();
+      $("#propiedadesContainer").show();
+    })
 
-        let element = `
-          <div id="enfermedades${EnfermedadesSecciones[i]}" class="ms-2 mt-2">
-            <h6 class="text-xs">${EnfermedadesSecciones[i]}</h6>
-          </div>
-        `;
-        $("#sectionEnfermedades").append(element);
+    $(document).on("click", ".removeSection", function () {
+      if (!confirm("Esta seguro de eliminar esta propiedad")) {return}
 
-        for (let e = 0; e < subSectionConent2.length; e++) {
-          let elementX = `
-            <div class="ms-2 d-flex gap-2">
-              <div><i class="fas fa-arrow-up"></i></div>
-              <div><i class="fas fa-arrow-down"></i></div>
-              ${subSectionConent2[e].titulo}
-            </div>
-          `
-          $("#enfermedades"+EnfermedadesSecciones[i]).append(elementX)
-        };
-      };
+      let id = $(this).parent().attr("data-id");
+      $(this).parent().remove()
 
-      // Malezas
-      let malezas = _.where(data, {descripcion_catalogo: "Malezas"});
-      let malezasSecciones = [];
-      for (let i = 0; i < malezas.length; i++) {
-        if (!malezasSecciones.includes(malezas[i].seccion)) {
-          malezasSecciones.push(malezas[i].seccion);
-        }
-      };
-      for (let i = 0; i < malezasSecciones.length; i++) {
-        let subSectionConent3 = [];
-        subSectionConent3 = _.where(data, {seccion: malezasSecciones[i], descripcion_catalogo: "Malezas"});
-
-        let element = `
-          <div id="malezas${malezasSecciones[i]}" class="ms-2 mt-2">
-            <h6 class="text-xs">${malezasSecciones[i]}</h6>
-          </div>
-        `;
-        $("#sectionMalezas").append(element);
-
-        for (let e = 0; e < subSectionConent3.length; e++) {
-          let elementX = `
-            <div class="ms-2 d-flex gap-2">
-              <div><i class="fas fa-arrow-up"></i></div>
-              <div><i class="fas fa-arrow-down"></i></div>
-              ${subSectionConent3[e].titulo}
-            </div>
-          `
-          $("#malezas"+malezasSecciones[i]).append(elementX)
-        };
-      };
-
-      // Plagas
-      let plagas = _.where(data, {descripcion_catalogo: "Plagas"});
-      let plagasSecciones = [];
-      for (let i = 0; i < plagas.length; i++) {
-        if (!plagasSecciones.includes(plagas[i].seccion)) {
-          plagasSecciones.push(plagas[i].seccion);
-        }
-      };
-      for (let i = 0; i < plagasSecciones.length; i++) {
-        let subSectionConent4 = [];
-        subSectionConent4 = _.where(data, {seccion: plagasSecciones[i], descripcion_catalogo: "Plagas"});
-
-        let element = `
-          <div id="plagas${plagasSecciones[i]}" class="ms-2 mt-2">
-            <h6 class="text-xs">${plagasSecciones[i]}</h6>
-          </div>
-        `;
-        $("#sectionPlagas").append(element);
-
-        for (let e = 0; e < subSectionConent4.length; e++) {
-          let elementX = `
-            <div class="ms-2 d-flex gap-2">
-              <div><i class="fas fa-arrow-up"></i></div>
-              <div><i class="fas fa-arrow-down"></i></div>
-              ${subSectionConent4[e].titulo}
-            </div>
-          `
-          $("#plagas"+plagasSecciones[i]).append(elementX)
-        };
-      };
-
-      // Productos
-      let productos = _.where(data, {descripcion_catalogo: "Productos"});
-      let productosSecciones = [];
-      for (let i = 0; i < productos.length; i++) {
-        if (!productosSecciones.includes(productos[i].seccion)) {
-          productosSecciones.push(productos[i].seccion);
-        }
-      };
-      for (let i = 0; i < productosSecciones.length; i++) {
-        let subSectionConent5 = [];
-        subSectionConent5 = _.where(data, {seccion: productosSecciones[i], descripcion_catalogo: "Productos"});
-
-        let element = `
-          <div id="productos${productosSecciones[i]}" class="ms-2 mt-2">
-            <h6 class="text-xs">${productosSecciones[i]}</h6>
-          </div>
-        `;
-        $("#sectionProductos").append(element);
-
-        for (let e = 0; e < subSectionConent5.length; e++) {
-          let elementX = `
-            <div class="ms-2 d-flex gap-2" data-position="${e}">
-              <div><i class="fas fa-arrow-up"></i></div>
-              <div><i class="fas fa-arrow-down"></i></div>
-              ${subSectionConent5[e].titulo}
-            </div>
-          `
-          $("#productos"+productosSecciones[i]).append(elementX)
-        };
-      };
-    }  
+      // http://104.236.159.193:3010/catalogo_eliminar_prodiedad/287
+    })
 
     $(document).on("click", ".moveUp", function () {
       let previus = $(this).parent().prev();
@@ -429,7 +322,7 @@
       container = $(container).children();
       for (let i = 0; i < container.length; i++) {
         $(container[i]).attr("data-position", i + 1)
-        }
+      }
     })
 
     $(document).on("click", ".moveDown", function () {
@@ -450,20 +343,26 @@
 
 
     var catalogos = '<%- catalogos %>';
-    catalogos = handleJSON(catalogos)
+    catalogos = handleJSON(catalogos);
+    catalogos = catalogos.data;
 
     var catalogosSecciones = '<%- catalogosSecciones %>';
-    catalogosSecciones = handleJSON(catalogosSecciones)
+    catalogosSecciones = handleJSON(catalogosSecciones);
+    catalogosSecciones = catalogosSecciones.data;
 
     var catalogoSeccionesSubsecciones = '<%- catalogoSeccionesSubsecciones %>';
-    catalogoSeccionesSubsecciones = handleJSON(catalogoSeccionesSubsecciones)
+    catalogoSeccionesSubsecciones = handleJSON(catalogoSeccionesSubsecciones);
+    catalogoSeccionesSubsecciones = catalogoSeccionesSubsecciones.data;
 
     var subsecciones = '<%- subsecciones %>';
-    subsecciones = handleJSON(subsecciones)
+    subsecciones = handleJSON(subsecciones);
+    subsecciones = subsecciones.data;
+
+    
 
     $(document).ready(function () {
       printPropiedades(subsecciones.campo_propiedad)
-      printSeccionesDetail(catalogoSeccionesSubsecciones.catalogo_propiedad_campo)
+      printSections(catalogoSeccionesSubsecciones.catalogo_propiedad_campo)
     })
 
 
@@ -475,6 +374,14 @@
 
 <!-- POST -->
 <!-- http://104.236.159.193:3010/catalogo_propiedad/ -->
+
+
+<!-- PAYLOAD nueva propiedad -->
+<!-- parametros[0][id]: 0
+parametros[0][id_catalogo]: 1
+parametros[0][id_propiedad]: 52
+parametros[0][id_catalogo_seccion]: 2
+parametros[0][orden]: 5 -->
 
 <!-- PAYLOAD -->
 <!-- parametros_actualizar[0][id]: 276

@@ -307,7 +307,7 @@
         .then(data => { return data.json()})
         .then(data => { return handleJSON(data.data)})
         .then(data => { solicitudesPendientes = data})
-        .then(data => { printTable(solicitudesPendientes.solicitudes)});
+        .then(data => { printTable(solicitudesPendientes.data.solicitudes)});
     };
 
     const getCerradas = () => {
@@ -316,7 +316,7 @@
         .then(data => { return data.json()})
         .then(data => { return handleJSON(data.data)})
         .then(data => { solicitudesCerradas = data})
-        .then(data => { printTable(solicitudesCerradas.solicitudes)});
+        .then(data => { printTable(solicitudesCerradas.data.solicitudes)});
     }
 
     const handleJSON = (s) => {
@@ -455,10 +455,9 @@
       .then(res => {
         if (res) {
           let detail = JSON.parse(res.detalle)
-          console.log(detail)
           let nota = JSON.parse(res.nota)
-          console.log(nota)
-          printDetail(rowData, detail, nota)
+
+          printDetail(rowData, detail.data, nota.data)
         } 
         else {console.error("No fue posbile obtener detalle de la solicitud")}
       });
@@ -495,10 +494,12 @@
 
 
     var solicitudesAbiertas = '<%- solicitudesA %>';
+    solicitudesAbiertas = handleJSON(solicitudesAbiertas);
+    solicitudesAbiertas = solicitudesAbiertas.data;
+
     var solicitudesPendientes;
     var solicitudesCerradas;
 
-    solicitudesAbiertas = handleJSON(solicitudesAbiertas)
     printTable(solicitudesAbiertas.solicitudes)
 
   </script>

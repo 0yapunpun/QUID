@@ -46,31 +46,24 @@
 
     <!-- Cotent -->
     <div class="p-4 m-4" style="height: 100vh; ">
-
       <div class="w-100 h-100 d-flex justify-content-center align-items-center">
-
-        <div class="card">
+        <div class="card" style="width: 40vw;">
           <div class="imgContainer">
             <img src="http://api.pedbox.co:8850/images/logo_quid_blanco.png" style="max-height: 100%; max-width: 100%;">
           </div>
-
           <div class="m-3 mb-1">
             <label for="">Usuario</label>
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" id="username">
           </div>
-
           <div class="m-3">
             <label for="" class="mt-2">Contraseña</label>
-            <input type="password" class="form-control">
+            <input type="password" class="form-control" id="password">
           </div>
-  
-          <button class="btn btn-primary mt-4 mx-3" style="background-color: #4caf50;">Ingresar</button>
+          <button id="btnIngresar" class="btn btn-primary mt-4 mx-3" style="background-color: #4caf50;">Ingresar</button>
           <hr class="horizontal dark mt-0">
           <label for="" class="text-center mb-3 forgotPassword">¿Olvidó su Contraseña?</label>
         </div>
-
       </div>
-
     </div>  
       
   </main>
@@ -95,6 +88,25 @@
 
   <script>  
 
+
+    $("#btnIngresar").click(function () {
+      let usuario = $("#username").val().trim();
+      let contrasena = $("#password").val().trim();
+
+      if (usuario == "" || contrasena == "") { return };
+      var credenciales = { "usuario" : usuario, "clave": contrasena};
+
+      fetch('/login/autentication', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(credenciales)
+      })
+      .then(res => res.json())
+      .then(res => {
+
+      });
+
+    })
 
 
   </script>

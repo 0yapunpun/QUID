@@ -1073,10 +1073,10 @@
 
     $(document).ready(function () {
       let id = '<%- id %>';
-
+      
       let detailProducto= '<%- detalleProducto %>';
       detailProducto = handleJSON(detailProducto)
-
+      
       let detailPropiedad= '<%- detallePropiedad %>';
       detailPropiedad = handleJSON(detailPropiedad);
       
@@ -1096,20 +1096,20 @@
       detailCatalogoEnfermedades = handleJSON(detailCatalogoEnfermedades)
 
       var catalogos = {
-        "productos" : detailCatalogoProducts.catalogo_enc,
-        "cultivos" : detailCatalogoCultivos.catalogo_enc,
-        "malezas" : detailCatalogoMaleza.catalogo_enc,
-        "plagas" : detailCatalogoPlagas.catalogo_enc,
-        "enfermedades" : detailCatalogoEnfermedades.catalogo_enc
+        "productos" : detailCatalogoProducts.data.catalogo_enc,
+        "cultivos" : detailCatalogoCultivos.data.catalogo_enc,
+        "malezas" : detailCatalogoMaleza.data.catalogo_enc,
+        "plagas" : detailCatalogoPlagas.data.catalogo_enc,
+        "enfermedades" : detailCatalogoEnfermedades.data.catalogo_enc
       }
 
 
-      printData(detailProducto, detailPropiedad, catalogos);
+      printData(detailProducto.data, detailPropiedad.data, catalogos);
       getCatalogId(catalogos);
       textAreaSize();
       imageAmountIndicator();
       
-      let currentCatalog = detailPropiedad.catalogo_detalle_propiedad[0].descripcion_catalogo;
+      let currentCatalog = detailPropiedad.data.catalogo_detalle_propiedad[0].descripcion_catalogo;
       handleSectionByCatalog(currentCatalog);
     })
   </script>

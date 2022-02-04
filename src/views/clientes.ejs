@@ -137,6 +137,7 @@
 
     let clientes= '<%- clientes %>';
     clientes = handleJSON(clientes);
+    clientes = clientes.data
 
     $(document).ready(function () {
       printTable(clientes.lista_cliente)

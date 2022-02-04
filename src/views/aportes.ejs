@@ -278,7 +278,8 @@
     }
 
     var aportes = '<%- aportes %>';
-    aportes = handleJSON(aportes)
+    aportes = handleJSON(aportes);
+    aportes = aportes.data;
 
     let creados = _.where(aportes.aporte, {estado: "C"})
     let aprobados = _.where(aportes.aporte, {estado: "A"})

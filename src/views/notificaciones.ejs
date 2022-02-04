@@ -267,11 +267,12 @@
 
     var notificacionesList = '<%- notificaciones %>';
     notificacionesList = handleJSON(notificacionesList)
-    // console.log(notificacionesList)
+    notificacionesList = notificacionesList.data;
 
     var usuarios = '<%- usuarios %>';
     usuarios = handleJSON(usuarios)
-    // console.log(usuarios)
+    usuarios = usuarios.data;
+    console.log(usuarios)
 
     $(document).ready(function () {
       printTable(notificacionesList.notificaciones)

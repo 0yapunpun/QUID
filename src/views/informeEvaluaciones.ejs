@@ -186,11 +186,11 @@
 
     var evaluaciones = '<%- evaluaciones %>';
     evaluaciones = handleJSON(evaluaciones);
-    console.log(evaluaciones)
+    evaluaciones = evaluaciones.data;
 
     var respuestas = '<%- respuestas %>';
     respuestas = handleJSON(respuestas);
-    console.log(respuestas)
+    respuestas = respuestas.data;
 
     const printTable = (data) => {
       $("#tableContainer").html("");

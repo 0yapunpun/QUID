@@ -386,28 +386,24 @@
 
     var ficha = '<%- ficha %>';
     ficha = handleJSON(ficha)
-    // console.log(ficha)
 
     var capacitaciones = '<%- capacitaciones %>';
     capacitaciones = handleJSON(capacitaciones)
-    // console.log(capacitaciones)
 
     var aporte = '<%- aporte %>'; 
     aporte = handleJSON(aporte)
-    // console.log(aporte)
 
     var acompañamiento = '<%- acompañamiento %>';
     acompañamiento = handleJSON(acompañamiento)
-    // console.log(acompañamiento)
     
     $(document).ready(function () {
-      loadCards(movimientos.cuenta)
-      chartRecomendation(recomendaciones.cuenta)
-      chartClients(clientes.cuenta)
-      chartFichas(ficha.cuenta)
-      chartCapacitaciones(capacitaciones.cuenta)
-      chartAportes(aporte.cuenta)
-      chartAcompañamiento(acompañamiento.cuenta)
+      loadCards(movimientos.data.cuenta)
+      chartRecomendation(recomendaciones.data.cuenta)
+      chartClients(clientes.data.cuenta)
+      chartFichas(ficha.data.cuenta)
+      chartCapacitaciones(capacitaciones.data.cuenta)
+      chartAportes(aporte.data.cuenta)
+      chartAcompañamiento(acompañamiento.data.cuenta)
     })
 
   </script>

@@ -26,6 +26,10 @@
     .noSorter .dataTable-sorter::before{
       opacity: 0;
     }
+    .dataTable-wrapper .dataTable-bottom .dataTable-pagination .dataTable-pagination-list .active a {
+      background-image: none !important;
+      background-color: #4caf50;
+    }
   </style>
 </head>
 
@@ -138,7 +142,9 @@
     
 
     var usuarios = '<%- usuarios %>';
-    usuarios = handleJSON(usuarios)
+    console.log(usuarios)
+    usuarios = handleJSON(usuarios);
+    usuarios = usuarios.data;
     printTable(usuarios)
 
   </script>

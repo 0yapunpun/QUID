@@ -489,19 +489,23 @@
 
     var activeUsers = '<%- activos %>';
     activeUsers = handleJSON(activeUsers)
+    activeUsers = activeUsers.data;
 
     var inactiveUsers = '<%- inactivos %>';
     inactiveUsers = handleJSON(inactiveUsers)
+    inactiveUsers = inactiveUsers.data;
 
     var cargos = '<%- cargos %>';
     cargos = handleJSON(cargos)
+    cargos = cargos.data;
     
     var roles = '<%- roles %>';
     roles = handleJSON(roles)
+    roles = roles.data;
 
     var departamentos = '<%- departamentos %>';
     departamentos = handleJSON(departamentos)
-    // let cargos = handleJSON(masters)
+    departamentos = departamentos.data
 
     const printUsers = (data) => {
       $("#itemsUsers").html("")
@@ -554,16 +558,19 @@
       data = JSON.parse(data)
       let id = data.id
 
+
       $("#preloader").show()
       fetch('/usuarios/'+id)
       .then(res => res.json())
       .then(res => {
         if (res) {
           let response = JSON.parse(res.data);
+          response = response.data;
+          console.log(response)
           printDataUser(data, response);
-          $(".inputField").addClass("inactiveField")
-          $(".inputSelect").addClass("inactiveSelect")
-          $("#rankingIndicator").show()
+          $(".inputField").addClass("inactiveField");
+          $(".inputSelect").addClass("inactiveSelect");
+          $("#rankingIndicator").show();
           $(".saveData").hide();
           $(".createUser").hide();
           $(".updateData").show();

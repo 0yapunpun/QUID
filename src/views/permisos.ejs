@@ -141,7 +141,8 @@
     }
 
     var permisos = '<%- permisos %>';
-    permisos = handleJSON(permisos)
+    permisos = handleJSON(permisos);
+    permisos = permisos.data;
 
     const loadInputSelect = (data) => {
       for (let i = 0; i < data.length; i++) {

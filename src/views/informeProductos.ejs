@@ -307,7 +307,7 @@
         $("#preloader").hide();
         general = handleJSON(res.general);
         detail = handleJSON(res.detail);
-        loadCards(general.cuenta, detail.cuenta);
+        loadCards(general.data.cuenta, detail.data.cuenta);
       })
       .catch(error => console.error(error));
 
@@ -315,11 +315,11 @@
 
     var general = '<%- general %>';
     general = handleJSON(general);
-    // console.log(general)
-
+    general = general.data;
+    
     var detail = '<%- detail %>';
     detail = handleJSON(detail);
-
+    detail = detail.data;
 
     $(document).ready(function () {
       loadCards(general.cuenta, detail.cuenta);

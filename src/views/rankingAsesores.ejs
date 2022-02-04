@@ -149,7 +149,7 @@
     $(document).ready(function () {
       var ranking = '<%- lista %>';
       ranking = handleJSON(ranking)
-      console.log(ranking)
+      ranking = ranking.data;
       printTable(ranking.ranking)
     })
 

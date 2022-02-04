@@ -188,15 +188,13 @@
 
     var datos = '<%- data %>';
     datos = handleJSON(datos)
-    console.log(datos)
 
     var dataSecciones = '<%- dataSecciones %>';
     dataSecciones = handleJSON(dataSecciones)
-    console.log(dataSecciones)
 
     $(document).ready(function () {
-      printSecciones(dataSecciones.secciones)
-      printSeccionesCatalogo(datos.catalogo_secciones)
+      printSecciones(dataSecciones.data.secciones)
+      printSeccionesCatalogo(datos.data.catalogo_secciones)
     })
 
     // Método POST

@@ -186,7 +186,7 @@
 
   <script>
     let catalogContent;
-    const removeSpecialCharacters = (s) => { //TODO revisar, parseo no funciona desde el back
+    const handleResponse = (s) => {
       s = s.replace(/\\n/g, "\\n")  
            .replace(/\\'/g, "\\'")
            .replace(/\\"/g, '\\"')
@@ -194,8 +194,9 @@
            .replace(/\\r/g, "\\r")
            .replace(/\\t/g, "\\t")
            .replace(/\\b/g, "\\b")
-           .replace(/\\f/g, "\\f");
-      s = s.replace(/[\u0000-\u0019]+/g,""); 
+           .replace(/\\f/g, "\\f")
+           .replace(/[\u0000-\u0019]+/g,""); 
+      s = JSON.parse(s)
       return s;
     };
 
@@ -276,22 +277,11 @@
       };
     });
 
-    // script.onreadystatechange(function(){ 
-    //   if(script.readyState == 'loaded' || script.readyState == 'complete') {
-    //     $("#preloader").hide();
-    //   } 
-    // });
-
-
-
-    history.navigationMode = 'compatible';
     $(document).ready(function () {
-      catalogContent= '<%- catalogContent %>';
-      catalogContent = removeSpecialCharacters(catalogContent)
-      catalogContent = JSON.parse(catalogContent)
-      console.log(catalogContent)
+      catalogContent= `<%- catalogContent %>`;
+      catalogContent = handleResponse(catalogContent)
 
-      printItems(catalogContent.catalogo_enc)
+      printItems(catalogContent.data.catalogo_enc)
       $("#preloader").hide();
     })
 

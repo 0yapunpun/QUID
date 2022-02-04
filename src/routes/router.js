@@ -2,52 +2,53 @@ const express = require('express');
 const router = express.Router();
 
 const indexController = require('../controllers/index');
+const viewController = require('../controllers/viewController.js');
 
 // Catalogos
-router.get('/catalogos/cultivos', indexController.catalogoCultivos);
-router.get('/catalogos/enfermedades', indexController.catalogoEnfermedades);
-router.get('/catalogos/malezas', indexController.catalogoMalezas);
-router.get('/catalogos/plagas', indexController.catalogoPlagas);
-router.get('/catalogos/productos', indexController.catalogoProductos);
-router.get('/detail/:id', indexController.catalogoDetail);
+router.get('/catalogos/cultivos', viewController.cultivos);
+router.get('/catalogos/enfermedades', viewController.enfermedades);
+router.get('/catalogos/malezas', viewController.malezas);
+router.get('/catalogos/plagas', viewController.plagas);
+router.get('/catalogos/productos', viewController.productos);
+router.get('/detail/:id', viewController.catalogoDetail);
 
 // Configuraciones Catalogo
-router.get('/catalogo/crearPropiedades', indexController.crearPropiedades);
-router.get('/catalogo/seccionesCatalogo', indexController.seccionesCatalogo);
-router.get('/catalogo/contenidoSecciones', indexController.contenidoSecciones);
-
+router.get('/catalogo/crearPropiedades', viewController.crearPropiedades);
+router.get('/catalogo/seccionesCatalogo', viewController.seccionesCatalogo);
+router.get('/catalogo/contenidoSecciones', viewController.contenidoSecciones);
 
 // Informes
-router.get('/informes/ranking', indexController.ranking);
-router.get('/informes/movimientos', indexController.movimientos);
-router.get('/informes/movimientos/:id', indexController.movimientosUser);
-router.get('/informes/productos', indexController.informeProductos);
-router.get('/informes/productosDate/:date', indexController.informeProductosByDate);
-router.get('/informes/blancosBiologicos', indexController.blancosBiologicos);
-router.get('/informes/evaluaciones', indexController.evaluaciones);
-router.get('/informes/mapaCalor', indexController.mapaCalor);
-router.get('/informes/mapaBlancosBiologicos', indexController.mapaBlancosBiologicos);
+router.get('/informes/ranking', viewController.ranking);
+router.get('/informes/movimientos', viewController.movimientos);
+router.get('/informes/movimientos/:id', viewController.movimientosUsuario); //TODO controlar caso
+router.get('/informes/productos', viewController.informeProductos);
+router.get('/informes/productosDate/:date', viewController.informeProductosByDate);
+router.get('/informes/blancosBiologicos', viewController.getInformeBB);
+router.get('/informes/mapaBlancosBiologicos', viewController.mapBB);
+router.get('/informes/evaluaciones', viewController.evaluaciones);
+router.get('/informes/mapaCalor', viewController.mapaCalor);
 
 
-router.get('/aportes', indexController.aportes);
-router.get('/clientes', indexController.clientes);
-router.get('/notificaciones', indexController.notificaciones);
-router.get('/usuariosExternos', indexController.usuariosExternos);
-router.get('/sucursales', indexController.sucursales);
-router.get('/permisos', indexController.permisos);
+router.get('/aportes', viewController.aportes);
+router.get('/clientes', viewController.clientes);
+router.get('/notificaciones', viewController.notificaciones);
+router.get('/usuariosExternos', viewController.usuariosExternos);
+router.get('/permisos', viewController.permisos);
 
 // Usuarios
-router.get('/usuarios', indexController.usuarios);
-router.get('/usuarios/:id', indexController.rankingUser);
+router.get('/usuarios', viewController.usuarios);
+router.get('/usuarios/:id', viewController.rankingUser);
+router.get('/sucursales', viewController.sucursales);
 
 // Solicitud Informacion
-router.get('/solicitudInformacion', indexController.solicitudInformacion);
-router.get('/solicitudInformacion/pending', indexController.solicitudInformacionPending);
-router.get('/solicitudInformacion/closed', indexController.solicitudInformacionClosed);
-router.get('/solicitudInformacion/:id', indexController.solicitudInformacionDetail);
+router.get('/solicitudInformacion', viewController.solicitudesInformacion);
+router.get('/solicitudInformacion/pending', viewController.solicitudInformacionPending);
+router.get('/solicitudInformacion/closed', viewController.solicitudInformacionClosed);
+router.get('/solicitudInformacion/:id', viewController.solicitudInformacionDetail);
 
 // Login
-router.get('/login', indexController.login);
+router.get('/login', viewController.login);
+router.post('/login/autentication', viewController.loginAutentication);
 
 
 module.exports = router;
