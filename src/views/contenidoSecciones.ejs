@@ -182,36 +182,45 @@
 
     const saveConfiguration = () => {
       let fields = $(".infoHarvest");
-      let data = {};
+      let data;
+      let parametros = [];
+      let parametros_actualizar = [];
       for (let i = 0; i < fields.length; i++) {
         if (!($(fields[i]).attr("id-catalogo-propiedad"))) {
-          data["parametros["+i+"][id]"] = 0;
-          data["parametros["+i+"][id_catalogo]"] = Number($(fields[i]).attr("id-catalogo"));
-          data["parametros["+i+"][id_propiedad]"] = Number($(fields[i]).attr("id-propiedad"));
-          data["parametros["+i+"][id_catalogo_seccion]"] = Number($(fields[i]).attr("id-catalogo-seccion"));
-          data["parametros["+i+"][orden]"] = Number($(fields[i]).attr("data-position"));
+          parametros.push({
+            "id": 0,
+            "id_catalogo": Number($(fields[i]).attr("id-catalogo")),
+            "id_propiedad":  Number($(fields[i]).attr("id-propiedad")),
+            "id_catalogo_seccion": Number($(fields[i]).attr("id-catalogo-seccion")),
+            "orden": Number($(fields[i]).attr("data-position"))
+          })
           continue
         }
-
-        data["parametros_actualizar["+i+"][id]"] = Number($(fields[i]).attr("id-catalogo-propiedad"));
-        data["parametros_actualizar["+i+"][id_catalogo]"] = Number($(fields[i]).attr("id-catalogo"));
-        data["parametros_actualizar["+i+"][id_propiedad]"] = Number($(fields[i]).attr("id-propiedad"));
-        data["parametros_actualizar["+i+"][id_catalogo_seccion]"] = Number($(fields[i]).attr("id-catalogo-seccion"));
-        data["parametros_actualizar["+i+"][orden]"] = Number($(fields[i]).attr("data-position"));
+        parametros_actualizar.push({
+          "id": Number($(fields[i]).attr("id-catalogo-propiedad")),
+          "id_catalogo": Number($(fields[i]).attr("id-catalogo")),
+          "id_propiedad": Number($(fields[i]).attr("id-propiedad")),
+          "id_catalogo_seccion": Number($(fields[i]).attr("id-catalogo-seccion")),
+          "orden": Number($(fields[i]).attr("data-position"))
+        })
       };
-      console.log(data)
+      if (parametros.length == 0) {
+        data = parametros_actualizar
+      } else {
+        data = parametros
+      }
 
-      // fetch('http://104.236.159.193:3010/catalogo_secciones', {
-      //   method: 'POST',
-      //   headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-      //   body: JSON.stringify(data)
-      // })
-      // .then(res => res.json())
-      // .then(res => {
-      //   console.log(res)
-      //   if (res.success) {} 
-      //   else {console.error("No fue posbile actualizar")}
-      // });
+      fetch('http://104.236.159.193:3010/catalogo_propiedad', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.success) {} 
+        else {console.error("No fue posbile actualizar")}
+      });
     };
 
     let campos = [
@@ -357,8 +366,6 @@
     var subsecciones = '<%- subsecciones %>';
     subsecciones = handleJSON(subsecciones);
     subsecciones = subsecciones.data;
-
-    
 
     $(document).ready(function () {
       printPropiedades(subsecciones.campo_propiedad)

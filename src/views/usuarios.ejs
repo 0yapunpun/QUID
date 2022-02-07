@@ -793,7 +793,6 @@
         "direccion": $("#directionField").val(),
         "id_rol": Number($( "#selectKind option:selected" ).val()),
       }
-      console.log(data)
 
       fetch('http://104.236.159.193:3010/usuario', {
         method: 'POST',
@@ -803,8 +802,7 @@
       .then(res => res.json())
       .then(res => {
         console.log(res)
-        if (res.success) {} 
-        // if (res.success) {location.reload()} 
+        if (res.success) {$("#detailModal").modal("hide")} 
         else {console.error("No fue posbile crear el usuario")}
       });
     }
@@ -831,6 +829,7 @@
       }
       console.log(data)
 
+      // TODO estos datos estas desaparencidos los usuarios aaaaa
       // fetch('http://104.236.159.193:3010/usuario', {
       //   method: 'PUT',
       //   headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},

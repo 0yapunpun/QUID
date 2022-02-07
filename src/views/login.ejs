@@ -33,21 +33,16 @@
       transition: 0.3s;
       cursor: pointer;
     }
-
   </style>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-
-
-
   <main class="main-content max-height-vh-100 h-100">
-
 
     <!-- Cotent -->
     <div class="p-4 m-4" style="height: 100vh; ">
       <div class="w-100 h-100 d-flex justify-content-center align-items-center">
-        <div class="card" style="width: 40vw;">
+        <div class="card" style="width: 30vw;">
           <div class="imgContainer">
             <img src="http://api.pedbox.co:8850/images/logo_quid_blanco.png" style="max-height: 100%; max-width: 100%;">
           </div>
@@ -94,18 +89,22 @@
       let contrasena = $("#password").val().trim();
 
       if (usuario == "" || contrasena == "") { return };
-      var credenciales = { "usuario" : usuario, "clave": contrasena};
+      var credenciales = { 'usuario' : usuario, 'clave': contrasena};
 
-      fetch('/login/autentication', {
+      fetch('/login/loginValidate', {
         method: 'POST',
         headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
         body: JSON.stringify(credenciales)
       })
       .then(res => res.json())
       .then(res => {
-
+        console.log(res)
+        if (res.success) {
+          window.location.href = '/catalogos/cultivos'
+        } else {
+          alert("No fue posible iniciar sesion. Usuario o contraseña incorrectos")
+        }
       });
-
     })
 
 

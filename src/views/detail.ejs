@@ -41,7 +41,6 @@
     }
     .fichaImages{
       width: 300px;
-      /* height: 400px; */
     }
     .removeImgButton{
       width: 30px;
@@ -138,11 +137,9 @@
     .iconBlancosBiologicos:hover{
       transform: scale(1.1);
     }
-
     .iconBlancosBiologicosActive{
       border: solid 2px lightblue
     }
-
     #imgContainer{
       transition: 0.3s;
     }
@@ -162,10 +159,6 @@
       background-image: none !important;
       background-color: #4CAF50 !important;
     }
-
-
-
-
   </style>
 </head>
 
@@ -526,32 +519,40 @@
         "titulo": $("#fichaTitle").val(),
         "subtitulo": $("#fichaGenericName").val(),
         "idtipoproducto": "",
-        "estado": ($('#toggleButton').is(':checked') ? "A" : "I")
+        "estado": ($('#toggleButton').is(':checked') ? "A" : "I"),
+        "catalogo_detalle" : [],
+        "catalogo_producto": [],
+        "catalogo_blanco_biologico": []
       };
 
       let fields = $(".dataHarvest");
       for (let i = 0; i < fields.length; i++) {
-        data["catalogo_detalle["+i+"][id_catalogo_propiedad]"] = Number($(fields[i]).attr("data-propiedad"));   
-        data["catalogo_detalle["+i+"][id_catalogo_seccion]"] = Number($(fields[i]).attr("data-seccion"));   
-        data["catalogo_detalle["+i+"][id_campo_maestro]"] = ($(fields[i]).attr("data-maestro") ? $(fields[i]).attr("data-maestro") : undefined);   
-        data["catalogo_detalle["+i+"][contenido]"] = $(fields[i]).find("textarea").val();  
-        data["catalogo_detalle["+i+"][es_archivo]"] = ($(fields[i]).attr("data-isArchivo") ? $(fields[i]).attr("data-isArchivo") : 0);        
-        data["catalogo_detalle["+i+"][orden]"] = Number($(fields[i]).attr("data-orden"));  
+        data.catalogo_detalle.push({
+          "id_catalogo_propiedad": Number($(fields[i]).attr("data-propiedad")),
+          "id_catalogo_seccion":  Number($(fields[i]).attr("data-seccion")),
+          "id_campo_maestro": ($(fields[i]).attr("data-maestro") ? $(fields[i]).attr("data-maestro") : undefined),
+          "contenido":$(fields[i]).find("textarea").val(),
+          "es_archivo":($(fields[i]).attr("data-isArchivo") ? $(fields[i]).attr("data-isArchivo") : 0),
+          "orden": Number($(fields[i]).attr("data-orden"))
+        })
       }
 
       let fieldProducts = $(".dataHarvestProducts");
       for (let i = 0; i < fieldProducts.length; i++) {
-        data["catalogo_producto["+i+"][id_catalogo_encabezado_producto]"] = Number($(fieldProducts[i]).attr("data-id"));   
-        data["catalogo_producto["+i+"][dosis]"] = "Dosis no agregada"   
+        data.catalogo_producto.push({
+          "id_catalogo_encabezado_producto": Number($(fieldProducts[i]).attr("data-id")),
+          "dosis": "Dosis no agregada",
+        })
       }
 
       let fieldBB = $(".dataHarvestBB");
       for (let i = 0; i < fieldBB.length; i++) {
-        data["catalogo_blanco_biologico["+i+"][id_blanco_biologico]"] = Number($(fieldBB[i]).attr("data-id"));   
-        data["catalogo_blanco_biologico["+i+"][id_tipo_catalogo]"] = Number($(fieldBB[i]).attr("data-catalog"));    
+        data.catalogo_blanco_biologico.push({
+          "id_blanco_biologico": Number($(fieldBB[i]).attr("data-id")),
+          "id_tipo_catalogo": Number($(fieldBB[i]).attr("data-catalog"))
+        })
       }
 
-      console.log(data)
     
       fetch('http://104.236.159.193:3010/catalogo', {
         method: 'POST',

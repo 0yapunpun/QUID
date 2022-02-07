@@ -22,62 +22,85 @@ controller.login = async (req, res, next) => {
     res.render('login');
 }
 
-controller.loginAutentication = async (req, res, next) => {
-    let data = req.params;
+// jeka9599
+controller.loginValidate = async(req, res, next) => {
+    const resp = await service.loginAutentication(req.body);
+    let state;
+    if (resp.data.success) {
+        req.session.login = true;
+        req.session.idUser = resp.data.id_usuario;
+        delete resp.user;
+        state = {"success": true}
+    } else {
+        state = {"success": false}
+    }
+    res.send(state);
+};
 
-    console.log(data)
-    // const rService = await service.getCultivos(data);
-    // res.render("login");
+controller.logout = async (req, res, next) => {
+    req.session.destroy((err) => { 
+        if(err) return console.error(err);
+        res.redirect('/login'); return;
+    });
 }
 
 controller.cultivos = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const id = req.session.idUser; 
+    const userData = await service.userData(id);
     const rService = await service.getCultivos();
-    res.render('catalog', {'catalogContent': rService} );
+
+    res.render('catalog', {'catalogContent': rService, "userData": userData} );
 }
 
 controller.enfermedades = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const id = req.session.idUser; 
+    const userData = await service.userData(id);
+
     const rService = await service.getEnfermedades();
-    res.render('catalog', {'catalogContent': rService} );
+    res.render('catalog', {'catalogContent': rService, "userData": userData} );
 }
 
 controller.malezas = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const id = req.session.idUser; 
+    const userData = await service.userData(id);
+
     const rService = await service.getMalezas();
-    res.render('catalog', {'catalogContent': rService} );
+    res.render('catalog', {'catalogContent': rService, "userData": userData} );
 }
 
 controller.plagas = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const id = req.session.idUser; 
+    const userData = await service.userData(id);
+
     const rService = await service.getPlagas();
-    res.render('catalog', {'catalogContent': rService} );
+    res.render('catalog', {'catalogContent': rService, "userData": userData} );
 }
 
 controller.productos = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const id = req.session.idUser; 
+    const userData = await service.userData(id);
+
     const rService = await service.getProductos();
-    res.render('catalog', {'catalogContent': rService} );
-}
-
-controller.crearPropiedades = async(req, res, next) => {
-    const rService = await service.getListPropiedades();
-    res.render("crearPropiedades", {"data": rService})
-}
-
-controller.seccionesCatalogo = async(req, res, next) => {
-    const rCatalogoSecciones = await service.getCatalogoSecciones();
-    const rSecciones = await service.getSecciones();
-    res.render("seccionesCatalogo", {"data": rCatalogoSecciones, "dataSecciones": rSecciones})
-}
-
-controller.contenidoSecciones = async(req, res, next) => {
-    const catalogoPropiedadCampo = await service.getListaCatalogos();
-    const catalogoSecciones = await service.getCatalogoSecciones();
-    const catalogoSubsecciones = await service.getCatalogoPropiedadCampo();
-    const subSecciones = await service.getListPropiedades();
-
-    res.render("contenidoSecciones", {"catalogos": catalogoPropiedadCampo, "catalogosSecciones": catalogoSecciones, "catalogoSeccionesSubsecciones": catalogoSubsecciones, "subsecciones": subSecciones})
+    res.render('catalog', {'catalogContent': rService, "userData": userData} );
 }
 
 controller.catalogoDetail = async(req, res, next) => {
-    const id = req.params.id;
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
 
+    const id = req.params.id;
     const rDetail = await service.getDetail(id);
     const rDetailProperty = await service.getDetailProperty(id);
 
@@ -88,16 +111,63 @@ controller.catalogoDetail = async(req, res, next) => {
     const rProductos = await service.getProductos();
 
 
-    res.render('detail', {'detalleProducto': rDetail, "detallePropiedad": rDetailProperty, "catalogoCultivos": rcultivos, "catalogoEnfermedades": rEnfermedades, "catalogoMalezas": rMalezas, "catalogoPlagas": rPlagas, "catalogoProductos": rProductos, "id": id} );
+    res.render('detail', {"userData": userData, "detalleProducto": rDetail, "detallePropiedad": rDetailProperty, "catalogoCultivos": rcultivos, "catalogoEnfermedades": rEnfermedades, "catalogoMalezas": rMalezas, "catalogoPlagas": rPlagas, "catalogoProductos": rProductos, "id": id} );
 }
+
+controller.crearPropiedades = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
+        
+    const rService = await service.getListPropiedades();
+    res.render("crearPropiedades", {"userData": userData, "data": rService})
+}
+
+controller.seccionesCatalogo = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
+    const rCatalogoSecciones = await service.getCatalogoSecciones();
+    const rSecciones = await service.getSecciones();
+    res.render("seccionesCatalogo", {"userData": userData, "data": rCatalogoSecciones, "dataSecciones": rSecciones})
+}
+
+controller.contenidoSecciones = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
+    const catalogoPropiedadCampo = await service.getListaCatalogos();
+    const catalogoSecciones = await service.getCatalogoSecciones();
+    const catalogoSubsecciones = await service.getCatalogoPropiedadCampo();
+    const subSecciones = await service.getListPropiedades();
+
+    res.render("contenidoSecciones", {"userData": userData, "catalogos": catalogoPropiedadCampo, "catalogosSecciones": catalogoSecciones, "catalogoSeccionesSubsecciones": catalogoSubsecciones, "subsecciones": subSecciones})
+}
+
 
 // Informes
 controller.ranking = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     const rService = await service.getRanking();
-    res.render('rankingAsesores', {"lista": rService})
+    res.render('rankingAsesores', {"userData": userData, "lista": rService})
 }
 
 controller.movimientos = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     let date = currentDate();
 
     const rService = await service.contarPrincipales();
@@ -108,9 +178,46 @@ controller.movimientos = async(req, res, next) => {
     const aporte = await service.informeAporte(date);
     const acompañamiento = await service.informeAcompañamiento(date);
 
-    res.render('movimientos', {"data": rService, "clientes": clientes, "recomendaciones": recomendaciones, "ficha": fichas, "capacitaciones": capacitaciones, "aporte": aporte, "acompañamiento": acompañamiento})
+    res.render('movimientos', {"userData": userData, "data": rService, "clientes": clientes, "recomendaciones": recomendaciones, "ficha": fichas, "capacitaciones": capacitaciones, "aporte": aporte, "acompañamiento": acompañamiento})
 }
 
+controller.movimientosByDate = async (req, res, next) => {
+    let date = req.params.date
+
+    const clientes = await service.informeClientes(date);
+    const recomendaciones = await service.informeRecomendaciones(date);
+    const fichas = await service.informeFichas(date);
+    const capacitaciones = await service.informeCapacitaciones(date);
+    const aporte = await service.informeAporte(date);
+    const acompañamiento = await service.informeAcompañamiento(date);
+
+    res.send({"clientes": clientes, "recomendaciones": recomendaciones, "ficha": fichas, "capacitaciones": capacitaciones, "aporte": aporte, "acompañamiento": acompañamiento})
+}
+
+controller.movimientosByDateUser = async (req, res, next) => {
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
+    let date = req.params.date
+    date = date.replace("-", "/")
+    let user = req.params.user
+
+    console.log("?", date, user)
+
+
+    const rService = await service.contarPrincipalesByUser(user);
+    const clientes = await service.informeClientesByUser(date, user);
+    const recomendaciones = await service.informeRecomendacionesByUser(date, user);
+    const fichas = await service.informeFichasByUser(date, user);
+    const capacitaciones = await service.informeCapacitacionesByUser(date, user);
+    const aporte = await service.informeAporteByUser(date, user);
+    const acompañamiento = await service.informeAcompañamientoByUser(date, user);
+
+    res.render('movimientos', {"userData": userData, "data": rService,"clientes": clientes, "recomendaciones": recomendaciones, "ficha": fichas, "capacitaciones": capacitaciones, "aporte": aporte, "acompañamiento": acompañamiento})
+
+}
+
+// TODO arreglar 
 controller.movimientosUsuario = async(req, res, next) => {
     var id = req.params.id;
     const rService = await service.movimientosPorUsuario(id);
@@ -118,11 +225,16 @@ controller.movimientosUsuario = async(req, res, next) => {
 }
 
 controller.informeProductos = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     let date = currentDate()
     const tarjetas = await service.informeProductosTarjetas(date);
     const graficas = await service.informeProductosGraficas(date);
 
-    res.render('informeProductos', {"general": tarjetas, "detail": graficas})
+    res.render('informeProductos', {"userData": userData, "general": tarjetas, "detail": graficas})
 }
 
 controller.informeProductosByDate = async(req, res, next) => {
@@ -134,85 +246,130 @@ controller.informeProductosByDate = async(req, res, next) => {
 }
 
 controller.getInformeBB = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     let date = currentDate();
     const tarjetasBB = await service.informeBBtarjetas(date);
     const detailBB = await service.informeBB(date);
 
-    res.render('informeBlancosBiologicos', {"data": tarjetasBB, "data2": detailBB})
+    res.render('informeBlancosBiologicos', {"userData": userData, "data": tarjetasBB, "data2": detailBB})
 }
 
 controller.mapBB = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     const dataBB = await service.getMapBB();
     const mastersDpto = await service.mastersDepartamentos();
 
-    res.render("mapaBlancosBiologicos", {"data": dataBB, "dptos": mastersDpto})
+    res.render("mapaBlancosBiologicos", {"userData": userData, "data": dataBB, "dptos": mastersDpto})
 }
 
 controller.evaluaciones = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     let fechaInicio = firstDayOfYear().replace(/\//g, "");
     let fechaFinal = currentDate().replace(/\//g, "");
 
     const rEvaluaciones = await service.evaluacionesDpto(fechaInicio, fechaFinal);
     const rResponse = await service.respuestasDpto(fechaInicio, fechaFinal);
 
-    res.render('informeEvaluaciones', {"evaluaciones": rEvaluaciones, "respuestas": rResponse})
+    res.render('informeEvaluaciones', {"userData": userData, "evaluaciones": rEvaluaciones, "respuestas": rResponse})
 }
 
 controller.mapaCalor = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     let fechaInicio = firstDayOfYear().replace(/\//g, "");
     let fechaFinal = currentDate().replace(/\//g, "");
 
     const rmapaCalor = await service.getMapaCalor(fechaInicio, fechaFinal);
 
-    res.render("mapaCalor", {"data": rmapaCalor})
+    res.render("mapaCalor", {"userData": userData, "data": rmapaCalor})
 }
 
 
-// Cosas que no son ni informes ni catalogos
+// Vistas
 controller.aportes = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     const rService = await service.getAportes();
-    res.render('aportes', {'aportes': rService} );
+    res.render('aportes', {"userData": userData, 'aportes': rService} );
 }
 
 controller.clientes = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     const rService = await service.getClientes();
-    res.render('clientes', {"clientes": rService})
+    res.render('clientes', {"userData": userData, "clientes": rService})
 }
 
 controller.notificaciones = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     const rNotificaciones = await service.getNotifiaciones();
     const rUsuariosNotificaciones = await service.getNotifiacionesUsuarios();
-    res.render('notificaciones', {"notificaciones": rNotificaciones, "usuarios": rUsuariosNotificaciones})
+    res.render('notificaciones', {"userData": userData, "notificaciones": rNotificaciones, "usuarios": rUsuariosNotificaciones})
 }
 
 controller.usuariosExternos = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+    
     const rUsuarios = await service.getUsuariosExternos();
-    res.render('usuariosExternos', {"usuarios": rUsuarios})
-}
-
-controller.sucursales = async(req, res, next) => {
-    const rActivos = await service.sucursalesActivas();
-    const rInactivos = await service.sucursalesInactivas();
-    const dpts = await service.mastersDepartamentos();
-    const roles = await service.mastersRoles();
-    const cargos = await service.mastersCargos();
-
-    res.render('sucursales', {"inactivos": rInactivos, "activos": rActivos, "cargos": cargos, "roles": roles, "departamentos": dpts})
-}
-
-controller.permisos = async(req, res, next) => {
-    const rService = await service.getPermissions();
-    res.render('permisos', {"permisos": rService})
+    res.render('usuariosExternos', {"userData": userData, "usuarios": rUsuarios})
 }
 
 controller.usuarios = async (req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     const rActivos = await service.usuariosActivos();
     const rInactivos = await service.usuariosInactivos();
     const cargos = await service.mastersCargos();
     const roles = await service.mastersRoles();
     const dpts = await service.mastersDepartamentos();
 
-    res.render('usuarios', {"inactivos": rInactivos, "activos": rActivos, "cargos": cargos, "roles": roles, "departamentos": dpts})
+    res.render('usuarios', {"userData": userData, "inactivos": rInactivos, "activos": rActivos, "cargos": cargos, "roles": roles, "departamentos": dpts})
+}
+
+controller.sucursales = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
+    const rActivos = await service.sucursalesActivas();
+    const rInactivos = await service.sucursalesInactivas();
+    const dpts = await service.mastersDepartamentos();
+    const roles = await service.mastersRoles();
+    const cargos = await service.mastersCargos();
+
+    res.render('sucursales', {"userData": userData, "inactivos": rInactivos, "activos": rActivos, "cargos": cargos, "roles": roles, "departamentos": dpts})
 }
 
 controller.rankingUser = async (req, res, next) => {
@@ -221,9 +378,24 @@ controller.rankingUser = async (req, res, next) => {
     res.send({"data": rService})
 }
 
+controller.permisos = async(req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
+    const rService = await service.getPermissions();
+    res.render('permisos', {"userData": userData, "permisos": rService})
+}
+
 controller.solicitudesInformacion = async (req, res, next) => {
+    // Validar login
+    if (!req.session.login) { res.redirect('/login'); return}
+    const idUser = req.session.idUser; 
+    const userData = await service.userData(idUser);
+
     const rService = await service.solicitudesDeInformacion();
-    res.render('solicitudInformacion', {"solicitudesA": rService})
+    res.render('solicitudInformacion', {"userData": userData, "solicitudesA": rService})
 }
 
 controller.solicitudInformacionPending = async (req, res, next) => {

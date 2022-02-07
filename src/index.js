@@ -4,9 +4,10 @@ const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
 const  router = require('./routes/router');
+const session = require('express-session');
 
 //Session
-// app.use(session({secret: 'credimarcas_session',saveUninitialized: true,resave: true}));
+app.use(session({secret: 'navacom_2021',saveUninitialized: true,resave: true}));
 
 //Configuracion
 app.set('port', process.env.PORT || 6066);

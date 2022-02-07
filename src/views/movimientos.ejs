@@ -18,13 +18,15 @@
   <link href="/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+  <!-- Custom QUID classes -->
+  <link id="pagestyle" href="/css/custom_classes.css" rel="stylesheet" />
+
 
   <style>
     #cardsContainer>div{
       width: 16%;
       transition: 0.3s;
     }
-
     #cardsContainer>div:hover{
       background-color: lightgrey;
     }
@@ -46,13 +48,29 @@
 
     <!-- Cotent -->
     <div class="p-4 m-4">
-      <h6>Movimientos Por Fecha</h6>
+      <div class="card flex-row p-3 my-2 justify-content-between align-items-center">
+        <h6>Movimientos Por Fecha</h6>
+        <input type="date" name=""  class="form-control" style="width: 150px" id="dateField" onchange="loadDataByDate($(this).val());"/>
+      </div>
+
       <div id="cardsContainer" class="d-flex gap-1"><!-- Contenido Dinamico --></div>
 
       <div id="chartsContainer"></div>
     </div>
       
   </main>
+
+  <!-- Preloader -->
+  <div id="preloader" style="display: none;">
+    <div>
+      <div class="spinner" style="width: 100px; height: 100px; margin-bottom: 10px;">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+      <h5 style="color: white;">Cargando Contenido ...</h5>
+    </div>
+  </div>
+  
 
   <!--   Core JS Files   -->
   <script src="/js/core/popper.min.js"></script>
@@ -187,6 +205,7 @@
       $("#mesrecomendaciones").html(data.mes)
       $("#añorecomendaciones").html(data.ano)
       
+      $("#chartsContainer").html("")
       let element = `
         <div class="chart card p-3 mt-2 " >
           <h6 style="text-transform: capitalize">Recomendaciones Generadas por mes</h6>
@@ -342,7 +361,7 @@
       
       let element = `
         <div class="chart card p-3 mt-2 " >
-          <h6 style="text-transform: capitalize">Aportes Generados por mes</h6>
+          <h6 style="text-transform: capitalize">Acompañamientos Generados por mes</h6>
           <canvas id="acompañamineto" class="chart-canvas" height="300"></canvas>
         </div>
       `;
@@ -371,6 +390,35 @@
           }]
           }
       });
+    };
+
+    const loadDataByDate = (data) => {
+      $("#preloader").show();
+
+      fetch('/informes/movimientos/'+data)
+      .then(res => res.json())
+      .then(res => {
+        $("#preloader").hide();
+
+        recomendaciones = handleJSON(res.recomendaciones)
+        chartRecomendation(recomendaciones.data.cuenta)
+
+        clientes = handleJSON(res.clientes)
+        chartClients(clientes.data.cuenta);
+
+        ficha = handleJSON(res.ficha)
+        chartFichas(ficha.data.cuenta);
+
+        capacitaciones = handleJSON(res.capacitaciones)
+        chartCapacitaciones(capacitaciones.data.cuenta);
+
+        aporte = handleJSON(res.aporte)
+        chartAportes(aporte.data.cuenta);
+
+        acompañamiento = handleJSON(res.acompañamiento)
+        chartAcompañamiento(acompañamiento.data.cuenta);
+      })
+      .catch(error => console.error(error));
     }
 
     
@@ -397,13 +445,17 @@
     acompañamiento = handleJSON(acompañamiento)
     
     $(document).ready(function () {
-      loadCards(movimientos.data.cuenta)
-      chartRecomendation(recomendaciones.data.cuenta)
-      chartClients(clientes.data.cuenta)
-      chartFichas(ficha.data.cuenta)
-      chartCapacitaciones(capacitaciones.data.cuenta)
-      chartAportes(aporte.data.cuenta)
-      chartAcompañamiento(acompañamiento.data.cuenta)
+      loadCards(movimientos.data.cuenta);
+      chartRecomendation(recomendaciones.data.cuenta);
+      chartClients(clientes.data.cuenta);
+      chartFichas(ficha.data.cuenta);
+      chartCapacitaciones(capacitaciones.data.cuenta);
+      chartAportes(aporte.data.cuenta);
+      chartAcompañamiento(acompañamiento.data.cuenta);
+
+      let currentDate = new Date();
+      currentDate = currentDate.toISOString().substr(0, 10)
+      $("#dateField").val(currentDate)
     })
 
   </script>

@@ -20,7 +20,12 @@ router.get('/catalogo/contenidoSecciones', viewController.contenidoSecciones);
 // Informes
 router.get('/informes/ranking', viewController.ranking);
 router.get('/informes/movimientos', viewController.movimientos);
-router.get('/informes/movimientos/:id', viewController.movimientosUsuario); //TODO controlar caso
+router.get('/informes/movimientos/:date', viewController.movimientosByDate);
+router.get('/informes/movimientos/:date/:user', viewController.movimientosByDateUser);
+
+// router.get('/informes/movimientos/:id', viewController.movimientosUsuario); //TODO controlar caso
+
+
 router.get('/informes/productos', viewController.informeProductos);
 router.get('/informes/productosDate/:date', viewController.informeProductosByDate);
 router.get('/informes/blancosBiologicos', viewController.getInformeBB);
@@ -48,7 +53,8 @@ router.get('/solicitudInformacion/:id', viewController.solicitudInformacionDetai
 
 // Login
 router.get('/login', viewController.login);
-router.post('/login/autentication', viewController.loginAutentication);
+router.post('/login/loginValidate', viewController.loginValidate);
+router.get('/login/logout', viewController.logout);
 
 
 module.exports = router;

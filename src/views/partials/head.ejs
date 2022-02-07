@@ -1,8 +1,8 @@
 <style>
-  .closeSession{
+  .closeSession a{
     transition: 0.3s;
   }
-  .closeSession:hover{
+  .closeSession a:hover{
     color: red;
   }
   .imgClass{
@@ -14,12 +14,8 @@
   }
 </style>
 
-
-
 <nav class="navbar navbar-main navbar-expand-lg  position-sticky mt-4 top-1 px-0 mx-4 shadow-none border-radius-xl z-index-sticky" id="navbarBlur" data-scroll="true">
-
   <div class="w-100 d-flex justify-content-between align-items-center">
-
     <div class="container-fluid py-1 px-3">
       <div class="sidenav-toggler sidenav-toggler-inner d-xl-block d-none ">
         <a href="javascript:;" class="nav-link text-body p-0">
@@ -34,13 +30,20 @@
 
     <div class="w-50 d-flex justify-content-end align-items-center gap-2 me-3">
       <div style="text-align: right;" class="d-flex flex-column">
-        <label class="m-0" >Jessy Pauline Maussa</label>
-        <label for="" class="m-0 closeSession" style="font-size: 11px; cursor: pointer;">Cerrar Sesion</label>
+        <label class="m-0"  id="userName"> <%- userData.nombre %> </label>
+        <label for="" class="m-0 closeSession" style="font-size: 11px; cursor: pointer;">
+          <a href="/login/logout">
+            Cerrar Sesion
+          </a>
+        </label>
       </div>
-      <div style="width: 40px; height: 40px; border-radius: 50%; background-color: lightgray;">
-        <img src="http://104.236.159.193:3010/media/usuario/JessyPaulineMaud8tp4z1.png" class="imgClass" alt="" >
+      <div style="width: 50px; height: 50px; border-radius: 50%; background-color: lightgray;">
+        <img src="http://104.236.159.193:3010/<%-userData.foto%>" class="imgClass" alt="" >
       </div>
     </div>
 
   </div>
 </nav>  
+
+
+

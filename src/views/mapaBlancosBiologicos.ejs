@@ -30,9 +30,6 @@
     .choices__item{
       font-size: 12px !important; 
     }
-    .choices__item{
-      /* opacity: 0 !important; */
-    }
   </style>
 </head>
 
@@ -237,11 +234,11 @@
       markers = [];
       _.each(data, function(d,i){
         var place = d;
-        var icon = "http://api.pedbox.co:8850/images/marker1.png";
+        var icon = "../img/marker1.png";
         if (place.id_catalogo == 3) {
-          icon = "http://api.pedbox.co:8850/images/marker2.png";
+          icon = "../img/marker2.png";
         } else if (place.id_catalogo == 4) {
-          icon = "http://api.pedbox.co:8850/images/marker3.png";
+          icon = "../img/marker3.png";
         }
         marker = new google.maps.Marker({
           position: new google.maps.LatLng(place.latitud, place.longitud),

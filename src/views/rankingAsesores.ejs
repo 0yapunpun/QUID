@@ -18,25 +18,12 @@
   <link href="/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+  <!-- Custom QUID classes -->
+  <link id="pagestyle" href="/css/custom_classes.css" rel="stylesheet" />
 
-  <style>
-    .noSorter .dataTable-sorter::after{
-      opacity: 0;
-    }
-    .noSorter .dataTable-sorter::before{
-      opacity: 0;
-    }
-    .iconTable{
-      cursor: pointer;
-    }
-    .dataTable-wrapper .dataTable-bottom .dataTable-pagination .dataTable-pagination-list .active a {
-      background-image: none !important;
-      background-color: #4caf50;
-    }
-  </style>
 </head>
 
-<body class="g-sidenav-show bg-gray-100">
+<body class="g-sidenav-show bg-gray-100" onunload='$("#preloader").hide();'>
 
   <!-- Menu -->
   <%- include('./partials/menu.ejs') %>
@@ -68,6 +55,18 @@
     </div>  
       
   </main>
+
+  <!-- Preloader -->
+  <div id="preloader" style="display: none;">
+    <div>
+      <div class="spinner" style="width: 100px; height: 100px; margin-bottom: 10px;">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+      <h5 style="color: white;">Cargando Contenido ...</h5>
+    </div>
+  </div>
+</div>
 
   <!--   Core JS Files   -->
   <script src="../js/core/popper.min.js"></script>
@@ -107,7 +106,6 @@
            .replace(/\\f/g, "\\f")
            .replace(/[\u0000-\u0019]+/g,"")
            .replace(/\n/g, "\\n");
-           ; 
 
       // Remove New Lines
       return JSON.parse(s)
@@ -141,9 +139,23 @@
       const tableObj = new simpleDatatables.DataTable("#tableUsuarios");   
     }
 
+    const currentDate = () => {
+      let today = new Date();
+      let dd = String(today.getDate()).padStart(2, '0');
+      let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+      let yyyy = today.getFullYear();
+      return today = yyyy + '/' + mm + '/' + dd;
+    }
+
     $(document).on("click", ".iconTable", function () {
-      let id = Number($(this).attr("id"))
-      window.location.href = "/informes/movimientos/"+id;
+      let user = Number($(this).attr("id"));
+      let date = currentDate();
+
+      console.log(user)
+      date = date.replace(/\//g, "-")
+
+      $("#preloader").show()
+      window.location.href = "/informes/movimientos/"+date+"/"+user;
     })
 
     $(document).ready(function () {
@@ -151,11 +163,7 @@
       ranking = handleJSON(ranking)
       ranking = ranking.data;
       printTable(ranking.ranking)
-    })
-
-
-
+    });
   </script>
-
 </body>
 </html>

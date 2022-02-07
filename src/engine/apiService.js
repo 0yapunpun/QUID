@@ -20,17 +20,21 @@ const firstDayOfYear = () => {
 	return today = yyyy + '/01/01';
 }
 
-// Login
-// service.loginAutentication = async (data) => {
-//     const url = bUrl+'autenticar';
-//     const options = { 
-//         method: 'post', 
-//         ejectUnauthorized: false,
-//         body: JSON.stringify(data),
-//         headers: {'Content-Type': 'application/json'},
-//     }
-//     return await makeRequest(url, options);
-// }
+service.loginAutentication = async (data) => {
+    const url = bUrl+'autenticar';
+    const options = { 
+        method: 'post', 
+        body: JSON.stringify(data),
+        headers: {'Content-Type': 'application/json'},
+    }
+    return await makeRequest(url, options);
+}
+
+service.userData = async (id) => {
+    const url = bUrl+'obtener_datos_usuario?id_usuario='+id;
+    const data =  await makeRequest(url);
+    return data.data.usuario[0]
+}
 
 // Masters
 service.mastersDepartamentos = async () => {
@@ -178,6 +182,52 @@ service.informeAcompañamiento = async (date) => {
     const data =  await makeRequest(url);
     return JSON.stringify(data)
 }
+
+// XXXX
+http://104.236.159.193:3010/contar_principales?id_usuario=101
+
+service.contarPrincipalesByUser = async (id) => {
+    const url = bUrl+'contar_principales?id_usuario='+id;
+    const data =  await makeRequest(url);
+    return JSON.stringify(data)
+}
+
+service.informeClientesByUser = async (date, id) => {
+    const url = bUrl+'contar_clientes_fecha?fecha='+date+"&id_usuario="+id;
+    const data =  await makeRequest(url);
+    return JSON.stringify(data)
+}
+
+service.informeRecomendacionesByUser = async (date, id) => {
+    const url = bUrl+'contar_recomendaciones_fecha?fecha='+date+"&id_usuario="+id;
+    const data =  await makeRequest(url);
+    return JSON.stringify(data)
+}
+
+service.informeFichasByUser = async (date, id) => {
+    const url = bUrl+'contar_ficha_fecha?fecha='+date+"&id_usuario="+id;
+    const data =  await makeRequest(url);
+    return JSON.stringify(data)
+}
+
+service.informeCapacitacionesByUser = async (date, id) => {
+    const url = bUrl+'contar_capacitacion_fecha?fecha='+date+"&id_usuario="+id;
+    const data =  await makeRequest(url);
+    return JSON.stringify(data)
+}
+
+service.informeAporteByUser = async (date, id) => {
+    const url = bUrl+'contar_aporte_fecha?fecha='+date+"&id_usuario="+id;
+    const data =  await makeRequest(url);
+    return JSON.stringify(data)
+}
+
+service.informeAcompañamientoByUser = async (date, id) => {
+    const url = bUrl+'contar_acompanamientos_fecha?fecha='+date+"&id_usuario="+id;
+    const data =  await makeRequest(url);
+    return JSON.stringify(data)
+}
+// XXX
 
 service.movimientosPorUsuario = async (userID) => {
     userID = Number(userID);
