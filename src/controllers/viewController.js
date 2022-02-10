@@ -22,7 +22,6 @@ controller.login = async (req, res, next) => {
     res.render('login');
 }
 
-// jeka9599
 controller.loginValidate = async(req, res, next) => {
     const resp = await service.loginAutentication(req.body);
     let state;
@@ -202,9 +201,6 @@ controller.movimientosByDateUser = async (req, res, next) => {
     date = date.replace("-", "/")
     let user = req.params.user
 
-    console.log("?", date, user)
-
-
     const rService = await service.contarPrincipalesByUser(user);
     const clientes = await service.informeClientesByUser(date, user);
     const recomendaciones = await service.informeRecomendacionesByUser(date, user);
@@ -214,14 +210,6 @@ controller.movimientosByDateUser = async (req, res, next) => {
     const acompañamiento = await service.informeAcompañamientoByUser(date, user);
 
     res.render('movimientos', {"userData": userData, "data": rService,"clientes": clientes, "recomendaciones": recomendaciones, "ficha": fichas, "capacitaciones": capacitaciones, "aporte": aporte, "acompañamiento": acompañamiento})
-
-}
-
-// TODO arreglar 
-controller.movimientosUsuario = async(req, res, next) => {
-    var id = req.params.id;
-    const rService = await service.movimientosPorUsuario(id);
-    res.render('movimientos', {"data": rService})
 }
 
 controller.informeProductos = async(req, res, next) => {
@@ -298,7 +286,6 @@ controller.mapaCalor = async(req, res, next) => {
 
     res.render("mapaCalor", {"userData": userData, "data": rmapaCalor})
 }
-
 
 // Vistas
 controller.aportes = async(req, res, next) => {

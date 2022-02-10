@@ -467,13 +467,12 @@
 
       let id = Number($("main").attr("id-item"))
       fetch("http://104.236.159.193:3010/catalogo_imagen/"+id) 
-      //TODO pasar petición al front-end
     }
 
     const addImageEncabezado = () => {
       $("#inputNewImgEncabezado").html("");
       let element = ` 
-        <form id="newImgEncabezadoForm" method="POST" action="" enctype="multipart/form-data"> 
+        <form id="newImgEncabezadoForm" method="POST" action="" enctype="multipart/form-data" onchange="updateImg"> 
           <input type="file" name="" id="newImgEncabezado" accept="image/*">
         </form>
       `;
@@ -487,26 +486,53 @@
       $("#imagesAmount").text(imagesAmount)
     }
 
-    const updateImg = () => {
-      var formData = new FormData($('#newImgEncabezadoForm')[0]);
-      var myFile = document.querySelector("#newImgEncabezado")
+    const updateImagesEncabezado = () => {
+      let inputsContainer = $("#inputsContainer");
+      let inputs = $(inputsContainer).find("input");
+
+      if (inputs.length == 0) {return}
       
+      var formData = new FormData();
       formData.append('idcatalogoenc', $("main").attr("id-item"));
-      formData.append('nombre_archivo', "imagen_catalogo");
-      formData.append('img', myFile.files[0]);
 
-      console.log(myFile)
-      console.log([...formData])
-
-      fetch('http://104.236.159.193:3010/catalogo', {
+      for (let i = 0; i < inputs.length; i++) {
+        let myFile = inputs[i].files[0];
+        formData.append('archivo', myFile);
+        formData.append('nombre_archivo', "imagen_catalogo");
+      }
+      
+      if (inputs.length == 1) {
+        formData.append('varios', 0);
+      } else {
+        formData.append('varios', 1);
+      }
+      
+      fetch('http://104.236.159.193:3010/media/catalogo_detalle', {
         method: 'POST',
-        body: formData
+        body: formData,
       })
       .then(res => res.json())
       .then(res => {
         console.log(res)
-        if (res.success) {} 
-        else {console.error("No fue posbile actualizar la ficha")}
+      });
+    }
+
+    const updateImg = () => {
+      var myFile = document.querySelector("#newImgEncabezado");
+      myFile = myFile.files[0];
+
+      var formData = new FormData($('#newImgEncabezadoForm')[0]);
+      formData.append('idcatalogoenc', $("main").attr("id-item"));
+      formData.append('archivo', myFile);
+      formData.append('nombre_archivo', "imagen_catalogo");
+
+      fetch('http://104.236.159.193:3010/media/catalogo', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
       });
     };
 
@@ -552,7 +578,6 @@
           "id_tipo_catalogo": Number($(fieldBB[i]).attr("data-catalog"))
         })
       }
-
     
       fetch('http://104.236.159.193:3010/catalogo', {
         method: 'POST',
@@ -566,6 +591,8 @@
         // if (res.success) {location.reload()} 
         else {console.error("No fue posbile actualizar la ficha")}
       });
+
+      updateImagesEncabezado();
     };
 
     $(document).on("change", "#newImgEncabezado", function () {
@@ -1103,7 +1130,6 @@
         "plagas" : detailCatalogoPlagas.data.catalogo_enc,
         "enfermedades" : detailCatalogoEnfermedades.data.catalogo_enc
       }
-
 
       printData(detailProducto.data, detailPropiedad.data, catalogos);
       getCatalogId(catalogos);

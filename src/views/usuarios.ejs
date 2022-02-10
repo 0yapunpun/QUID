@@ -18,6 +18,8 @@
   <link href="/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="/css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+  <!-- Custom QUID classes -->
+  <link id="pagestyle" href="/css/custom_classes.css" rel="stylesheet" />
 
   <style>
     .btnColor{
@@ -144,66 +146,6 @@
 
     .choices[data-type*='select-one']:after{
       opacity: 0;
-    }
-
-    #preloader{
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 100000;
-      background-color: rgb(0,0, 0, 0.7)
-    }
-
-    #preloader div{
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-
-      position: relative;
-      margin: 100px auto;
-    }
-
-    .double-bounce1, .double-bounce2 {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background-color: white;
-      opacity: 0.6;
-      position: absolute;
-      top: 0;
-      left: 0;
-      
-      -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
-        animation: sk-bounce 2.0s infinite ease-in-out;
-    }
-
-    .double-bounce2 {
-      -webkit-animation-delay: -1.0s;
-      animation-delay: -1.0s;
-    }
-
-    @-webkit-keyframes sk-bounce {
-      0%, 100% { -webkit-transform: scale(0.0) }
-      50% { -webkit-transform: scale(1.0) }
-    }
-
-    @keyframes sk-bounce {
-      0%, 100% { 
-        transform: scale(0.0);
-        -webkit-transform: scale(0.0);
-      } 50% { 
-        transform: scale(1.0);
-        -webkit-transform: scale(1.0);
-      }
     }
   </style>
 </head>
@@ -784,9 +726,9 @@
         "usuario": $("#inputUser").val(),
         "clave": $("#inputPassword").val(),
         "id_cargo": Number($("#selectCargo option:selected" ).val()),
-        "confirmado": ($("#isConfirm").attr("isConfirm") ? Number($("#isConfirm").attr("isConfirm")) : 1),
+        "confirmado": ($('#toggleButton').is(':checked') ? 1 : 0),
         "id_ciudad": Number($( "#selectCity option:selected" ).val()),
-        "perfil": ($('#toggleButton').is(':checked') ? "A" : "I"),
+        "perfil": "A",
         "telefono": $("#telefonoField").val(),
         "extension": $("#extensionField").val(),
         "celular": Number($("#userPhone").val()),
@@ -801,8 +743,7 @@
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
-        if (res.success) {$("#detailModal").modal("hide")} 
+        if (res.success) {location.reload();} 
         else {console.error("No fue posbile crear el usuario")}
       });
     }
@@ -816,11 +757,11 @@
         "id_usuario": Number($("#userDetail").attr("data-idUser")),
         "nombre": $("#inputName").val(),
         "usuario": $("#inputUser").val(),
-        "clave": $("#inputPassword").val(),
+        "clave": $("#inputPassword").val().toString(),
         "id_cargo": Number($("#selectCargo option:selected" ).val()),
-        "confirmado": Number($("#isConfirm").attr("isConfirm")),
+        "confirmado": ($('#toggleButton').is(':checked') ? 1 : 0),
         "id_ciudad": Number($( "#selectCity option:selected" ).val()),
-        "perfil": ($('#toggleButton').is(':checked') ? "A" : "I"),
+        "perfil": "A",
         "telefono": $("#telefonoField").val(),
         "extension": $("#extensionField").val(),
         "celular": Number($("#userPhone").val()),
@@ -829,19 +770,17 @@
       }
       console.log(data)
 
-      // TODO estos datos estas desaparencidos los usuarios aaaaa
-      // fetch('http://104.236.159.193:3010/usuario', {
-      //   method: 'PUT',
-      //   headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-      //   body: JSON.stringify(data)
-      // })
-      // .then(res => res.json())
-      // .then(res => {
-      //   console.log(res)
-      //   if (res.success) {} 
-      //   // if (res.success) {location.reload()} 
-      //   else {console.error("No fue posbile actualizar datos")}
-      // });
+      fetch('http://104.236.159.193:3010/usuario', {
+        method: 'PUT',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        if (res.success) {location.reload();} 
+        else {console.error("No fue posbile actualizar datos")}
+      });
     }
 
     $(document).on("change", "#selectCargo", function () {

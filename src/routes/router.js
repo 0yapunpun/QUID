@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const indexController = require('../controllers/index');
 const viewController = require('../controllers/viewController.js');
 
 // Catalogos
@@ -22,10 +21,6 @@ router.get('/informes/ranking', viewController.ranking);
 router.get('/informes/movimientos', viewController.movimientos);
 router.get('/informes/movimientos/:date', viewController.movimientosByDate);
 router.get('/informes/movimientos/:date/:user', viewController.movimientosByDateUser);
-
-// router.get('/informes/movimientos/:id', viewController.movimientosUsuario); //TODO controlar caso
-
-
 router.get('/informes/productos', viewController.informeProductos);
 router.get('/informes/productosDate/:date', viewController.informeProductosByDate);
 router.get('/informes/blancosBiologicos', viewController.getInformeBB);
@@ -33,17 +28,16 @@ router.get('/informes/mapaBlancosBiologicos', viewController.mapBB);
 router.get('/informes/evaluaciones', viewController.evaluaciones);
 router.get('/informes/mapaCalor', viewController.mapaCalor);
 
+// Usuarios
+router.get('/usuarios', viewController.usuarios);
+router.get('/usuarios/:id', viewController.rankingUser);
+router.get('/sucursales', viewController.sucursales);
 
 router.get('/aportes', viewController.aportes);
 router.get('/clientes', viewController.clientes);
 router.get('/notificaciones', viewController.notificaciones);
 router.get('/usuariosExternos', viewController.usuariosExternos);
 router.get('/permisos', viewController.permisos);
-
-// Usuarios
-router.get('/usuarios', viewController.usuarios);
-router.get('/usuarios/:id', viewController.rankingUser);
-router.get('/sucursales', viewController.sucursales);
 
 // Solicitud Informacion
 router.get('/solicitudInformacion', viewController.solicitudesInformacion);
