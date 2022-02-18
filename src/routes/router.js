@@ -48,6 +48,7 @@ router.get('/solicitudInformacion/:id', viewController.solicitudInformacionDetai
 // Login
 router.get('/login', viewController.login);
 router.post('/login/loginValidate', viewController.loginValidate);
+router.post('/login/passwordForgot', viewController.loginPasswordForgot);
 router.get('/login/logout', viewController.logout);
 
 

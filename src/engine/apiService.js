@@ -30,6 +30,11 @@ service.loginAutentication = async (data) => {
     return await makeRequest(url, options);
 }
 
+service.loginPasswordRecovery = async (correo) => {
+    const url = bUrl+'recuperar_clave?correo=maussa@invesa.com&usuario=&fbId=&gpId=';
+    return await makeRequest(url);
+}
+
 service.userData = async (id) => {
     const url = bUrl+'obtener_datos_usuario?id_usuario='+id;
     const data =  await makeRequest(url);
@@ -227,7 +232,6 @@ service.informeAcompañamientoByUser = async (date, id) => {
     const data =  await makeRequest(url);
     return JSON.stringify(data)
 }
-// XXX
 
 service.movimientosPorUsuario = async (userID) => {
     userID = Number(userID);
@@ -375,28 +379,14 @@ service.getNotasSolicitud = async (id) => {
     return JSON.stringify(data);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 const makeRequest = async (url, options) => {
     try {
         var resp = await fetch(url, options || {});
-
         if (!resp.ok) return {'err': 'Error obteniendo los datos'};
         
         const json = await resp.json();
         return {'data': json};
     } catch(error) {
-        console.log("Error obteniendo datos")
         return {'err': 'Error obteniendo los datos', 'err_service': error};
     }
 }

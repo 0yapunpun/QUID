@@ -24,16 +24,18 @@ controller.login = async (req, res, next) => {
 
 controller.loginValidate = async(req, res, next) => {
     const resp = await service.loginAutentication(req.body);
-    let state;
-    if (resp.data.success) {
-        req.session.login = true;
-        req.session.idUser = resp.data.id_usuario;
-        delete resp.user;
-        state = {"success": true}
-    } else {
-        state = {"success": false}
-    }
-    res.send(state);
+    console.log(resp)
+
+    // let state;
+    // if (resp.data.success) {
+    //     req.session.login = true;
+    //     req.session.idUser = resp.data.id_usuario;
+    //     delete resp.user;
+    //     state = {"success": true}
+    // } else {
+    //     state = {"success": false}
+    // }
+    // res.send(state);
 };
 
 controller.logout = async (req, res, next) => {
@@ -41,6 +43,11 @@ controller.logout = async (req, res, next) => {
         if(err) return console.error(err);
         res.redirect('/login'); return;
     });
+}
+
+controller.loginPasswordForgot = async (req, res, next) => {
+    const resp = await service.loginPasswordRecovery(req.body.correo);
+    res.send(resp);
 }
 
 controller.cultivos = async(req, res, next) => {

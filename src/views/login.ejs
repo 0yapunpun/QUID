@@ -46,17 +46,31 @@
           <div class="imgContainer">
             <img src="http://api.pedbox.co:8850/images/logo_quid_blanco.png" style="max-height: 100%; max-width: 100%;">
           </div>
-          <div class="m-3 mb-1">
-            <label for="">Usuario</label>
-            <input type="text" class="form-control" id="username">
+          <div class="text-center mt-2">
+            <label for="" style="font-size: 16px;" id="loginLabel">Inicio de Sesión</label>
+            <label for="" style="font-size: 16px; display: none;" id="forgotLabel">Recuperación de clave</label>
           </div>
-          <div class="m-3">
-            <label for="" class="mt-2">Contraseña</label>
-            <input type="password" class="form-control" id="password">
+          <div id="loginForm">
+            <div class="m-3 mb-1">
+              <label for="">Usuario</label>
+              <input type="text" class="form-control" id="username">
+            </div>
+            <div class="m-3">
+              <label for="" class="mt-2">Contraseña</label>
+              <input type="password" class="form-control" id="password">
+            </div>
+          </div>
+          <div id="forgotForm" style="display: none;">
+            <div class="m-3 mb-1">
+              <label for="">Correo</label>
+              <input type="text" class="form-control" id="userMailRecovery" placeholder="Ingrese su correo para recibir las instrucciones">
+            </div>
           </div>
           <button id="btnIngresar" class="btn btn-primary mt-4 mx-3" style="background-color: #4caf50;">Ingresar</button>
+          <button id="btnForgot" class="btn btn-primary mt-4 mx-3" style="background-color: #4caf50; display: none;">Solicitar</button>
           <hr class="horizontal dark mt-0">
-          <label for="" class="text-center mb-3 forgotPassword">¿Olvidó su Contraseña?</label>
+          <label for="" class="text-center mb-3 forgotPassword" id="backToLogin" style="display: none;">Volver al login</label>
+          <label for="" class="text-center mb-3 forgotPassword" id="showForgot">¿Olvidó su Contraseña?</label>
         </div>
       </div>
     </div>  
@@ -104,6 +118,49 @@
         }
       });
     });
+
+    $("#btnForgot").click(function () {
+      let correo = $("#userMailRecovery").val();
+      fetch('/login/passwordForgot', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+        body: JSON.stringify({"correo": correo})
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+      });
+    });
+    
+    $("#showForgot").on("click", function () {
+      $("#loginLabel").hide();
+      $("#forgotLabel").show();
+
+      $("#loginForm").hide();
+      $("#forgotForm").show();
+
+      $("#showForgot").hide();
+      $("#backToLogin").show();
+
+      $("#btnIngresar").hide()
+      $("#btnForgot").show()
+    })
+
+    $("#backToLogin").on("click", function () {
+      $("#loginLabel").show();
+      $("#forgotLabel").hide();
+
+      $("#loginForm").show();
+      $("#forgotForm").hide();
+
+      $("#showForgot").show();
+      $("#backToLogin").hide();
+
+      $("#btnIngresar").show()
+      $("#btnForgot").hide()
+    })
+
+
   </script>
 
 </body>
