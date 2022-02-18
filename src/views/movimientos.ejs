@@ -70,7 +70,6 @@
       <h5 style="color: white;">Cargando Contenido ...</h5>
     </div>
   </div>
-  
 
   <!--   Core JS Files   -->
   <script src="/js/core/popper.min.js"></script>
@@ -92,7 +91,6 @@
   <script src="/js/plugins/chartjs.min.js"></script>
 
   <script>
-
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
       // Remove special characters
@@ -133,7 +131,7 @@
           case "acompanamientos":
             color = "4CAF50"
             break;
-        }
+        };
 
         let element = `
           <div class="card flex-fill" >
@@ -157,7 +155,6 @@
             </div>
           </div>
         `;
-
         $("#cardsContainer").append(element);
       }
     }
@@ -353,7 +350,6 @@
       });
     }
 
-
     const chartAcompañamiento = (data) => {
       console.log(data)
       $("#mesacompañamiento").html(data.mes)
@@ -420,8 +416,6 @@
       })
       .catch(error => console.error(error));
     }
-
-    
 
     var movimientos = '<%- data %>';
     movimientos = handleJSON(movimientos)

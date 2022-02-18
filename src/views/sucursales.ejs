@@ -291,8 +291,7 @@
            .replace(/[\u0000-\u0019]+/g,"")
            .replace(/\n/g, "\\n"); 
 
-      s = JSON.parse(s)
-      return s
+      return JSON.parse(s)
     }
 
     var activeSucursal = '<%- activos %>';
@@ -378,7 +377,6 @@
       $("#extensionField").val(data.extension)
       $("#direccionField").val(data.direccion)
 
-      console.log(data)
       if (data.confirmado) {
         $("#toggleButton").prop("checked", true);
       } else {
@@ -419,7 +417,6 @@
 
       $("#userCity").text("")
       $("#userDep").text("")
-
       $("#detailModal").modal("show")
     }
 
@@ -450,7 +447,6 @@
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
         if (res.success) {location.reload()} 
         else {console.error("No fue posbile actualizar datos")}
       });
@@ -483,8 +479,7 @@
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
-        if (res.success) {location.reload()} 
+        if (res.success) {console.log("Sucursal actualizada con exito")} 
         else {console.error("No fue posbile actualizar datos")}
       });
     }
@@ -519,7 +514,6 @@
     $(document).ready(function () {
       printUsers(activeSucursal)
     })
-
   </script>
 
 </body>

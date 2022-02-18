@@ -272,9 +272,7 @@
           .replace(/\n/g, "\\n");
 
       // Remove New Lines
-      s = JSON.parse(s)
-      console.log(s)
-      return s
+      return JSON.parse(s)
     }
 
     var aportes = '<%- aportes %>';
@@ -314,8 +312,6 @@
 
     $(document).on("click", ".aporteLeft", function () {
       let data = JSON.parse($(this).attr("data-aporte"))
-      console.log(data)
-
       
       $("#idAporte").attr("data-idAporte", data.id)
       $("#idAporte").attr("data-idUser", data.id_user)
@@ -343,9 +339,8 @@
             <label for="">${data.detalle_aporte[i].nota}</label>
           </div>
         `;
-        $("#detailAport").append(element)
+        $("#detailAport").append(element);
       }
-
       $("#rightSideContainer").show();
     })
 
@@ -367,11 +362,9 @@
       });
     }
 
-
     $(document).ready(function () {
       printAportes(creados)
     })
-
   </script>
 
 </body>

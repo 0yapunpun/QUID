@@ -110,7 +110,6 @@
     }
 
     let dataChart = {};
-
     const loadCards = (data, detail) =>{
       $("#cardsContainer").html("");
       for (const x in data) {
@@ -264,13 +263,11 @@
 
     $(document).ready(function () {
       loadCards(general.cuenta, detail.cuenta);
-      // printChart(dataChart)
 
       let currentDate = new Date();
       currentDate = currentDate.toISOString().substr(0, 10)
       $("#dateField").val(currentDate)
     })
-
   </script>
 
 </body>

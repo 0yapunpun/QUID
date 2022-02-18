@@ -96,7 +96,6 @@
         </div>
       </div>
     </div>  
-      
   </main>
 
   <!--   Core JS Files   -->
@@ -121,7 +120,6 @@
   <script>
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
-
       // Remove special characters
       s = s.replace(/\\n/g, "\\n")  
           .replace(/\\'/g, "\\'")
@@ -132,7 +130,6 @@
           .replace(/\\b/g, "\\b")
           .replace(/\\f/g, "\\f")
           .replace(/[\u0000-\u0019]+/g,""); 
-
       // Remove New Lines
       s = s.replace(/\n/g, "\\n");
       s = JSON.parse(s)
@@ -210,9 +207,8 @@
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
+        console.log("Permissions updated")
       });
-      console.log(dataSend)
     })
 
     $(document).on('change','#rolesSelect',function(){
@@ -224,9 +220,7 @@
       loadInputSelect(permisos.permisos.roles);
       loadSidebar(permisos.permisos.modulos)
       loadPermissionsList(permisos.permisos, 1)
-
     });
-
   </script>
 
 </body>

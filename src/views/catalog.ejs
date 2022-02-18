@@ -123,8 +123,6 @@
 
 
   <script>
-    
-    
     let catalogContent;
     const handleResponse = (s) => {
       s = s.replace(/\\n/g, "\\n")  
@@ -180,7 +178,6 @@
         `;
         $("#itemsCatalog").append(element)
       }
-
       $("#catalogName").text(data[0].nombre_catalogo)
     };
 
@@ -224,8 +221,6 @@
       printItems(catalogContent.data.catalogo_enc)
       $("#preloader").hide();
     })
-
-
   </script>
 
 </body>

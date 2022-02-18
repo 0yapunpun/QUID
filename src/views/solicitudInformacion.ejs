@@ -317,11 +317,10 @@
         .then(data => { return handleJSON(data.data)})
         .then(data => { solicitudesCerradas = data})
         .then(data => { printTable(solicitudesCerradas.data.solicitudes)});
-    }
+    };
 
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
-
       // Remove special characters
       s = s.replace(/\\n/g, "\\n")  
            .replace(/\\'/g, "\\'")
@@ -441,7 +440,6 @@
         `;
         $("#seguimientoContainer").append(element)
       }
-
       $("#detailModal").modal("show");
     }
 
@@ -488,10 +486,7 @@
       .then(res => {
         $("#modalStateRequest").modal("hide");
       });
-
-    }
-
-
+    };
 
     var solicitudesAbiertas = '<%- solicitudesA %>';
     solicitudesAbiertas = handleJSON(solicitudesAbiertas);
@@ -501,7 +496,6 @@
     var solicitudesCerradas;
 
     printTable(solicitudesAbiertas.solicitudes)
-
   </script>
 
 </body>

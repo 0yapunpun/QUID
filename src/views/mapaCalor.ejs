@@ -118,7 +118,6 @@
     var data = '<%- data %>';
     data = handleJSON(data);
     data = data.data;
-    console.log(data)
 
     function percentage(partialValue, totalValue) {
       return (100 * partialValue) / totalValue;
@@ -143,8 +142,6 @@
           usuarios[data[i].nombre] += 1
         }
       }
-      console.log(usuarios)
-      
 
       // Table Secciones
       $("#tableContainer").html("");
@@ -175,7 +172,6 @@
       $("#tableInformes").append(tbody)
       const tableObj = new simpleDatatables.DataTable("#tableInformes"); 
       
-      
       // Table Usuarios
       $("#tableContainer2").html("");
       let thead2 = `
@@ -205,7 +201,6 @@
       $("#tableUsuarios").append(tbody2)
       const tableObj2 = new simpleDatatables.DataTable("#tableUsuarios"); 
     }
-
 
     const printCharts = (data) => {
       $("#chartsContainer").html();
@@ -322,7 +317,6 @@
       })
       .catch(error => console.error(error));
     }
-    
 
     $(document).ready(function () {
       printCharts(data.analytics);
@@ -335,9 +329,7 @@
       var firstDay = new Date(new Date().getFullYear(), 0, 1);
       firstDay = firstDay.toISOString().substr(0, 10);
       $("#date1").val(firstDay)
-
-    })
-
+    });
   </script>
 
 </body>

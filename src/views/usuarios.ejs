@@ -65,7 +65,6 @@
       transform: scale(1.1);
     }
 
-
     /* Style Scrollbar */
     /* .removeScrollbar::-webkit-scrollbar {
       display: none;
@@ -236,7 +235,7 @@
 
               <div class="nav-wrapper position-relative end-0" style="z-index: 1;">
                 <ul class="nav nav-pills nav-fill p-1" role="tablist" style="background-color: #ededed">
-                  <li class="nav-item activeNav">
+                  <li class="nav-item activeNav" id="dataNavigator">
                     <a class="nav-link mb-0 px-0 py-1 active" >
                       Datos
                     </a>
@@ -477,22 +476,20 @@
       }
     }
 
+    $("#dataNavigator").on("click", function () {
+      $("#detailSection").show()
+      $("#pointSection").hide()
+    })
+
+    $("#pointsNavigator").on("click", function () {
+      $("#detailSection").hide()
+      $("#pointSection").show()
+    })
+
     let showDetail = true;
     $(".nav-item").click(function () {
       $(".nav-item").removeClass("activeNav");
       $(this).addClass("activeNav");
-
-
-      if (showDetail) {
-        $("#detailSection").hide()
-        $("#pointSection").show()
-        showDetail = false
-      } else {
-        $("#detailSection").show()
-        $("#pointSection").hide()
-        showDetail = true
-      }
-
     })
 
     $(document).on("click", ".cardUser", function () {
@@ -596,14 +593,13 @@
         $("#toggleButton").prop("checked", true);
       } else {
         $("#toggleButton").prop("checked", false);
-      }
+      };
 
       if (data.foto) {
         $("#userImg").attr("src", "http://104.236.159.193:3010/"+data.foto);
       } else {
         $("#userImg").attr("src", "http://104.236.159.193:8850/images/miAmigoInvesa.png");
-      }
-
+      };
       $("#userRank").text((ranking.ranking[0].ranking == -1 ? "-" : ranking.ranking[0].ranking))
 
       // Print Points
@@ -687,29 +683,34 @@
       $("#detailModal").modal("show")
     }
 
-
     $(".updateData").on("click", function () {
-      $(".inputField").removeClass("inactiveField")
-      $(".inputSelect").removeClass("inactiveSelect")
+      $(".inputField").removeClass("inactiveField");
+      $(".inputSelect").removeClass("inactiveSelect");
+
+      $("#pointsNavigator").css("pointer-events", "none")
 
       $(this).hide();
-      $(".createUser").hide()
-      $("#rankingIndicator").show()
+      $(".createUser").hide();
+      $("#rankingIndicator").show();
       $(".saveData").show();
       $("#pointsNavigator").hide();
       $("#claveField").show();
     })
 
     $(".saveData").on("click", function () {
-      $(".inputField").addClass("inactiveField")
-      $(".inputSelect").addClass("inactiveSelect")
+      $(".inputField").addClass("inactiveField");
+      $(".inputSelect").addClass("inactiveSelect");
 
-      $("#rankingIndicator").show()
-      $(".createUser").hide()
+      $("#pointsNavigator").css("pointer-events", "inherit")
+      $("#pointsNavigator").removeClass("activeNav")
+      $("#dataNavigator").addClass("activeNav")
+
+      $("#rankingIndicator").show();
+      $(".createUser").hide();
       $("#claveField").hide();
       $(this).hide();
       $(".updateData").show();
-      $("#pointsNavigator").show()
+      $("#pointsNavigator").show();
     })
 
     const createUser = () => {
@@ -743,7 +744,7 @@
       })
       .then(res => res.json())
       .then(res => {
-        if (res.success) {location.reload();} 
+        if (res.success) {location.reload()} 
         else {console.error("No fue posbile crear el usuario")}
       });
     }
@@ -768,7 +769,6 @@
         "direccion": $("#directionField").val(),
         "id_rol": Number($( "#selectKind option:selected" ).val()),
       }
-      console.log(data)
 
       fetch('http://104.236.159.193:3010/usuario', {
         method: 'PUT',
@@ -777,8 +777,7 @@
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
-        if (res.success) {location.reload();} 
+        if (res.success) {console.log("Usuario creado con exito")} 
         else {console.error("No fue posbile actualizar datos")}
       });
     }

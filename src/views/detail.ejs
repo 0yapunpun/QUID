@@ -159,6 +159,29 @@
       background-image: none !important;
       background-color: #4CAF50 !important;
     }
+
+    .catalogPaginator{
+      border-radius: 0.5rem; 
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .navigatorLi{
+      border-radius: 0.5rem; 
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .navigatorActive{
+      box-shadow: 0 0px 10px 0 rgb(0 0 0 / 15%);
+      background-color: white;
+    }
+    .navigatorLink{
+      color: #344767; 
+      font-size: 17px; 
+      font-weight: 500;
+    }
+    .navigatorLink:hover{
+      color: #344767; 
+    }
   </style>
 </head>
 
@@ -176,34 +199,34 @@
     <div class="p-4 m-4">
       
       <!-- Paginador -->
-      <div class="nav-wrapper position-relative end-0">
-        <ul class="nav nav-pills nav-fill p-1" role="tablist">
-           <li id="sectionEncabezado" class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaEncabezado").fadeIn()'>
-              <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
+      <div class="">
+        <ul style="display: flex; gap: 5px; list-style-type: none; background: #f8f9fa; border-radius: 0.75rem; padding: 0;">
+          <li id="sectionEncabezado" class="flex-fill text-center catalogPaginator navigatorActive" onclick='$(".fichaPage").hide(); $("#fichaEncabezado").fadeIn(); $(".catalogPaginator").removeClass("navigatorActive"); $(this).addClass("navigatorActive")'>
+            <a class="nav-link mb-0 px-0 py-1 navigatorLink" >
               Encabezado ficha
-              </a>
-           </li>
-           <li id="sectionImagenes" class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaImages").fadeIn()'>
-              <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
+            </a>
+          </li>
+          <li id="sectionImagenes" class="flex-fill text-center catalogPaginator" onclick='$(".fichaPage").hide(); $("#fichaImages").fadeIn(); $(".catalogPaginator").removeClass("navigatorActive"); $(this).addClass("navigatorActive")'>
+            <a class="nav-link mb-0 px-0 py-1 navigatorLink" >
               Imágenes Ficha
-              </a>
-           </li>
-           <li id="sectionDetalle" class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaDetalle").fadeIn(); textAreaSize(); '>
-              <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
+            </a>
+          </li>
+          <li id="sectionDetalle" class="flex-fill text-center catalogPaginator" onclick='$(".fichaPage").hide(); $("#fichaDetalle").fadeIn(); textAreaSize(); $(".catalogPaginator").removeClass("navigatorActive"); $(this).addClass("navigatorActive")'>
+            <a class="nav-link mb-0 px-0 py-1 navigatorLink" >
               Detalle Ficha
-              </a>
-            </li> 
-            <li id="sectionBB" class="nav-item" onclick='$(".fichaPage").hide(); $("#fichaBlancosBiologicos").fadeIn()'>
-              <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
+            </a>
+          </li>
+          <li id="sectionBB" class="flex-fill text-center catalogPaginator" onclick='$(".fichaPage").hide(); $("#fichaBlancosBiologicos").fadeIn(); $(".catalogPaginator").removeClass("navigatorActive"); $(this).addClass("navigatorActive")'>
+            <a class="nav-link mb-0 px-0 py-1 navigatorLink" >
               Blancos Biologicos
-              </a>
-            </li> 
-            <li id="sectionMapa" class="nav-item" >
-              <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab" aria-controls="dashboard" aria-selected="false">
+            </a>
+          </li>
+          <li id="sectionMapa" class="flex-fill text-center catalogPaginator" >
+            <a class="nav-link mb-0 px-0 py-1 navigatorLink" >
               Geolocalización Ficha
-              </a>
-            </li> 
-         </ul>
+            </a>
+          </li>
+        </ul>
       </div>
 
       <div class="card ">
@@ -278,10 +301,10 @@
 
         <!-- Ficha Detalle -->
         <div id="fichaDetalle" class="fichaPage p-3" style="display: none;">
-          <div class="nav-wrapper position-relative end-0">
-            <ul class="nav nav-pills nav-fill p-1" role="tablist" id="detallePaginador">
-
-             </ul>
+          <div class="">
+            <ul class=""" style="display: flex; gap: 5px; list-style-type: none; background: #f8f9fa; border-radius: 0.75rem; padding: 0;" id="detallePaginador">
+              <!-- Contenido Dinamico-->
+            </ul>
           </div>
           <div id="detailContainer" class="px-3">
             <!-- Contenido Dinamico-->
@@ -291,12 +314,10 @@
         <!-- Blancos Biologicos -->
         <div id="fichaBlancosBiologicos" class="fichaPage p-4" style="display: none;">
           <div class="d-flex gap-3 my-3 justify-content-center" id="BBicons"> <!-- Contenido Dinamico--> </div>
-
           <div>
             <h6 id="relatedElementsBBpageName" class="text-center"></h6> 
             <div class="d-flex" id="relatedElementsBB"> <!-- Contenido Dinamico--></div>
           </div>
-
         </div>
 
         <!-- Footer Page -->
@@ -306,17 +327,6 @@
             <i class="fas fa-chevron-left"></i>
             <h6 class="text-s m-0" onclick="history.back()">Volver al catalogo</h6>
           </div>
-          <!-- <div class="d-flex justify-content-center gap-3">
-            <div class="imgUser"></div>
-            <div class="text-center">
-              <h6 class="m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Diseñado Actualizado Por:</h6>
-              <h6 class="m-0">Juan Sims</h6>
-              <div class="d-flex justify-content-center align-items-center gap-1 m-0 text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                <i class="fa fa-calendar " ></i>
-                <span>11/12/2022</span>
-              </div>
-            </div>
-          </div> -->
           <div class="d-flex justify-content-end" style="width: 150px;">
             <button onclick="sendData()" class="btn btn-primary m-0 btnColor" id="saveButton" style="display: none;">
               <i class="far fa-save ms-2"></i>
@@ -357,7 +367,6 @@
 
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
-      // console.log(s)
       // Remove special characters
       s = s.replace(/\\n/g, "\\n")  
            .replace(/\\'/g, "\\'")
@@ -368,11 +377,25 @@
            .replace(/\\b/g, "\\b")
            .replace(/\\f/g, "\\f")
            .replace(/[\u0000-\u0019]+/g,"")
-           .replace(/\n/g, "\\n") ;
-
-      return JSON.parse(s)
-     }
-
+           .replace(/\n/g, "\\n") 
+      //  Casos especiales
+           .replace('"spray"', "") 
+           .replace('"."', '."')
+           .replace('"Irritante', `'Irritante`)
+           .replace('día"', `día'`)
+           .replace('"Ascophyllum Nodosum" ', `'Ascophyllum Nodosum'`) 
+           .replace('"Fabricante:', '"Fabricante -')
+           .replace('"S', 'S')
+           .replace('Socio ","', '"Socio","')
+           .replace(':S', ':"S')
+           .replace('""I', '"I'); 
+      try {
+        return JSON.parse(s)
+      } catch (error) {
+        console.log("Error parseando respuesta, comuniquese con soporte")        
+      }
+    }
+    
     //  Controlar modo vista y editar
     $("#editButton").on("click", function () {
       $(this).hide();
@@ -477,7 +500,6 @@
         </form>
       `;
       $("#inputNewImgEncabezado").append(element);
-
       $("#newImgEncabezado").trigger('click');
     }
 
@@ -513,7 +535,7 @@
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
+        console.log("Imane uploaded Successfully")
       });
     }
 
@@ -532,7 +554,7 @@
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
+        console.log("Imane uploaded Successfully")
       });
     };
 
@@ -738,10 +760,13 @@
       }
       // Create paginator and sections
       for (let i = 0; i < sections.length; i++) {
+        let isActive;
+        if (i == 0) {isActive = "navigatorActive"}
+
         let navName = sections[i].replace(/\s+/g, '');
         let elementP = `
-          <li class="nav-item" onclick='$(".detailPage").hide(); $("#detailContainer${navName}").fadeIn(); textAreaSize()'>
-            <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple" role="tab" aria-controls="profile" aria-selected="true">
+          <li class="flex-fill text-center navigatorLi ${isActive}" onclick='$(".detailPage").hide(); $("#detailContainer${navName}").fadeIn(); textAreaSize(); $(".navigatorLi").removeClass("navigatorActive"); $(this).addClass("navigatorActive")'>
+            <a class="nav-link mb-0 px-0 py-1 navigatorLink" >
               ${sections[i]}
             </a>
           </li>
@@ -758,8 +783,6 @@
 
       // Load sections Content
       for (let i = 0; i < detalleFicha.length; i++) {
-        // console.log(detalleFicha[i])
-
         if (detalleFicha[i].seccion == "Productos") { //Elementos fantasma para la recolleccion de datos, 
           let element = `
           <div style="display: none" class="dataHarvest" data-propiedad="${detalleFicha[i].id_catalogo_propiedad}" data-seccion="${detalleFicha[i].id_catologo_seccion}" data-maestro="${detalleFicha[i].campo_maestro}" data-orden="${detalleFicha[i].orden_propiedad}" data-isArchivo="${detalleFicha[i].foto}">
@@ -803,8 +826,6 @@
         `;
         $("#detailContainerProductos").append(element);
 
-
-        console.log(productsList)
         for (let i = 0; i < productsList.length; i++) {
           let productExist = _.findWhere(productosFicha, {id: productsList[i].id}); // La seccion de productos tiene una estructura diferente
           if (productExist) {continue}
@@ -846,7 +867,6 @@
           `;
           $("#detailRelatedProducts").append(elementP);
         }
-
 
         // ** Blancos Biologicos
         let sectionsBlancosBiologicos = [2, 3, 4]; 
@@ -946,7 +966,7 @@
                 </div>
               </div>
               <hr class="horizontal dark mt-0">
-            `
+            `;
             $("#pageBB"+sectionsBlancosBiologicos[i]).find(".relatedElementsBBpage").append(element);
           };
 
@@ -973,7 +993,6 @@
       }
     }
 
-    //  Separo estas partes del codigo para poder cargar solo los masters en la vista de edición
     const printMastersProducts = () => {
       let element = `
           <div class="d-flex">
@@ -1022,60 +1041,60 @@
     const prinMastersBB = () => {
       // ** Blancos Biologicos
       let sectionsBlancosBiologicos = [2, 3, 4]; 
-        for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
-          let icon;
-          let iconName;
-          switch (sectionsBlancosBiologicos[i]) {
-            case 1:
-              icon = "http://api.pedbox.co:8850/images/icono_cultivos.png"
-              iconName = "Cultivos"
-              break;
-            case 2:
-              icon = "http://api.pedbox.co:8850/images/icono_enfermedades.png"
-              iconName = "Enfermedades"
-              break;
-            case 3:
-              icon = "http://api.pedbox.co:8850/images/icono_malezas.png"
-              iconName = "Malezas"
-              break;
-            case 4:
-              icon = "http://api.pedbox.co:8850/images/icono_plagas.png"
-              iconName = "Plagas"
-              break;
-            case 5:
-              icon = "http://api.pedbox.co:8850/images/icono_productos.png"
-              iconName = "Productos"
-              break;
-          }
+      for (let i = 0; i < sectionsBlancosBiologicos.length; i++) {
+        let icon;
+        let iconName;
+        switch (sectionsBlancosBiologicos[i]) {
+          case 1:
+            icon = "http://api.pedbox.co:8850/images/icono_cultivos.png"
+            iconName = "Cultivos"
+            break;
+          case 2:
+            icon = "http://api.pedbox.co:8850/images/icono_enfermedades.png"
+            iconName = "Enfermedades"
+            break;
+          case 3:
+            icon = "http://api.pedbox.co:8850/images/icono_malezas.png"
+            iconName = "Malezas"
+            break;
+          case 4:
+            icon = "http://api.pedbox.co:8850/images/icono_plagas.png"
+            iconName = "Plagas"
+            break;
+          case 5:
+            icon = "http://api.pedbox.co:8850/images/icono_productos.png"
+            iconName = "Productos"
+            break;
+        }
 
-          let isActive;
-          if (i == 0) {isActive = "iconBlancosBiologicosActive"} else {isActive = ""}
-          let element = `
-            <div class="bg-gray-100 iconBlancosBiologicos ${isActive}" name="${iconName}"><img src="${icon}" alt="" class="imgCard" id="BBtipo${sectionsBlancosBiologicos[i]}" onclick='$(".pageBB").hide(); $("#pageBB${sectionsBlancosBiologicos[i]}").fadeIn();'></div>
-          `;
+        let isActive;
+        if (i == 0) {isActive = "iconBlancosBiologicosActive"} else {isActive = ""}
+        let element = `
+          <div class="bg-gray-100 iconBlancosBiologicos ${isActive}" name="${iconName}"><img src="${icon}" alt="" class="imgCard" id="BBtipo${sectionsBlancosBiologicos[i]}" onclick='$(".pageBB").hide(); $("#pageBB${sectionsBlancosBiologicos[i]}").fadeIn();'></div>
+        `;
 
-          let isVisible;
-          if (!i == 0) {isVisible = "style='display: none'"} else {isVisible = ""; $("#relatedElementsBBpageName").text(iconName)}
-          let elementC = `
-            <div class="pageBB w-100" id="pageBB${sectionsBlancosBiologicos[i]}" ${isVisible} >
-              <div class="d-flex">
-                <div class="w-45 mt-2 ps-4 addRelatedElementsBB" style="display: none">
-                  <h6>Relacionar Item </h6>  
-                  <div class="dropdown">
-                    <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="DropdownBB${sectionsBlancosBiologicos[i]}">
-                        Lista Productos
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="DropdownBB${sectionsBlancosBiologicos[i]}" id="DropdownBBContainer${sectionsBlancosBiologicos[i]}"></ul>
-                  </div>  
-                </div>
-                <div class="w-40 mt-2 relatedElementsBBpage" style="margin: 0 auto; text-align: left;"> 
-                </div>
+        let isVisible;
+        if (!i == 0) {isVisible = "style='display: none'"} else {isVisible = ""; $("#relatedElementsBBpageName").text(iconName)}
+        let elementC = `
+          <div class="pageBB w-100" id="pageBB${sectionsBlancosBiologicos[i]}" ${isVisible} >
+            <div class="d-flex">
+              <div class="w-45 mt-2 ps-4 addRelatedElementsBB" style="display: none">
+                <h6>Relacionar Item </h6>  
+                <div class="dropdown">
+                  <a href="javascript:;" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="DropdownBB${sectionsBlancosBiologicos[i]}">
+                      Lista Productos
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="DropdownBB${sectionsBlancosBiologicos[i]}" id="DropdownBBContainer${sectionsBlancosBiologicos[i]}"></ul>
+                </div>  
+              </div>
+              <div class="w-40 mt-2 relatedElementsBBpage" style="margin: 0 auto; text-align: left;"> 
               </div>
             </div>
-          `;
-          $("#BBicons").append(element)
-          $("#relatedElementsBB").append(elementC)
-        };
+          </div>
+        `;
+        $("#BBicons").append(element)
+        $("#relatedElementsBB").append(elementC)
+      };
     }
 
     // Sí, todo esto para sacar la id del catalogo
@@ -1087,26 +1106,29 @@
       if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return}
 
       catalogId = _.findWhere(catalogos.malezas, {id: idItem});
-      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return}
 
       catalogId = _.findWhere(catalogos.plagas, {id: idItem});
-      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return}
 
       catalogId = _.findWhere(catalogos.enfermedades, {id: idItem});
-      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return}
 
       catalogId = _.findWhere(catalogos.productos, {id: idItem});
-      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return }
+      if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return}
     }
 
     $(document).ready(function () {
       let id = '<%- id %>';
       
-      let detailProducto= '<%- detalleProducto %>';
-      detailProducto = handleJSON(detailProducto)
-      
       let detailPropiedad= '<%- detallePropiedad %>';
       detailPropiedad = handleJSON(detailPropiedad);
+
+      let currentCatalog = detailPropiedad.data.catalogo_detalle_propiedad[0].descripcion_catalogo;
+      handleSectionByCatalog(currentCatalog);
+
+      let detailProducto= '<%- detalleProducto %>';
+      detailProducto = handleJSON(detailProducto)
       
       let detailCatalogoProducts = '<%- catalogoProductos %>';
       detailCatalogoProducts = handleJSON(detailCatalogoProducts)
@@ -1129,15 +1151,12 @@
         "malezas" : detailCatalogoMaleza.data.catalogo_enc,
         "plagas" : detailCatalogoPlagas.data.catalogo_enc,
         "enfermedades" : detailCatalogoEnfermedades.data.catalogo_enc
-      }
+      };
 
       printData(detailProducto.data, detailPropiedad.data, catalogos);
       getCatalogId(catalogos);
       textAreaSize();
       imageAmountIndicator();
-      
-      let currentCatalog = detailPropiedad.data.catalogo_detalle_propiedad[0].descripcion_catalogo;
-      handleSectionByCatalog(currentCatalog);
     })
   </script>
 

@@ -159,8 +159,7 @@
       }
       tbody += "</tbody>"
       $("#tableInformes").append(tbody)
-    }
-
+    };
 
     const printCharts = (data) => {
       $("#chartsContainer").html();
@@ -218,8 +217,8 @@
               fill: false
           }]
           }
-      });
-    }
+      })
+    };
     
     const searRangoFecha = () => {
       let dateStart = $("#date1").val();
@@ -227,7 +226,6 @@
 
       dateStart = dateStart.replace(/-/g, "");
       dateEnd = dateEnd.replace(/-/g, "");
-
       let link = `http://104.236.159.193:3010/obtener_evaluacionesDepto?fechaInicial=${dateStart}&fechaFinal=${dateEnd}`;
 
       $("#preloader").show();
@@ -239,8 +237,7 @@
         printTable(res.datosEncuesta);
       })
       .catch(error => console.error(error));
-    }
-    
+    };
 
     $(document).ready(function () {
       printCharts(evaluaciones.datosEncuesta);
@@ -253,9 +250,7 @@
       var firstDay = new Date(new Date().getFullYear(), 0, 1);
       firstDay = firstDay.toISOString().substr(0, 10);
       $("#date1").val(firstDay)
-
     })
-
   </script>
 
 </body>

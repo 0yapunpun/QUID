@@ -165,7 +165,6 @@
     })
 
     const choiceCampo = new Choices($('#selectCampo')[0]);
-
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
       // Remove special characters
@@ -198,7 +197,6 @@
 
     const saveConfiguration = () => {
       let fields = $(".infoHarvest");
-      console.log(fields)
 
       let data = {};
       for (let i = 0; i < fields.length; i++) {

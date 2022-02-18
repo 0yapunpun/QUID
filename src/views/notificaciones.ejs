@@ -161,7 +161,6 @@
   <script>  
     const handleJSON = (s) => {
       if (s == null && s == "") { return }
-
       // Remove special characters, new lienes
       s = s.replace(/\\n/g, "\\n")  
           .replace(/\\'/g, "\\'")
@@ -187,7 +186,6 @@
 
     const printTable = (data) =>{
       var tableBody = "<tbody id='tableBody'>"
-
       for (let i = 0; i < data.length; i++) {
         let tableRow = `
           <tr>
@@ -260,9 +258,6 @@
       };
       $("#selectAsesor").append(`<option value="" selected disabled hidden>...</option>`);
       const choiceAsesor = new Choices($('#selectAsesor')[0]);
-      
-
-      console.log(usuarios)
     }
 
     var notificacionesList = '<%- notificaciones %>';
@@ -272,7 +267,17 @@
     var usuarios = '<%- usuarios %>';
     usuarios = handleJSON(usuarios)
     usuarios = usuarios.data;
-    console.log(usuarios)
+
+    let users = [],
+        asesores = [];
+    for (let i = 0; i < usuarios.length; i++) {
+      if (usuarios[i].perfil == "A") {
+        users.push(usuarios[i])
+      }
+      if (usuarios[i].perfil == "U") {
+        asesores.push(usuarios[i])
+      }
+    }
 
     $(document).ready(function () {
       printTable(notificacionesList.notificaciones)
