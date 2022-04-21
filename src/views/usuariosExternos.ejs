@@ -84,6 +84,8 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Datatable -->
   <script src="../js/plugins/datatables.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     const handleJSON = (s) => {
@@ -132,7 +134,15 @@
     var usuarios = '<%- usuarios %>';
         usuarios = handleJSON(usuarios);
         usuarios = usuarios.data;
-    printTable(usuarios)
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
+
+    $(document).ready(function () {
+      handlePermissions(permissionsUser);
+      printTable(usuarios)
+    })
   </script>
 
 </body>

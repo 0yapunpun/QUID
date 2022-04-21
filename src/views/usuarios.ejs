@@ -169,7 +169,7 @@
             <div onclick="toggleStateUser()" id="showInactive"  data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Usuarios Inactivos" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
               <i class="fas fa-ban"></i>
             </div>
-            <div onclick="newUser()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Usuario" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
+            <div id="newUserButton" onclick="newUser()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Usuario" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
               <i class="fas fa-plus" ></i>
             </div>
 
@@ -210,11 +210,13 @@
 
               <div class="updateDataButton">
                 <hr class="horizontal dark mt-0">
-                <div class="updateData">
-                  <h6 class="m-0">
-                    <i class="fas fa-pen"></i>
-                    Actualizar datos
-                  </h6>
+                <div id="updateUserButton">
+                  <div class="updateData">
+                    <h6 class="m-0">
+                      <i class="fas fa-pen"></i>
+                      Actualizar datos
+                    </h6>
+                  </div>
                 </div>
                 <div class="createUser" style="display: none;" onclick="createUser()">
                   <h6 class="m-0" style="color: green;">
@@ -407,6 +409,8 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>  
     const handleJSON = (s) => {
@@ -447,6 +451,10 @@
     var departamentos = '<%- departamentos %>';
     departamentos = handleJSON(departamentos)
     departamentos = departamentos.data
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
 
     const printUsers = (data) => {
       $("#itemsUsers").html("")
@@ -792,6 +800,7 @@
 
     $(document).ready(function () {
       printUsers(activeUsers)
+      handlePermissions(permissionsUser)
     })
 
   </script>

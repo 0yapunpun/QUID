@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href="http://104.236.159.193:8850/images/logoamigoinvesa.png"/>
   <title>
     Permisos
   </title>
@@ -116,6 +117,8 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Choices JS -->
   <script src="../js/plugins/choices.min.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     const handleJSON = (s) => {
@@ -129,17 +132,18 @@
           .replace(/\\t/g, "\\t")
           .replace(/\\b/g, "\\b")
           .replace(/\\f/g, "\\f")
-          .replace(/[\u0000-\u0019]+/g,""); 
-      // Remove New Lines
-      s = s.replace(/\n/g, "\\n");
-      s = JSON.parse(s)
-      console.log(s)
-      return s
+          .replace(/[\u0000-\u0019]+/g,"")
+          .replace(/\n/g, "\\n");
+      return JSON.parse(s)
     }
 
     var permisos = '<%- permisos %>';
     permisos = handleJSON(permisos);
     permisos = permisos.data;
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
 
     const loadInputSelect = (data) => {
       for (let i = 0; i < data.length; i++) {
@@ -180,7 +184,6 @@
       }
 
       $("#displayFiltered").html("")
-      console.log(hasPermissions)
       for (let i = 0; i < hasPermissions.length; i++) {
         let element = `
           <div class="form-switch d-flex justify-content-between px-4 pt-2" data-id="${hasPermissions[i].id}" data-idRole="${hasPermissions[i].id_role}" data-idConfig="${hasPermissions[i].id_configuracion}">
@@ -218,8 +221,9 @@
 
     $(document).ready(function () {
       loadInputSelect(permisos.permisos.roles);
-      loadSidebar(permisos.permisos.modulos)
-      loadPermissionsList(permisos.permisos, 1)
+      loadSidebar(permisos.permisos.modulos);
+      loadPermissionsList(permisos.permisos, 1);
+      handlePermissions(permissionsUser)
     });
   </script>
 

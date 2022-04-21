@@ -97,6 +97,8 @@
   <script src="/js/plugins/chartjs.min.js"></script>
   <!-- Datatable -->
   <script src="../js/plugins/datatables.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     const handleJSON = (s) => {
@@ -118,6 +120,10 @@
     var data = '<%- data %>';
     data = handleJSON(data);
     data = data.data;
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
 
     function percentage(partialValue, totalValue) {
       return (100 * partialValue) / totalValue;
@@ -321,6 +327,7 @@
     $(document).ready(function () {
       printCharts(data.analytics);
       printTable(data.analytics);
+      handlePermissions(permissionsUser);
 
       let currentDate = new Date();
       currentDate = currentDate.toISOString().substr(0, 10)

@@ -182,6 +182,22 @@
     .navigatorLink:hover{
       color: #344767; 
     }
+    .removeProductRelation{
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: solid 1px lightgray;
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+      visibility: hidden;
+    }
+    .removeProductRelation:hover{
+      background-color: lightgray;
+    }
   </style>
 </head>
 
@@ -302,7 +318,7 @@
         <!-- Ficha Detalle -->
         <div id="fichaDetalle" class="fichaPage p-3" style="display: none;">
           <div class="">
-            <ul class=""" style="display: flex; gap: 5px; list-style-type: none; background: #f8f9fa; border-radius: 0.75rem; padding: 0;" id="detallePaginador">
+            <ul id="detallePaginador" class="" style="display: flex; gap: 5px; list-style-type: none; background: #f8f9fa; border-radius: 0.75rem; padding: 0;">
               <!-- Contenido Dinamico-->
             </ul>
           </div>
@@ -360,6 +376,8 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -410,6 +428,7 @@
       $(".imgEncabezadoAddRemove").removeClass("hideBtnRemoveImg");
       $(".addRelatedElementsBB").show();
       $("#imgEncabezadoContainer").css("border-color", "lightgray")
+      $(".removeProductRelation").css("visibility", "inherit")
     });
 
     $("#saveButton").on("click", function () {
@@ -425,6 +444,7 @@
       $(".imgEncabezadoAddRemove").addClass("hideBtnRemoveImg");
       $(".addRelatedElementsBB").hide();
       $("#imgEncabezadoContainer").css("border-color", "transparent")
+      $(".removeProductRelation").css("visibility", "hidden")
     });
 
     //  Esconder secciones dependiendo del catálogo desde el que se abra
@@ -677,7 +697,7 @@
       let subtitulo = $(this).attr("data-s");
 
       let element = `
-        <div class="d-flex align-items-center my-2 dataHarvestProducts" data-id="${id}">
+        <div data-id="${id}" class="d-flex align-items-center my-2 dataHarvestProducts" style="position: absolute">
           <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
             <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
           </div>
@@ -688,6 +708,8 @@
               <span>${subtitulo}</span>
             </h6>
           </div>
+          <div class="removeProductRelation">x</div>
+          
         </div>
         <hr class="horizontal dark mt-0">
       `;
@@ -699,6 +721,11 @@
       $(".iconBlancosBiologicos").removeClass("iconBlancosBiologicosActive");
       $(this).addClass("iconBlancosBiologicosActive")
       $("#relatedElementsBBpageName").text($(this).attr("name"))
+    })
+
+    $(document).on("click", ".removeProductRelation", function () {
+      if (!confirm('¿Está seguro de eliminar este producto relacionado?')) {return}
+      $(this).parents('.dataHarvestProducts').remove();
     })
 
     const printData = (detailProducto, detailPropiedad, catalogos) => {
@@ -737,7 +764,6 @@
 
       // ** Imagenes
       for (let i = 0; i < imagesFicha.length; i++) {
-        console.log(imagesFicha)
         let element = `
           <div class="fichaImages d-flex flex-column align-items-center text-center pb-3" style="position: relative;" id="${imagesFicha[i].id}">
             <img class="imgCard" src="http://104.236.159.193:3010/${imagesFicha[i].ruta_imagen}" alt="">
@@ -758,6 +784,11 @@
           sections.push(detalleFicha[i].seccion)
         }
       }
+
+      if (detalleFicha[0].descripcion_catalogo == "Productos") {
+        sections.push("Productos")
+      }
+
       // Create paginator and sections
       for (let i = 0; i < sections.length; i++) {
         let isActive;
@@ -850,7 +881,7 @@
 
         for (let i = 0; i < productosFicha.length; i++) {
           let elementP = `
-            <div class="d-flex align-items-center my-2 dataHarvestProducts" data-id="${productosFicha[i].id}">
+            <div data-id="${productosFicha[i].id}" class="d-flex align-items-center my-2 dataHarvestProducts" >
               <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
                 <img src="http://104.236.159.193:3010/${productosFicha[i].foto}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
               </div>
@@ -861,9 +892,9 @@
                   <span>${productosFicha[i].dosis}</span>
                 </h6>
               </div>
+              <div class="removeProductRelation">x</div>
             </div>
             <hr class="horizontal dark mt-0">
-
           `;
           $("#detailRelatedProducts").append(elementP);
         }
@@ -1145,6 +1176,10 @@
       let detailCatalogoEnfermedades = '<%- catalogoEnfermedades %>';
       detailCatalogoEnfermedades = handleJSON(detailCatalogoEnfermedades)
 
+      let permissionsUser = `<%- JSON.stringify(userData) %>`;
+      permissionsUser = handleJSON(permissionsUser);
+      permissionsUser = permissionsUser.permisos;
+
       var catalogos = {
         "productos" : detailCatalogoProducts.data.catalogo_enc,
         "cultivos" : detailCatalogoCultivos.data.catalogo_enc,
@@ -1153,6 +1188,7 @@
         "enfermedades" : detailCatalogoEnfermedades.data.catalogo_enc
       };
 
+      handlePermissions(permissionsUser)
       printData(detailProducto.data, detailPropiedad.data, catalogos);
       getCatalogId(catalogos);
       textAreaSize();

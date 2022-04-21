@@ -86,6 +86,8 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Datatable -->
   <script src="../js/plugins/datatables.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>  
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -160,7 +162,13 @@
       var ranking = '<%- lista %>';
       ranking = handleJSON(ranking)
       ranking = ranking.data;
+
+      let permissionsUser = `<%- JSON.stringify(userData) %>`;
+      permissionsUser = handleJSON(permissionsUser);
+      permissionsUser = permissionsUser.permisos;
+
       printTable(ranking.ranking)
+      handlePermissions(permissionsUser);
     });
   </script>
 </body>

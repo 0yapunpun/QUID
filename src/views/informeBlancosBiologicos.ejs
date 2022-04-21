@@ -64,6 +64,8 @@
   <script src="/js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="/js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
 
@@ -80,7 +82,7 @@
            .replace(/\\f/g, "\\f")
            .replace(/[\u0000-\u0019]+/g,"")
            .replace(/\n/g, "\\n");
-           ; 
+           
       // Remove New Lines
       return JSON.parse(s)
     }
@@ -135,9 +137,13 @@
       var movimientos2 = '<%- data2 %>';
       movimientos2 = handleJSON(movimientos2);
       movimientos2 = movimientos2.data;
+
+      let permissionsUser = `<%- JSON.stringify(userData) %>`;
+      permissionsUser = handleJSON(permissionsUser);
+      permissionsUser = permissionsUser.permisos;
       
       loadCards(movimientos.cuenta)
-      console.log(movimientos.cuenta)
+      handlePermissions(permissionsUser);
     })
   </script>
 

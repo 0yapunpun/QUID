@@ -56,9 +56,11 @@
 
       <div class="d-flex justify-content-between align-items-center mb-2" >
         <h6 class="ms-2 mb-0">Notificaciones</h6>
-        <div class="d-flex align-items-center gap-2 newNotification" id="newNotificationButton">
-          <i class="fas fa-plus"></i>
-          <h6 class="mb-0">Nuevo Notificación</h6>
+        <div id="newNotificationButton">
+          <div class="d-flex align-items-center gap-2 newNotification">
+            <i class="fas fa-plus"></i>
+            <h6 class="mb-0">Nuevo Notificación</h6>
+          </div>
         </div>
       </div>
       
@@ -82,7 +84,7 @@
     <div class="modal fade" tabindex="-1" id="newNotification" role="dialog" aria-labelledby="detailModalModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header" id="newNotificationButton">
             <h5 class="modal-title">Nueva Notificación </h5>
             <div class="d-flex justify-content-center align-items-center gap-2">
               <button type="button" class="btn-close rounded-circle me-1" style="background-color: gray" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -157,6 +159,8 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Datatable -->
   <script src="../js/plugins/datatables.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>  
     const handleJSON = (s) => {
@@ -268,6 +272,10 @@
     usuarios = handleJSON(usuarios)
     usuarios = usuarios.data;
 
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
+
     let users = [],
         asesores = [];
     for (let i = 0; i < usuarios.length; i++) {
@@ -282,6 +290,7 @@
     $(document).ready(function () {
       printTable(notificacionesList.notificaciones)
       printAsesoresUsuariosList(usuarios.usuarios)
+      handlePermissions(permissionsUser)
     })
 
   </script>

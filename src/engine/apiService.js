@@ -31,7 +31,7 @@ service.loginAutentication = async (data) => {
 }
 
 service.loginPasswordRecovery = async (correo) => {
-    const url = bUrl+'recuperar_clave?correo=maussa@invesa.com&usuario=&fbId=&gpId=';
+    const url = bUrl+'recuperar_clave?correo='+correo+'&usuario=&fbId=&gpId=';
     return await makeRequest(url);
 }
 
@@ -187,9 +187,6 @@ service.informeAcompañamiento = async (date) => {
     const data =  await makeRequest(url);
     return JSON.stringify(data)
 }
-
-// XXXX
-http://104.236.159.193:3010/contar_principales?id_usuario=101
 
 service.contarPrincipalesByUser = async (id) => {
     const url = bUrl+'contar_principales?id_usuario='+id;

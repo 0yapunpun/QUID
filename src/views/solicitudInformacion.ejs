@@ -293,6 +293,8 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Datatable -->
   <script src="../js/plugins/datatables.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     const getAbiertas = () => {
@@ -492,10 +494,18 @@
     solicitudesAbiertas = handleJSON(solicitudesAbiertas);
     solicitudesAbiertas = solicitudesAbiertas.data;
 
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
+
     var solicitudesPendientes;
     var solicitudesCerradas;
 
-    printTable(solicitudesAbiertas.solicitudes)
+    $(document).ready(function () {
+      handlePermissions(permissionsUser);
+      printTable(solicitudesAbiertas.solicitudes);
+    })
+
   </script>
 
 </body>

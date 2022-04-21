@@ -103,6 +103,8 @@
   <script src="/js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Chart JS -->
   <script src="/js/plugins/chartjs.min.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     const handleJSON = (s) => {
@@ -128,6 +130,10 @@
     var respuestas = '<%- respuestas %>';
     respuestas = handleJSON(respuestas);
     respuestas = respuestas.data;
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
 
     const printTable = (data) => {
       $("#tableContainer").html("");
@@ -242,6 +248,7 @@
     $(document).ready(function () {
       printCharts(evaluaciones.datosEncuesta);
       printTable(evaluaciones.datosEncuesta);
+      handlePermissions(permissionsUser);
 
       let currentDate = new Date();
       currentDate = currentDate.toISOString().substr(0, 10)

@@ -21,6 +21,7 @@
   <!-- Custom QUID classes -->
   <link id="pagestyle" href="/css/custom_classes.css" rel="stylesheet" />
 
+
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -54,8 +55,6 @@
           </thead>  
         </table>
       </div>
-        
-
     </div>
       
   </main>
@@ -78,6 +77,8 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Datatable -->
   <script src="../js/plugins/datatables.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     const handleJSON = (s) => {
@@ -130,10 +131,15 @@
 
     let clientes= '<%- clientes %>';
     clientes = handleJSON(clientes);
-    clientes = clientes.data
+    clientes = clientes.data;
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
 
     $(document).ready(function () {
-      printTable(clientes.lista_cliente)
+      printTable(clientes.lista_cliente);
+      handlePermissions(permissionsUser);
     })
   </script>
 

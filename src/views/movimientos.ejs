@@ -89,6 +89,8 @@
   <script src="/js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Chart JS -->
   <script src="/js/plugins/chartjs.min.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     const handleJSON = (s) => {
@@ -436,7 +438,11 @@
     aporte = handleJSON(aporte)
 
     var acompañamiento = '<%- acompañamiento %>';
-    acompañamiento = handleJSON(acompañamiento)
+    acompañamiento = handleJSON(acompañamiento);
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
     
     $(document).ready(function () {
       loadCards(movimientos.data.cuenta);
@@ -446,6 +452,7 @@
       chartCapacitaciones(capacitaciones.data.cuenta);
       chartAportes(aporte.data.cuenta);
       chartAcompañamiento(acompañamiento.data.cuenta);
+      handlePermissions(permissionsUser);
 
       let currentDate = new Date();
       currentDate = currentDate.toISOString().substr(0, 10)

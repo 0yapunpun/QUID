@@ -128,7 +128,12 @@
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res)
+        if (res.data.success) {
+          alert("Se ha enviado un correo electronico para la recuperación de clave");
+          $("#userMailRecovery").val("");
+        } else {
+          alert("Este correo electronico no esta registrado");
+        }
       });
     });
     

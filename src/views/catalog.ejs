@@ -76,7 +76,7 @@
             <div id="showInactive" data-bs-toggle="tooltip"  data-bs-placement="top" title="Mostrar Fichas Inactivas" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
               <i class="fas fa-ban"></i>
             </div>
-            <div onclick="newUser()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Ficha" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
+            <div id="newCatalogButton" onclick="newUser()" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear Ficha" class=" icon icon-shape icon-sm bg-gradient-primary shadow text-center border-radius-lg btnColor" style="cursor: pointer; position: relative;" >
               <i class="fas fa-plus" ></i>
             </div>
             <div class="searchFieldContent">
@@ -120,7 +120,8 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
-
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     let catalogContent;
@@ -216,10 +217,15 @@
 
     $(document).ready(function () {
       catalogContent= `<%- catalogContent %>`;
-      catalogContent = handleResponse(catalogContent)
+      catalogContent = handleResponse(catalogContent);
 
-      printItems(catalogContent.data.catalogo_enc)
+      let permissionsUser = `<%- JSON.stringify(userData) %>`;
+      permissionsUser = handleResponse(permissionsUser);
+      permissionsUser = permissionsUser.permisos;
+
+      printItems(catalogContent.data.catalogo_enc);
       $("#preloader").hide();
+      handlePermissions(permissionsUser);
     })
   </script>
 

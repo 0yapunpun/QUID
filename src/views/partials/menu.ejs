@@ -17,7 +17,7 @@
   <div class="collapse navbar-collapse  w-auto  max-height-vh-100 h-100 removeScroll" id="sidenav-collapse-main" style="background-color: white;">
     <ul class="navbar-nav">
 
-      <li class="nav-item" >
+      <li class="nav-item" id="sectionCatalogos">
         <a class="nav-link"  data-bs-toggle="collapse" href="#collapseCatalog" >
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center  me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-table" style="color: #252f40; font-size: 12px"></i>
@@ -55,7 +55,7 @@
         </div>
       </li>
 
-      <li class="nav-item removeScroll">
+      <li class="nav-item removeScroll" id="sectionInformes"> 
         <a class="nav-link"  data-bs-toggle="collapse" href="#collapseReport" >
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center  me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-chart-pie" style="color: #252f40; font-size: 12px"></i>
@@ -65,37 +65,37 @@
         <div class="collapse show" id="collapseReport">
           <ul class="navbar-nav ms-2">
             <li class="nav-item" >
-              <a class="nav-link" href="/informes/ranking" >
+              <a class="nav-link" href="/informes/ranking" id="sectionRanking">
                 <span class="nav-link-text ms-1 font-weight-bold">Ranking asesores</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/informes/movimientos" >
+              <a class="nav-link" href="/informes/movimientos" id="sectionMovimientos">
                 <span class="nav-link-text ms-1 font-weight-bold">Movimientos</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/informes/productos" >
+              <a class="nav-link" href="/informes/productos" id="sectionMovimientosProductos">
                 <span class="nav-link-text ms-1 font-weight-bold">Productos</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/informes/evaluaciones" >
+              <a class="nav-link" href="/informes/evaluaciones" id="sectionEvaluaciones">
                 <span class="nav-link-text ms-1 font-weight-bold">Evaluaciones</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/informes/blancosBiologicos" >
+              <a class="nav-link" href="/informes/blancosBiologicos" id="sectionMovimientosBB">
                 <span class="nav-link-text ms-1 font-weight-bold">Blancos Biólogicos</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/informes/mapaBlancosBiologicos" >
+              <a class="nav-link" href="/informes/mapaBlancosBiologicos" id="sectionBB">
                 <span class="nav-link-text ms-1 font-weight-bold">Mapa Blancos Biólogicos</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/informes/mapaCalor" >
+              <a class="nav-link" href="/informes/mapaCalor" id="sectionMapaCalor">
                 <span class="nav-link-text ms-1 font-weight-bold">Mapa Calor</span>
               </a>
             </li>
@@ -112,28 +112,28 @@
         </a>
         <div class="collapse show" id="collapseActions">
           <ul class="navbar-nav ms-2">
-            <li class="nav-item" >
+            <li class="nav-item" id="sectionUsuarios">
               <a class="nav-link" href="/usuarios">
                 <span class="nav-link-text ms-1 font-weight-bold">Usuarios</span>
               </a>
             </li>
-            <li class="nav-item" >
+            <li class="nav-item" id="sectionSucursales">
               <a class="nav-link" href="/sucursales" >
                 <span class="nav-link-text ms-1 font-weight-bold">Sucursales</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/solicitudInformacion" >
+              <a class="nav-link" href="/solicitudInformacion" id="sectionSolicitudInfo">
                 <span class="nav-link-text ms-1 font-weight-bold">Solicitud Información</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/notificaciones" >
+              <a class="nav-link" href="/notificaciones" id="sectionNotificaciones">
                 <span class="nav-link-text ms-1 font-weight-bold">Notificaciones</span>
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/clientes" >
+              <a class="nav-link" href="/clientes" id="sectionClientes">
                 <span class="nav-link-text ms-1 font-weight-bold">Lista Clientes</span>
               </a>
             </li>
@@ -143,7 +143,7 @@
               </a>
             </li>
             <li class="nav-item" >
-              <a class="nav-link" href="/aportes" >
+              <a class="nav-link" href="/aportes" id="sectionAportes">
                 <span class="nav-link-text ms-1 font-weight-bold">Lista Aportes</span>
               </a>
             </li>
@@ -161,22 +161,22 @@
         </a>
         <div class="collapse show" id="collapseConfig">
           <ul class="navbar-nav ms-2">
-            <li class="nav-item" >
+            <li class="nav-item" id="sectionCrearPropiedades">
               <a class="nav-link" href="/catalogo/crearPropiedades" >
                 <span class="nav-link-text ms-1 font-weight-bold">Crear Propiedades Catálogo</span>
               </a>
             </li>
-            <li class="nav-item" >
+            <li class="nav-item" id="sectionCrearSecciones">
               <a class="nav-link" href="/catalogo/seccionesCatalogo" >
                 <span class="nav-link-text ms-1 font-weight-bold">Secciones Catálogo</span>
               </a>
             </li>
-            <li class="nav-item" >
+            <li class="nav-item" id="sectionConfigurarContenidoSecciones">
               <a class="nav-link" href="/catalogo/contenidoSecciones" >
                 <span class="nav-link-text ms-1 font-weight-bold">Contenido Secciones </span>
               </a>
             </li>
-            <li class="nav-item" >
+            <li class="nav-item" id="sectionPermisos">
               <a class="nav-link" href="/permisos" >
                 <span class="nav-link-text ms-1 font-weight-bold">Permisos</span>
               </a>

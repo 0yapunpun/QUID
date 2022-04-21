@@ -171,7 +171,7 @@
                 </div>
                 <div class="flex-fill ">
                   <div class="d-flex justify-content-between alig-items-center">
-                    <h6 class="text-primary" id="dataAporteName"></h6>
+                    <h6 class="text-primary" id="dataAporteName" style="color: #4caf50 !important;"></h6>
                     <h6 class="text-xxs font-weight-bolder opacity-7" id="dataAporteDate"></h6>
                   </div>
                   <div>
@@ -255,6 +255,8 @@
   <script src="../js/underscore-min.js"></script>
   <!-- Script Plantilla -->
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>
     const handleJSON = (s) => {
@@ -278,6 +280,10 @@
     var aportes = '<%- aportes %>';
     aportes = handleJSON(aportes);
     aportes = aportes.data;
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
 
     let creados = _.where(aportes.aporte, {estado: "C"})
     let aprobados = _.where(aportes.aporte, {estado: "A"})
@@ -364,6 +370,7 @@
 
     $(document).ready(function () {
       printAportes(creados)
+      handlePermissions(permissionsUser)
     })
   </script>
 

@@ -24,18 +24,17 @@ controller.login = async (req, res, next) => {
 
 controller.loginValidate = async(req, res, next) => {
     const resp = await service.loginAutentication(req.body);
-    console.log(resp)
 
-    // let state;
-    // if (resp.data.success) {
-    //     req.session.login = true;
-    //     req.session.idUser = resp.data.id_usuario;
-    //     delete resp.user;
-    //     state = {"success": true}
-    // } else {
-    //     state = {"success": false}
-    // }
-    // res.send(state);
+    let state;
+    if (resp.data.success) {
+        req.session.login = true;
+        req.session.idUser = resp.data.id_usuario;
+        delete resp.user;
+        state = {"success": true}
+    } else {
+        state = {"success": false}
+    }
+    res.send(state);
 };
 
 controller.logout = async (req, res, next) => {

@@ -157,6 +157,8 @@
   <script src="../js/soft-ui-dashboard.min.js?v=1.0.3"></script>
   <!-- Datatable -->
   <script src="../js/plugins/datatables.js"></script>
+  <!-- Helpers -->
+  <script src="../js/helpers.js"></script>
 
   <script>  
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -329,9 +331,15 @@
 
     var datos = '<%- data %>';
     datos = handleJSON(datos);
+
+    let permissionsUser = `<%- JSON.stringify(userData) %>`;
+    permissionsUser = handleJSON(permissionsUser);
+    permissionsUser = permissionsUser.permisos;
+
     
     $(document).ready(function () {
-        printPropiedades(datos.data.campo_propiedad)
+        printPropiedades(datos.data.campo_propiedad);
+        handlePermissions(permissionsUser);
     })
   </script>
 
