@@ -146,7 +146,6 @@ controller.getUserData = async(req, res, next) => {
     res.send(response)
 }
 
-
 controller.crearPropiedades = async(req, res, next) => {
     // Validar login
     if (!req.session.login) { res.redirect('/login'); return}
