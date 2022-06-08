@@ -11,6 +11,16 @@ router.get('/catalogos/plagas', viewController.plagas);
 router.get('/catalogos/productos', viewController.productos);
 router.get('/detail/:id', viewController.catalogoDetail);
 
+router.get('/user_data', viewController.getUserData);
+router.get('/detalle/:id', viewController.getDetail);
+router.get('/detalle_propiedad/:id', viewController.getDetailProperty);
+
+router.get('/cultivos', viewController.getCultivos);
+router.get('/enfermedades', viewController.getEnfermedades);
+router.get('/malezas', viewController.getMalezas);
+router.get('/plagas', viewController.getPlagas);
+router.get('/productos', viewController.getProductos);
+
 // Configuraciones Catalogo
 router.get('/catalogo/crearPropiedades', viewController.crearPropiedades);
 router.get('/catalogo/seccionesCatalogo', viewController.seccionesCatalogo);

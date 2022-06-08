@@ -102,22 +102,50 @@ controller.productos = async(req, res, next) => {
 controller.catalogoDetail = async(req, res, next) => {
     // Validar login
     if (!req.session.login) { res.redirect('/login'); return}
+    
     const idUser = req.session.idUser; 
     const userData = await service.userData(idUser);
 
-    const id = req.params.id;
-    const rDetail = await service.getDetail(id);
-    const rDetailProperty = await service.getDetailProperty(id);
-
-    const rcultivos = await service.getCultivos();
-    const rEnfermedades = await service.getEnfermedades();
-    const rMalezas = await service.getMalezas();
-    const rPlagas = await service.getPlagas();
-    const rProductos = await service.getProductos();
-
-
-    res.render('detail', {"userData": userData, "detalleProducto": rDetail, "detallePropiedad": rDetailProperty, "catalogoCultivos": rcultivos, "catalogoEnfermedades": rEnfermedades, "catalogoMalezas": rMalezas, "catalogoPlagas": rPlagas, "catalogoProductos": rProductos, "id": id} );
+    res.render('detail', {"userData": userData, "id": req.params.id} );
 }
+
+controller.getCultivos = async(req, res, next) => {
+    const response = await service.getCultivos();
+    res.send(response)
+}
+controller.getEnfermedades = async(req, res, next) => {
+    const response = await service.getEnfermedades();
+    res.send(response)
+}
+controller.getMalezas = async(req, res, next) => {
+    const response = await service.getMalezas();
+    res.send(response)
+}
+controller.getPlagas = async(req, res, next) => {
+    const response = await service.getPlagas();
+    res.send(response)
+}
+controller.getProductos = async(req, res, next) => {
+    const response = await service.getProductos();
+    res.send(response)
+}
+
+controller.getDetail = async(req, res, next) => {
+    const id = req.params.id;
+    const response = await service.getDetail(id);
+    res.send(response)
+}
+controller.getDetailProperty = async(req, res, next) => {
+    const id = req.params.id;
+    const response = await service.getDetailProperty(id);
+    res.send(response)
+}
+controller.getUserData = async(req, res, next) => {
+    const idUser = req.session.idUser; 
+    const response = await service.userData(idUser);
+    res.send(response)
+}
+
 
 controller.crearPropiedades = async(req, res, next) => {
     // Validar login

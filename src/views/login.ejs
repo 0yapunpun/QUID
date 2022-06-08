@@ -100,7 +100,8 @@
       let usuario = $("#username").val().trim();
       let contrasena = $("#password").val().trim();
 
-      if (usuario == "" || contrasena == "") { return };
+      if (usuario == "" || contrasena == "") { return alert("Ingresa tus credenciales antes de enviar") };
+      
       var credenciales = { 'usuario' : usuario, 'clave': contrasena};
 
       fetch('/login/loginValidate', {

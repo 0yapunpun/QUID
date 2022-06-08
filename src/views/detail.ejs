@@ -1,3 +1,4 @@
+<!-- * -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,6 +20,8 @@
   <link href="../css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../css/soft-ui-dashboard.css?v=1.0.3" rel="stylesheet" />
+  <!-- Custom QUID classes -->
+  <link id="pagestyle" href="/css/custom_classes.css" rel="stylesheet" />
 
   <style>
     .imgCard{
@@ -183,11 +186,11 @@
       color: #344767; 
     }
     .removeProductRelation{
-      min-width: 22px;
       height: 22px;
+      width: 22px;
       border-radius: 50%;
       border: solid 1px lightgray;
-      margin-left: 10px;
+      margin-left: auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -197,6 +200,9 @@
     }
     .removeProductRelation:hover{
       background-color: lightgray;
+    }
+    .inputDosis{
+      width: 180px;
     }
   </style>
 </head>
@@ -212,7 +218,7 @@
     <%- include('./partials/head.ejs') %>
 
     <!-- Cotent -->
-    <div class="p-4 m-4">
+    <div class="p-4">
       
       <!-- Paginador -->
       <div class="">
@@ -261,6 +267,19 @@
               <div class=" mt-2">
                 <label for="fichaGenericName">Nombre Génerico</label>
                 <input type="text" id="fichaGenericName" class="form-control inputsText textAreaDisable" value="">
+              </div>
+              <div id="selectProductKindContainer" class=" mt-2" style="display: none">
+                <label for="fichaGenericName">Tipo de Producto</label>
+                <select name="" id="selectProductKind" class="form-control inputsText textAreaDisable" >
+                  <option value="-1" selected></option>
+                  <option value="1">Fungicidas</option>
+                  <option value="2">Herbicidas selectivos</option>
+                  <option value="8">Herbicidas no selectivos</option>
+                  <option value="3">Insecticidas</option>
+                  <option value="6">Fertilizantes</option>
+                  <option value="7">Coadyuvantes</option>
+                  <option value="9">Biológicos</option>
+                </select>
               </div>
               <div class="form-check form-switch ps-0  mt-2 ">
                 <label for="">Estado</label>
@@ -357,6 +376,17 @@
 
       </div>
     </div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+      <div>
+        <div class="spinner" style="width: 100px; height: 100px; margin-bottom: 10px;">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+        </div>
+        <h5 style="color: white;">Cargando Contenido ...</h5>
+      </div>
+    </div>
       
   </main>
 
@@ -382,37 +412,6 @@
   <script>
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {return new bootstrap.Tooltip(tooltipTriggerEl)})
-
-    const handleJSON = (s) => {
-      if (s == null && s == "") { return }
-      // Remove special characters
-      s = s.replace(/\\n/g, "\\n")  
-           .replace(/\\'/g, "\\'")
-           .replace(/\\"/g, '\\"')
-           .replace(/\\&/g, "\\&")
-           .replace(/\\r/g, "\\r")
-           .replace(/\\t/g, "\\t")
-           .replace(/\\b/g, "\\b")
-           .replace(/\\f/g, "\\f")
-           .replace(/[\u0000-\u0019]+/g,"")
-           .replace(/\n/g, "\\n") 
-      //  Casos especiales
-           .replace('"spray"', "") 
-           .replace('"."', '."')
-           .replace('"Irritante', `'Irritante`)
-           .replace('día"', `día'`)
-           .replace('"Ascophyllum Nodosum" ', `'Ascophyllum Nodosum'`) 
-           .replace('"Fabricante:', '"Fabricante -')
-           .replace('"S', 'S')
-           .replace('Socio ","', '"Socio","')
-           .replace(':S', ':"S')
-           .replace('""I', '"I'); 
-      try {
-        return JSON.parse(s)
-      } catch (error) {
-        console.log("Error parseando respuesta, comuniquese con soporte")        
-      }
-    }
     
     //  Controlar modo vista y editar
     $("#editButton").on("click", function () {
@@ -422,6 +421,7 @@
       $("#saveButton").show();
       $("#imgContainer").attr("style", "margin-right: 70px")
       $(".textArea").removeClass("textAreaDisable");
+      $(".inputDosis").removeClass("textAreaDisable");
       $("#addRelatedProduct").show();
       $(".inputsText").removeClass("textAreaDisable");
       $("#toggleButton").removeClass("disableToggle");
@@ -438,6 +438,7 @@
       $("#editButton").show();
       $("#imgContainer").attr("style", "margin-right: 0px")
       $(".textArea").addClass("textAreaDisable");
+      $(".inputDosis").addClass("textAreaDisable");
       $("#addRelatedProduct").hide();
       $(".inputsText").addClass("textAreaDisable");
       $("#toggleButton").addClass("disableToggle");
@@ -453,6 +454,7 @@
         $("#sectionImagenes").remove()
         $("#sectionBB").remove()
         $("#sectionMapa").remove()
+        $("#selectProductKindContainer").show()
       }
       if (catalog != "Cultivos") {
         $("#sectionBB").remove()
@@ -586,7 +588,7 @@
         "codigo": "",
         "titulo": $("#fichaTitle").val(),
         "subtitulo": $("#fichaGenericName").val(),
-        "idtipoproducto": "",
+        "idtipoproducto": ($("#selectProductKind").val() == "-1" ? "" : Number($("#selectProductKind").val())),
         "estado": ($('#toggleButton').is(':checked') ? "A" : "I"),
         "catalogo_detalle" : [],
         "catalogo_producto": [],
@@ -609,7 +611,7 @@
       for (let i = 0; i < fieldProducts.length; i++) {
         data.catalogo_producto.push({
           "id_catalogo_encabezado_producto": Number($(fieldProducts[i]).attr("data-id")),
-          "dosis": "Dosis no agregada",
+          "dosis": $(fieldProducts[i]).find(".inputDosis").val(),
         })
       }
 
@@ -620,7 +622,7 @@
           "id_tipo_catalogo": Number($(fieldBB[i]).attr("data-catalog"))
         })
       }
-    
+
       fetch('http://104.236.159.193:3010/catalogo', {
         method: 'POST',
         headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
@@ -697,24 +699,24 @@
       let subtitulo = $(this).attr("data-s");
 
       let element = `
-        <div data-id="${id}" class="d-flex align-items-center my-2 dataHarvestProducts" style="position: absolute">
+        <div data-id="${id}" class="d-flex align-items-center my-2 dataHarvestProducts" >
           <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
             <img src="http://104.236.159.193:3010/${img}" alt="" class="imgCard" style="object-fit: cover; width: 100%; height: 100%">
           </div>
           <div>
             <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
               <span >${nombre}</span> <br>
-              <span>${titulo}</span> <br>
               <span>${subtitulo}</span>
+              <input value="Dosis no agregada" type="text" class="form-control inputDosis"></input>
             </h6>
           </div>
-          <div class="removeProductRelation">x</div>
+          <div class="removeProductRelation" style="visibility: inherit">x</div>
           
         </div>
         <hr class="horizontal dark mt-0">
       `;
       $(this).remove();
-      $("#detailRelatedProducts").append(element);
+      $("#detailRelatedProducts>div:first-child").after(element);
     })
 
     $(document).on("click", ".iconBlancosBiologicos", function () {
@@ -749,6 +751,10 @@
       $("#fichaName").val(datosEncabezado.nombre)
       $("#fichaTitle").val(datosEncabezado.titulo_catalogo)
       $("#fichaGenericName").val(datosEncabezado.subtitulo)
+
+      if (datosEncabezado.idtipoproducto) {
+        $("#selectProductKind").val(datosEncabezado.idtipoproducto)
+      } 
 
       if (datosEncabezado.foto) {
         $("#imgEncabezado").attr("src", "http://104.236.159.193:3010/"+datosEncabezado.foto)
@@ -879,7 +885,7 @@
           $("#detailRelatedProductsListComplete").append(elementL);
         }
 
-        for (let i = 0; i < productosFicha.length; i++) {
+        for (let i = 0; i < productosFicha.length; i++) { 
           let elementP = `
             <div data-id="${productosFicha[i].id}" class="d-flex align-items-center my-2 dataHarvestProducts" >
               <div style="width: 80px; height: 80px; min-width: 80px" class="me-1 border rounded">
@@ -889,7 +895,7 @@
                 <h6 style="text-align: left; font-size: 13px;" class="font-weight-bolder opacity-7 m-0" >
                   <span >${productosFicha[i].nombre}</span> <br>
                   <span>${productosFicha[i].subtitulo}</span> <br>
-                  <span>${productosFicha[i].dosis}</span>
+                  <input value="${productosFicha[i].dosis}" type="text" class="form-control inputDosis textAreaDisable"></input>
                 </h6>
               </div>
               <div class="removeProductRelation">x</div>
@@ -1149,50 +1155,56 @@
       if (catalogId) {$("main").attr("id-catalog", catalogId.id_catalogo); return}
     }
 
-    $(document).ready(function () {
+    const getData = async () => {
       let id = '<%- id %>';
-      
-      let detailPropiedad= '<%- detallePropiedad %>';
-      detailPropiedad = handleJSON(detailPropiedad);
 
-      let currentCatalog = detailPropiedad.data.catalogo_detalle_propiedad[0].descripcion_catalogo;
-      handleSectionByCatalog(currentCatalog);
+      let detalle = await fetch(`/detalle/${id}`);
+          detalle = await detalle.json();
 
-      let detailProducto= '<%- detalleProducto %>';
-      detailProducto = handleJSON(detailProducto)
+      let detalleProp = await fetch(`/detalle_propiedad/${id}`);
+          detalleProp = await detalleProp.json();
       
-      let detailCatalogoProducts = '<%- catalogoProductos %>';
-      detailCatalogoProducts = handleJSON(detailCatalogoProducts)
-      
-      let detailCatalogoCultivos = '<%- catalogoCultivos %>';
-      detailCatalogoCultivos = handleJSON(detailCatalogoCultivos)
-      
-      let detailCatalogoMaleza = '<%- catalogoMalezas %>';
-      detailCatalogoMaleza = handleJSON(detailCatalogoMaleza)
-      
-      let detailCatalogoPlagas = '<%- catalogoPlagas %>';
-      detailCatalogoPlagas = handleJSON(detailCatalogoPlagas)
-      
-      let detailCatalogoEnfermedades = '<%- catalogoEnfermedades %>';
-      detailCatalogoEnfermedades = handleJSON(detailCatalogoEnfermedades)
+      let cultivos = await fetch(`/cultivos`);
+          cultivos = await cultivos.json();
 
-      let permissionsUser = `<%- JSON.stringify(userData) %>`;
-      permissionsUser = handleJSON(permissionsUser);
-      permissionsUser = permissionsUser.permisos;
+      let enfermedades = await fetch(`/enfermedades`);
+          enfermedades = await enfermedades.json();
+
+      let malezas = await fetch(`/malezas`);
+          malezas = await malezas.json();
+
+      let plagas = await fetch(`/plagas`);
+          plagas = await plagas.json();
+      
+      let productos = await fetch(`/productos`);
+          productos = await productos.json();
+
+      let userData = await fetch(`/user_data`);
+          userData = await userData.json();
 
       var catalogos = {
-        "productos" : detailCatalogoProducts.data.catalogo_enc,
-        "cultivos" : detailCatalogoCultivos.data.catalogo_enc,
-        "malezas" : detailCatalogoMaleza.data.catalogo_enc,
-        "plagas" : detailCatalogoPlagas.data.catalogo_enc,
-        "enfermedades" : detailCatalogoEnfermedades.data.catalogo_enc
+        "cultivos" : cultivos.data.catalogo_enc,
+        "enfermedades" : enfermedades.data.catalogo_enc,
+        "malezas" : malezas.data.catalogo_enc,
+        "plagas" : plagas.data.catalogo_enc,
+        "productos" : productos.data.catalogo_enc,
       };
 
+      let permissionsUser = userData.permisos;
+      let currentCatalog = detalleProp.data.catalogo_detalle_propiedad[0].descripcion_catalogo;
+      
+      handleSectionByCatalog(currentCatalog);
       handlePermissions(permissionsUser)
-      printData(detailProducto.data, detailPropiedad.data, catalogos);
+      printData(detalle.data, detalleProp.data, catalogos);
       getCatalogId(catalogos);
       textAreaSize();
       imageAmountIndicator();
+
+      $("#preloader").hide();
+    }
+
+    $(document).ready(function () {
+      getData();
     })
   </script>
 
